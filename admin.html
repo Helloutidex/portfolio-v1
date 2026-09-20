@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Portfolio Admin — Designing What's Next</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body class="admin-body">
+<section class="lock-screen" id="lockScreen">
+  <form id="lockForm" class="lock-box">
+    <span class="admin-eyebrow">Admin access</span>
+    <h1 id="lockTitle">Enter passphrase</h1>
+    <p class="admin-note" id="lockNote">This only keeps casual visitors out — it's a client-side check, not real
+      security. For genuine protection, don't publish this admin.html/js/css to your public GitHub Pages site (see
+      the README).</p>
+    <input type="password" id="lockInput" autocomplete="current-password" placeholder="Passphrase">
+    <button class="modal-nav" type="submit">Unlock</button>
+    <p class="admin-status" id="lockStatus" aria-live="polite"></p>
+  </form>
+</section>
+
+<div id="appContent" hidden>
+<nav class="nav">
+  <a class="logo" href="index.html">ADEDEJI SUNDAY / DESIGN</a>
+  <div class="navlinks">
+    <a href="index.html">← Back to site</a>
+    <button class="modal-nav" id="lockOut" type="button">Lock</button>
+    <button class="theme" id="theme" aria-label="Switch theme"><span></span><b>Black</b></button>
+  </div>
+</nav>
+
+<main class="admin-wrap">
+  <header class="admin-head">
+    <span class="admin-eyebrow">Content editor · local preview only</span>
+    <h1>Edit everything.</h1>
+    <p class="admin-note">Colors, heading size, every piece of text, and the work list — all in one place. Changes save
+      to <b>this browser only</b> (<code>localStorage</code>): a static site with no server can't publish an edit to
+      every visitor by itself. Use "Copy code for script.js" in each tab to make a change permanent before you push
+      to GitHub.</p>
+  </header>
+
+  <div class="admin-tabs" role="tablist">
+    <button class="admin-tab active" data-tab="content" type="button">Content</button>
+    <button class="admin-tab" data-tab="theme" type="button">Theme</button>
+    <button class="admin-tab" data-tab="projects" type="button">Work / Projects</button>
+  </div>
+
+  <!-- ===== CONTENT TAB ===== -->
+  <section class="admin-panel" id="panel-content">
+    <div class="admin-group" data-group="nav">
+      <h2>Nav</h2>
+      <label>Logo text<input data-path="nav.logo"></label>
+    </div>
+
+    <div class="admin-group" data-group="hero">
+      <h2>Hero</h2>
+      <label>Eyebrow<input data-path="hero.eyebrow"></label>
+      <div class="admin-row3">
+        <label>Headline — before<input data-path="hero.titlePre"></label>
+        <label>Headline — italic word<input data-path="hero.titleEm"></label>
+        <label>Headline — after<input data-path="hero.titlePost"></label>
+      </div>
+      <label>Paragraph<textarea data-path="hero.paragraph"></textarea></label>
+      <label>Lens label (small text on the lens)<input data-path="hero.lensLabel"></label>
+      <label>Text under the lens<input data-path="hero.opticNote"></label>
+      <div class="admin-row2">
+        <label>Bottom-left note<input data-path="hero.note"></label>
+        <label>Bottom-right instruction<input data-path="hero.zoomInstruction"></label>
+      </div>
+    </div>
+
+    <div class="admin-group" data-group="about">
+      <h2>About</h2>
+      <div class="admin-row2">
+        <label>Section label<input data-path="about.label"></label>
+        <label>Portrait caption<input data-path="about.portraitCaption"></label>
+      </div>
+      <div class="admin-row2">
+        <label>"View CV" button text<input data-path="about.viewCV"></label>
+        <label>"Download CV" button text<input data-path="about.downloadCV"></label>
+      </div>
+      <label>Portrait image<div class="admin-image-field" data-image-path="about.portraitImage"></div></label>
+      <div class="admin-row3">
+        <label>Heading — before<input data-path="about.headingPre"></label>
+        <label>Heading — italic word<input data-path="about.headingEm"></label>
+        <label>Heading — after<input data-path="about.headingPost"></label>
+      </div>
+      <label>Paragraph 1<textarea data-path="about.paragraph1"></textarea></label>
+      <label>Paragraph 2<textarea data-path="about.paragraph2"></textarea></label>
+      <label>Skills (comma-separated)<input data-path="about.skills" data-list="comma"></label>
+    </div>
+
+    <div class="admin-group" data-group="social">
+      <h2>Collaborators strip <span class="admin-hint">(real logos — a placeholder mark shows until you add one)</span></h2>
+      <div class="admin-row2">
+        <label>Label<input data-path="social.label"></label>
+        <label>Count text<input data-path="social.count"></label>
+      </div>
+      <div id="collabEditor"></div>
+      <button class="admin-add-small" type="button" id="addCollab">+ Add a collaborator</button>
+    </div>
+
+    <div class="admin-group" data-group="testimonials">
+      <h2>Testimonials</h2>
+      <div class="admin-row2">
+        <label>Label<input data-path="testimonials.label"></label>
+        <label>Description<input data-path="testimonials.description"></label>
+      </div>
+      <div id="testimonialsEditor"></div>
+      <button class="admin-add-small" type="button" id="addTestimonial">+ Add a testimonial</button>
+    </div>
+
+    <div class="admin-group" data-group="work">
+      <h2>Work / gallery</h2>
+      <div class="admin-row2">
+        <label>Label<input data-path="work.label"></label>
+        <label>Description<input data-path="work.description"></label>
+      </div>
+      <label>Note (bottom-right of the gallery)<input data-path="work.noteRight"></label>
+    </div>
+
+    <div class="admin-group" data-group="experience">
+      <h2>Experience</h2>
+      <div class="admin-row2">
+        <label>Heading line 1<input data-path="experience.headingLine1"></label>
+        <label>Heading line 2<input data-path="experience.headingLine2"></label>
+      </div>
+      <div id="expRowsEditor"></div>
+      <button class="admin-add-small" type="button" id="addExpRow">+ Add a row</button>
+    </div>
+
+    <div class="admin-group" data-group="links">
+      <h2>Links section</h2>
+      <div class="admin-row2">
+        <label>Label<input data-path="links.label"></label>
+        <label>Description<input data-path="links.description"></label>
+      </div>
+      <div id="linksEditor"></div>
+      <button class="admin-add-small" type="button" id="addLink">+ Add a link</button>
+    </div>
+
+    <div class="admin-group" data-group="signature">
+      <h2>Signature marquee</h2>
+      <label>Name<input data-path="signature.name"></label>
+    </div>
+
+    <div class="admin-group" data-group="contact">
+      <h2>Contact</h2>
+      <label>Small label<input data-path="contact.small"></label>
+      <label>Heading (one line per row)<textarea data-path="contact.headingLines" data-list="lines"></textarea></label>
+      <div class="admin-row2">
+        <label>Availability line<input data-path="contact.available"></label>
+        <label>Email display text<input data-path="contact.emailText"></label>
+      </div>
+      <label>Email link (mailto:...)<input data-path="contact.emailHref"></label>
+    </div>
+
+    <div class="admin-group" data-group="footer">
+      <h2>Footer</h2>
+      <div class="admin-row2">
+        <label>Left<input data-path="footer.left"></label>
+        <label>Right<input data-path="footer.right"></label>
+      </div>
+    </div>
+
+    <div class="admin-actions">
+      <button class="modal-nav" id="saveContent" type="button">Save changes</button>
+      <button class="modal-nav" id="resetContent" type="button">Reset to defaults</button>
+      <button class="modal-nav" id="copyContentCode" type="button">Copy code for script.js</button>
+    </div>
+    <p class="admin-status" id="contentStatus" aria-live="polite"></p>
+  </section>
+
+  <!-- ===== THEME TAB ===== -->
+  <section class="admin-panel" id="panel-theme" hidden>
+    <div class="admin-group">
+      <h2>Colors <span class="admin-hint">(the default / light theme — dark mode keeps its own high-contrast palette)</span></h2>
+      <div class="admin-swatches">
+        <label>Background<input type="color" data-theme="paper"></label>
+        <label>Text / ink<input type="color" data-theme="ink"></label>
+        <label>Secondary text<input type="color" data-theme="muted"></label>
+        <label>Lines / borders<input type="color" data-theme="line"></label>
+        <label>Contact section<input type="color" data-theme="contactBg"></label>
+      </div>
+    </div>
+    <div class="admin-group">
+      <h2>Heading size <span class="admin-hint">(scales all section headlines — not the floating work cards)</span></h2>
+      <label class="admin-slider">
+        <input type="range" min="0.8" max="1.3" step="0.02" data-theme="scale" id="scaleSlider">
+        <span id="scaleValue">1.00×</span>
+      </label>
+    </div>
+    <div class="admin-actions">
+      <button class="modal-nav" id="saveTheme" type="button">Save changes</button>
+      <button class="modal-nav" id="resetTheme" type="button">Reset to defaults</button>
+      <button class="modal-nav" id="copyThemeCode" type="button">Copy code for script.js</button>
+    </div>
+    <p class="admin-status" id="themeStatus" aria-live="polite"></p>
+  </section>
+
+  <!-- ===== PROJECTS TAB ===== -->
+  <section class="admin-panel" id="panel-projects" hidden>
+    <div class="admin-list" id="adminList" aria-label="Projects"></div>
+    <button class="admin-add" id="addProject" type="button">+ Add a project</button>
+    <div class="admin-actions">
+      <button class="modal-nav" id="saveProjects" type="button">Save changes</button>
+      <button class="modal-nav" id="resetProjects" type="button">Reset to defaults</button>
+      <button class="modal-nav" id="copyProjectsCode" type="button">Copy code for script.js</button>
+    </div>
+    <p class="admin-status" id="projectsStatus" aria-live="polite"></p>
+  </section>
+
+  <a class="modal-nav admin-preview" href="index.html" target="_blank" rel="noopener">Preview site ↗</a>
+</main>
+</div>
+
+<script src="admin.js" defer></script>
+</body></html>

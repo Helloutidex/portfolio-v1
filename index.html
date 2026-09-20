@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Designing What's Next — Portfolio</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="nav">
+  <a class="logo" href="#top" id="navLogo">ADEDEJI SUNDAY / DESIGN</a>
+  <div class="navlinks">
+    <a href="#about">About</a><a href="#work">Work</a><a href="#contact">Contact</a>
+    <button class="theme" id="theme" aria-label="Switch theme"><span></span><b>Black</b></button>
+  </div>
+</nav>
+
+<section class="hero" id="top">
+  <div class="intro">
+    <div class="eyebrow" id="heroEyebrow">Independent designer · Lagos, Nigeria</div>
+    <h1><span id="heroTitlePre">Designing </span><em id="heroTitleEm">what's</em><span id="heroTitlePost"> next.</span></h1>
+    <p id="heroParagraph">I turn ideas into identities, digital experiences and visual systems people can feel.</p>
+  </div>
+  <div class="stage" id="stage">
+    <div class="cards" id="cards" aria-label="Selected work"></div>
+    <div class="lens" id="lens">
+      <div class="glass"><img id="lensImg" alt="Abstract architecture"></div>
+      <div class="ring-mark"></div>
+      <div class="focus-dot"></div>
+      <div class="lens-label" id="lensLabel">Zoom to reveal</div>
+    </div>
+    <div class="zoom-readout" aria-hidden="true">Focus <b id="zoomValue">01</b> / 05</div>
+    <div class="optic-note" id="opticNote">Scroll / drag the lens · reveal the work</div>
+  </div>
+  <div class="hero-bottom">
+    <div class="note" id="heroNote">The work is hidden in the lens.</div>
+    <div class="zoom-instruction"><strong id="heroZoomInstruction">Scroll / drag to explore</strong></div>
+  </div>
+</section>
+
+<section class="about" id="about">
+  <div class="about-grid">
+    <div>
+      <div class="about-label" id="aboutLabel">About me</div>
+      <div class="cv-cta"><a href="#" id="viewCV">View CV ↗</a><button id="downloadCV" type="button">Download CV ↓</button></div>
+      <div class="portrait" tabindex="0" role="button" aria-label="Reveal portrait in colour">
+        <div class="portrait-frame"><img id="portraitImg" src="assets/portrait.jpg" alt="Portrait of Adedeji Sunday Samuel"></div>
+        <span id="portraitCaption">Portrait · tap for colour</span>
+      </div>
+      <h2><span id="aboutHeadingPre">I design for the space between an </span><em id="aboutHeadingEm">idea</em><span id="aboutHeadingPost"> and what it can become.</span></h2>
+    </div>
+    <div class="about-copy">
+      <p id="aboutParagraph1">I'm a multidisciplinary designer working across brand identity, digital design, campaigns and AI / generative visuals.</p>
+      <p id="aboutParagraph2">I'm interested in clear ideas, strong visual systems and work that can live beyond a single screen.</p>
+      <div class="skills" id="skillsList"></div>
+    </div>
+  </div>
+</section>
+
+<section class="social-proof" aria-label="Selected clients and collaborations">
+  <div class="social-proof-head"><span id="socialLabel">Selected collaborators</span><span id="socialCount">01 — 05</span></div>
+  <div class="logo-marquee"><div class="logo-track" id="logoTrack"></div></div>
+</section>
+
+<section class="work" id="work">
+  <div class="section-top"><span id="workLabel">Gallery / automatic</span><p id="workDescription">Selected work, continuously moving. Tap any frame to explore.</p></div>
+  <div class="auto-gallery" id="autoGallery" aria-label="Selected work gallery"></div>
+  <div class="gallery-note"><span id="galleryNoteRight">Tap any frame to explore</span></div>
+</section>
+
+<section class="testimonials" id="testimonials">
+  <div class="section-top"><span id="testimonialsLabel">Praise</span><p id="testimonialsDescription">What collaborators say about working together.</p></div>
+  <div class="testimonial-grid" id="testimonialGrid"></div>
+</section>
+
+<section class="experience" id="experience">
+  <div class="experience-grid">
+    <h2><span id="expHeadingLine1">Experience</span><br><span id="expHeadingLine2">&amp; practice.</span></h2>
+    <div class="exp-list" id="expRows"></div>
+  </div>
+</section>
+
+<section class="links-section">
+  <div class="section-top"><span id="linksLabel">Links</span><p id="linksDescription">Find the work, the process, or start a conversation.</p></div>
+  <div class="links-grid" id="linksGrid"></div>
+</section>
+<div class="signature"><div class="name-track" id="nameTrack"></div></div>
+
+<section class="contact" id="contact">
+  <div class="small" id="contactSmall">Start a project</div>
+  <h2 id="contactHeading">LET'S MAKE<br>SOMETHING<br>WORTH SEEING.</h2>
+  <div class="contact-bottom"><span id="contactAvailable">Available for selected projects</span><a class="email" id="contactEmail" href="mailto:hello@example.com">hello@example.com ↗</a></div>
+</section>
+<footer class="footer"><span id="footerLeft">© 2026 Adedeji Sunday Samuel</span><span id="footerRight">Designed with intention / Lagos</span></footer>
+
+<div class="collection-modal" id="collectionModal" aria-hidden="true">
+  <div class="collection-box">
+    <div class="collection-head"><span id="collectionMeta">Collection</span><button id="collectionClose" class="modal-nav">Close ×</button></div>
+    <div class="collection-title"><span>Explore</span><h2 id="collectionTitle">Brand Identity</h2></div>
+    <div class="collection-grid" id="collectionGrid"></div>
+  </div>
+</div>
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <span id="mmeta"></span>
+      <div class="modal-actions">
+        <button class="modal-nav" id="prevProject">← Prev</button>
+        <button class="modal-nav" id="nextProject">Next →</button>
+        <button class="modal-nav" id="backWork">Back to collection</button>
+        <button class="close" id="close" aria-label="Close">×</button>
+      </div>
+    </div>
+    <div class="modal-body" id="modalBody">
+      <div class="case-title-track" id="caseTitleTrack"></div>
+      <p class="case-tagline reveal" id="caseTagline"></p>
+      <div class="case-meta reveal" id="caseMeta"></div>
+      <div class="case-sections" id="caseSections"></div>
+      <div class="case-next reveal" id="caseNext"></div>
+    </div>
+  </div>
+</div>
+
+<script src="script.js" defer></script>
+</body></html>
