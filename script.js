@@ -116,6 +116,14 @@
     set('linksLabel', c.links.label); set('linksDescription', c.links.description);
     const linksGrid = $('#linksGrid'); if(linksGrid) linksGrid.innerHTML = c.links.items.map(it=>`<a class="big-link" href="${esc(it.href)}">${esc(it.label)}</a>`).join('');
     const nameTrack = $('#nameTrack'); if(nameTrack) nameTrack.innerHTML = [c.signature.name,c.signature.name].map(n=>`<span>${esc(n)}</span>`).join('');
+    // Floating badge reuses the same name from Signature above — one field, two places.
+    const badgeText = $('#badgeCircleText');
+    if (badgeText) badgeText.textContent = Array(4).fill(c.signature.name).join(' · ') + ' · ';
+    const badgeInitials = $('#floatingBadgeInitials');
+    if (badgeInitials) {
+      const initials = c.signature.name.split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+      badgeInitials.textContent = initials || 'SA';
+    }
     set('contactSmall', c.contact.small);
     const contactHeading = $('#contactHeading'); if(contactHeading) contactHeading.innerHTML = c.contact.headingLines.map(esc).join('<br>');
     set('contactAvailable', c.contact.available);
@@ -206,7 +214,8 @@
   // A big circle that follows the pointer over the gallery — purely decorative,
   // so it just no-ops on touch devices where there's no hover/pointermove to track.
   const galleryCursor = $('#galleryCursor');
-  if (galleryCursor && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+  const supportsHover = typeof window.matchMedia === 'function' && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  if (galleryCursor && supportsHover) {
     galleryEl.addEventListener('pointermove', e => {
       const rect = galleryEl.getBoundingClientRect();
       galleryCursor.style.left = (e.clientX - rect.left) + 'px';
@@ -223,6 +232,14 @@
   function syncTheme(){ if(theme) theme.querySelector('b').textContent = document.body.classList.contains('dark') ? 'White' : 'Black'; }
   syncTheme();
   theme?.addEventListener('click', () => { document.body.classList.toggle('dark'); localStorage.setItem('portfolio-theme', document.body.classList.contains('dark')?'dark':'light'); syncTheme(); });
+
+  /* ---------- nav: subtle border once you've scrolled past the very top ---------- */
+  const navEl = $('.nav');
+  if (navEl) {
+    const syncNavScroll = () => navEl.classList.toggle('is-scrolled', window.scrollY > 4);
+    syncNavScroll();
+    window.addEventListener('scroll', syncNavScroll, { passive: true });
+  }
 
   /* ---------- portrait colour toggle ---------- */
   $$('.portrait').forEach(p => {
@@ -416,4 +433,41 @@
     if(modal.classList.contains('open')&&e.key==='ArrowRight')moveWork(1);
     if(modal.classList.contains('open')&&e.key==='ArrowLeft')moveWork(-1);
   });
+
+  /* ---------- contact form: submits without leaving the page ----------
+     Sends to FormSubmit.co's AJAX endpoint, using whatever email is set as
+     the contact email above (edit it in admin.html's Content → Contact
+     tab, no separate field to keep in sync). The first message sent to a
+     new address triggers a one-time confirmation email from FormSubmit
+     that has to be approved before messages start arriving normally. */
+  const contactForm = $('#contactForm');
+  if (contactForm) {
+    contactForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const statusEl = $('#contactFormStatus');
+      const submitBtn = contactForm.querySelector('.contact-submit');
+      const emailHref = $('#contactEmail')?.getAttribute('href') || 'mailto:hello@example.com';
+      const targetEmail = emailHref.replace(/^mailto:/,'').split('?')[0];
+      const data = Object.fromEntries(new FormData(contactForm).entries());
+      submitBtn.disabled = true;
+      statusEl.textContent = 'Sending…';
+      statusEl.className = 'contact-form-status';
+      try {
+        const res = await fetch(`https://formsubmit.co/ajax/${encodeURIComponent(targetEmail)}`, {
+          method: 'POST',
+          headers: { 'Content-Type':'application/json', 'Accept':'application/json' },
+          body: JSON.stringify(data),
+        });
+        if (!res.ok) throw new Error('Request failed');
+        statusEl.textContent = "Sent — I'll get back to you soon.";
+        statusEl.className = 'contact-form-status is-success';
+        contactForm.reset();
+      } catch (err) {
+        statusEl.textContent = 'Something went wrong — try the email link below instead.';
+        statusEl.className = 'contact-form-status is-error';
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+  }
 })();

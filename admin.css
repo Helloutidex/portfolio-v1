@@ -42,7 +42,8 @@
 .lock-box{width:min(420px,100%);display:flex;flex-direction:column;gap:14px}
 .lock-box h1{font-size:32px;letter-spacing:-.04em;margin:6px 0 4px}
 .lock-box input{font:15px Manrope,Arial,sans-serif;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink)}
-.lock-box button{align-self:flex-start}
+.lock-box button[type=submit]{align-self:flex-start}
+.lock-reset{align-self:flex-start;border:0;background:none;color:var(--muted);font:500 10px 'DM Mono',monospace;text-transform:uppercase;text-decoration:underline;cursor:pointer;padding:4px 0}
 .admin-swatches label{align-items:center;flex-direction:row;gap:10px}
 .admin-swatches input[type=color]{width:44px;height:34px;border:1px solid var(--line);border-radius:8px;padding:2px;background:var(--paper);cursor:pointer}
 .admin-slider{flex-direction:row;align-items:center;gap:14px}

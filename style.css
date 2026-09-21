@@ -2,7 +2,7 @@
 
 /* ---------- tokens ---------- */
 :root{
-  --paper:#fff;--ink:#000;--muted:#747474;--line:#dedede;--surface:#fff;
+  --paper:#faf6ee;--ink:#000;--muted:#747474;--line:#e2ddd2;--surface:#faf6ee;
   --photo-shadow:rgba(0,0,0,.14);--contact-bg:#a91624;
   --edge:clamp(20px,4.2vw,100px); /* side breathing room — grows on wide screens instead of running edge-to-edge */
   --scale:1; /* headline size multiplier, set by the admin page. Never applied to the floating cards. */
@@ -17,8 +17,10 @@ button{font:inherit}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 
 /* ---------- nav ---------- */
-.nav{position:fixed;z-index:100;top:0;left:0;width:100%;display:flex;justify-content:space-between;align-items:center;padding:22px var(--edge);font:500 10px 'DM Mono',monospace;text-transform:uppercase;mix-blend-mode:multiply}
-.dark .nav{mix-blend-mode:normal}
+.nav{position:fixed;z-index:100;top:0;left:0;width:100%;display:flex;justify-content:space-between;align-items:center;padding:22px var(--edge);font:500 10px 'DM Mono',monospace;text-transform:uppercase;background:color-mix(in srgb,var(--paper) 82%, transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid transparent;transition:border-color .3s ease}
+.nav.is-scrolled{border-bottom-color:var(--line)}
+.dark .nav{border-bottom-color:transparent}
+.dark .nav.is-scrolled{border-bottom-color:var(--line)}
 .logo{font-weight:500}
 .navlinks{display:flex;gap:24px;align-items:center}
 .navlinks a{position:relative}
@@ -197,9 +199,23 @@ button{font:inherit}
 @keyframes nameScroll{to{transform:translateX(-50%)}}
 
 /* ---------- contact ---------- */
-.contact{background:var(--contact-bg);color:#fff;min-height:70vh;padding:var(--edge);display:flex;flex-direction:column;justify-content:space-between}
+.contact{background:var(--contact-bg);color:#fff;min-height:60vh;padding:var(--edge);display:flex;flex-direction:column;gap:44px}
 .contact .small{font:500 10px 'DM Mono',monospace;text-transform:uppercase}
 .contact h2{font-size:calc(var(--scale) * clamp(60px,12vw,175px));line-height:.8;letter-spacing:-.08em;margin:70px 0 0;max-width:1200px}
+.contact-body{display:flex;flex-direction:column;gap:36px;margin-top:auto}
+.contact-form{display:flex;flex-direction:column;gap:14px;max-width:640px}
+.contact-form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.contact-form label{display:flex;flex-direction:column;gap:6px;font:500 9px 'DM Mono',monospace;text-transform:uppercase;color:rgba(255,255,255,.8)}
+.contact-form input,.contact-form textarea{font:15px Manrope,Arial,sans-serif;padding:12px 14px;border:1px solid rgba(255,255,255,.35);border-radius:10px;background:rgba(255,255,255,.07);color:#fff}
+.contact-form input::placeholder,.contact-form textarea::placeholder{color:rgba(255,255,255,.45)}
+.contact-form input:focus,.contact-form textarea:focus{outline:none;border-color:#fff}
+.contact-form textarea{resize:vertical;min-height:90px}
+.contact-submit{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;background:#fff;color:var(--contact-bg);border:0;border-radius:999px;padding:13px 22px;font:600 13px Manrope,Arial,sans-serif;cursor:pointer;transition:transform .25s ease,opacity .25s ease}
+.contact-submit:hover{transform:translateY(-2px)}
+.contact-submit:disabled{opacity:.6;cursor:default;transform:none}
+.contact-form-status{font:500 10px 'DM Mono',monospace;text-transform:uppercase;min-height:14px;color:rgba(255,255,255,.75)}
+.contact-form-status.is-success{color:#c9f5cf}
+.contact-form-status.is-error{color:#ffd3d3}
 .contact-bottom{display:flex;justify-content:space-between;align-items:end;font:500 10px 'DM Mono',monospace;text-transform:uppercase}
 .email{font:700 clamp(18px,2.5vw,32px) Manrope;text-transform:none;letter-spacing:-.04em;border-bottom:1px solid}
 .footer{padding:20px var(--edge);display:flex;justify-content:space-between;font:500 9px 'DM Mono',monospace;text-transform:uppercase;color:var(--muted)}
@@ -268,6 +284,14 @@ button{font:inherit}
 .case-next-btn strong{font-size:clamp(32px,6vw,64px);letter-spacing:-.05em;font-weight:700;transition:opacity .25s ease,transform .25s ease;display:inline-block}
 .case-next-btn:hover strong{opacity:.55;transform:translateX(6px)}
 
+/* ---------- floating rotating badge ---------- */
+.floating-badge{position:fixed;right:var(--edge);bottom:calc(var(--edge) * .7);width:96px;height:96px;z-index:50;display:flex;align-items:center;justify-content:center;text-decoration:none;color:var(--ink)}
+.floating-badge-ring{position:absolute;inset:0;width:100%;height:100%;animation:spin 16s linear infinite}
+.floating-badge-ring text{font:500 8.4px 'DM Mono',monospace;text-transform:uppercase;letter-spacing:.05em;fill:var(--muted)}
+.floating-badge-center{position:relative;z-index:1;font-size:16px;font-weight:800;letter-spacing:-.02em;display:flex;align-items:baseline;background:var(--paper);border-radius:50%;width:54px;height:54px;justify-content:center;box-shadow:0 8px 22px rgba(0,0,0,.14);transition:transform .3s ease}
+.floating-badge-center i{font-style:normal;color:var(--contact-bg)}
+.floating-badge:hover .floating-badge-center{transform:scale(1.06)}
+
 /* ---------- mobile ---------- */
 @media(max-width:800px){
   .nav{padding:16px var(--edge)}.navlinks a:not(.theme-link){display:none}
@@ -311,7 +335,7 @@ button{font:inherit}
   .exp-row{grid-template-columns:70px 1fr;gap:10px}.exp-row span:last-child{grid-column:2}
   .links-section{padding:60px var(--edge) 30px}
   .signature{padding:0 var(--edge) 24px}
-  .contact{min-height:65vh;padding:20px var(--edge)}.contact h2{font-size:clamp(58px,16vw,120px)}.contact-bottom{display:block}.email{display:inline-block;margin-top:15px}
+  .contact{min-height:auto;padding:20px var(--edge) 40px;gap:30px}.contact h2{font-size:clamp(58px,16vw,120px)}.contact-body{gap:26px}.contact-form-row{grid-template-columns:1fr}.contact-bottom{display:block}.email{display:inline-block;margin-top:15px}
   .footer{padding:16px var(--edge);display:block}.footer span{display:block;margin-bottom:8px}
   .collection-title h2{font-size:17vw}.collection-grid{grid-template-columns:1fr}.collection-item img{height:220px}
   .modal-box{height:100svh}
@@ -323,4 +347,7 @@ button{font:inherit}
   .case-section{grid-template-columns:1fr;gap:14px;padding:34px 0}
   .case-image{margin:34px 0}
   .case-next-btn strong{font-size:clamp(26px,9vw,42px)}
+  .floating-badge{width:70px;height:70px;bottom:calc(var(--edge) * .5);right:calc(var(--edge) * .6)}
+  .floating-badge-center{width:38px;height:38px;font-size:12px}
+  .floating-badge-ring text{font-size:9.6px}
 }

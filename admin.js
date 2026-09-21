@@ -1,4 +1,5 @@
 (() => {
+try {
   const $ = s => document.querySelector(s);
   const $$ = s => [...document.querySelectorAll(s)];
   function esc(s){ return String(s==null?'':s).replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
@@ -56,6 +57,12 @@
     else { setStatus('lockStatus', 'Wrong passphrase.'); $('#lockInput').value=''; }
   });
   $('#lockOut')?.addEventListener('click', () => { sessionStorage.removeItem('ferricool-admin-unlocked'); showLock(false); });
+  $('#lockReset')?.addEventListener('click', () => {
+    if (!confirm('This clears the saved passphrase on this browser so you can set a new one. Continue?')) return;
+    localStorage.removeItem(LOCK_KEY);
+    sessionStorage.removeItem('ferricool-admin-unlocked');
+    location.reload();
+  });
 
   /* ---------- shared: theme toggle (same as main site) ---------- */
   const themeBtn = $('#theme');
@@ -616,4 +623,13 @@
     const code = 'const DEFAULT_PROJECTS = ' + JSON.stringify(projects.map(({__i,...rest})=>rest), null, 2) + ';';
     await copyOrLog(code, 'projectsStatus');
   });
+} catch (err) {
+  // If anything above throws, show it directly on the page — no DevTools needed
+  // to see what broke. Always visible regardless of the lock screen's state.
+  const banner = document.createElement('div');
+  banner.style.cssText = 'position:fixed;inset:16px;z-index:99999;background:#fff;color:#900;border:2px solid #900;border-radius:12px;padding:20px;font:14px/1.5 monospace;overflow:auto;white-space:pre-wrap';
+  banner.textContent = 'The admin page hit an error and stopped working:\n\n' + (err && err.stack ? err.stack : String(err)) + '\n\nScreenshot this whole box and send it over.';
+  document.body.appendChild(banner);
+  console.error(err);
+}
 })();

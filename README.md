@@ -36,7 +36,15 @@ uploaded image is embedded as a long `data:image/...` string — fine for
 preview, but for a real site swap it for an actual file in `assets/` and a
 normal path, so `script.js` doesn't balloon in size.
 
-## Security — please read before you rely on this
+## What's new in this update
+- **Nav bar** now has a soft blurred background so scrolling content no longer visually overlaps the logo/menu.
+- **Background color** shifted from pure white to a warm cream (`--paper`) across the whole site — still editable as a color in admin.html's Theme tab.
+- **Floating rotating badge** — your initials in a circle with your full name curved around it, spinning slowly, fixed in the bottom-right corner on every page, linking to Contact. It reuses the same name from the Signature section, so there's nothing extra to keep in sync.
+- **Contact form** — visitors can now message you without leaving the site. It posts to [FormSubmit.co](https://formsubmit.co) using whatever email is set in Content → Contact → "Email link" (the `mailto:` address). **Important:** the very first message sent to a given address triggers a one-time confirmation email from FormSubmit — you must click "Activate Form" in that email before real submissions start arriving in your inbox normally. Test it once yourself after deploying to trigger that.
+- **Admin lock got more forgiving.** There's now a "Forgot it, or stuck? Reset the lock" link right on the passphrase screen — no more digging through DevTools. And if admin.js ever hits an unexpected error, it now shows the actual error message directly on the page instead of silently doing nothing.
+- Added a `.nojekyll` file — a standard precaution for GitHub Pages so it serves your files as-is rather than running them through Jekyll processing first.
+
+
 `admin.html` has a passphrase lock, but it's important to understand what
 that does and doesn't protect:
 
