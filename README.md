@@ -36,6 +36,12 @@ uploaded image is embedded as a long `data:image/...` string — fine for
 preview, but for a real site swap it for an actual file in `assets/` and a
 normal path, so `script.js` doesn't balloon in size.
 
+## Latest changes
+- **Tap to reveal** — the lens no longer needs scrolling or dragging. Tap it (or press Enter) and every project card appears; tap it again, tap empty space, or press Escape to tuck them away.
+- **Contact is its own page** (`contact.html`). The homepage keeps a big "Let's talk" button that leads there; the nav's Contact link and the floating badge go straight to it. The form posts through FormSubmit.co to the email set in admin → Content → Contact. The first message ever sent triggers a one-time activation email from FormSubmit — click it, or messages won't arrive.
+- **Palette**: black `#141211`, red `#E8223E`, cream instead of white, grey body copy. These are the defaults in `DEFAULT_THEME` in `script.js`.
+- **Nav** is a solid bar now (no blur).
+
 ## What's new in this update
 - **Nav bar** now has a soft blurred background so scrolling content no longer visually overlaps the logo/menu.
 - **Background color** shifted from pure white to a warm cream (`--paper`) across the whole site — still editable as a color in admin.html's Theme tab.

@@ -97,10 +97,10 @@ try {
       eyebrow: 'Independent designer · Lagos, Nigeria',
       titlePre: 'Designing ', titleEm: "what's", titlePost: ' next.',
       paragraph: 'I turn ideas into identities, digital experiences and visual systems people can feel.',
-      lensLabel: 'Zoom to reveal',
-      opticNote: 'Scroll / drag the lens · reveal the work',
+      lensLabel: 'Tap to reveal',
+      opticNote: 'Tap the lens · reveal the work',
       note: 'The work is hidden in the lens.',
-      zoomInstruction: 'Scroll / drag to explore',
+      zoomInstruction: 'Tap to explore',
     },
     about: {
       label: 'About me', viewCV: 'View CV ↗', downloadCV: 'Download CV ↓',
@@ -131,7 +131,7 @@ try {
       { label: 'Work ↗', href: '#work' }, { label: 'About ↗', href: '#about' }, { label: 'Contact ↗', href: '#contact' },
     ]},
     signature: { name: 'ADEDEJI SUNDAY SAMUEL' },
-    contact: { small: 'Start a project', headingLines: ["LET'S MAKE","SOMETHING","WORTH SEEING."], available: 'Available for selected projects', emailText: 'hello@example.com ↗', emailHref: 'mailto:hello@example.com' },
+    contact: { ctaLabel: "Let's talk ↗", small: 'Start a project', headingLines: ["LET'S MAKE","SOMETHING","WORTH SEEING."], available: 'Available for selected projects', emailText: 'hello@example.com ↗', emailHref: 'mailto:hello@example.com' },
     footer: { left: '© 2026 Adedeji Sunday Samuel', right: 'Designed with intention / Lagos' },
   };
   function cloneDefaultContent(){ return JSON.parse(JSON.stringify(DEFAULT_CONTENT)); }
@@ -140,6 +140,7 @@ try {
       c.social.items = c.social.names.map(n => ({ name:n, logo:'' }));
     }
     if (!c.testimonials) c.testimonials = cloneDefaultContent().testimonials;
+    if (c.contact && !c.contact.ctaLabel) c.contact = { ...c.contact, ctaLabel: "Let's talk ↗" };
     return c;
   }
   function loadContent(){
@@ -298,7 +299,7 @@ try {
      THEME TAB
   ============================================================ */
   const THEME_STORAGE_KEY = 'ferricool-portfolio-theme';
-  const DEFAULT_THEME = { paper:'#ffffff', ink:'#000000', muted:'#747474', line:'#dedede', contactBg:'#a91624', scale:1 };
+  const DEFAULT_THEME = { paper:'#faf6ee', ink:'#141211', muted:'#747474', line:'#e2ddd2', contactBg:'#E8223E', scale:1 };
   function loadTheme(){
     try{
       const saved = JSON.parse(localStorage.getItem(THEME_STORAGE_KEY));

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Contact — Designing What's Next</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<nav class="nav">
+  <a class="logo" href="index.html" id="navLogo">ADEDEJI SUNDAY / DESIGN</a>
+  <div class="navlinks">
+    <a href="index.html#about">About</a><a href="index.html#work">Work</a><a href="contact.html">Contact</a>
+    <button class="theme" id="theme" aria-label="Switch theme"><span></span><b>Black</b></button>
+  </div>
+</nav>
+
+<section class="contact contact-full" id="contact">
+  <div class="small" id="contactSmall">Start a project</div>
+  <h2 id="contactHeading">LET'S MAKE<br>SOMETHING<br>WORTH SEEING.</h2>
+  <div class="contact-body">
+    <form class="contact-form" id="contactForm" action="https://formsubmit.co/hello@example.com" method="POST">
+      <input type="hidden" name="_subject" value="New message from your portfolio">
+      <input type="hidden" name="_captcha" value="false">
+      <div class="contact-form-row">
+        <label>Name<input type="text" name="name" required autocomplete="name"></label>
+        <label>Email<input type="email" name="email" required autocomplete="email"></label>
+      </div>
+      <label>What are you looking to build?<textarea name="message" rows="4" required></textarea></label>
+      <button type="submit" class="contact-submit">Send message <span>↗</span></button>
+      <p class="contact-form-status" id="contactFormStatus" role="status"></p>
+    </form>
+    <div class="contact-bottom"><span id="contactAvailable">Available for selected projects</span><a class="email" id="contactEmail" href="mailto:hello@example.com">hello@example.com ↗</a></div>
+  </div>
+</section>
+<footer class="footer"><span id="footerLeft">© 2026 Adedeji Sunday Samuel</span><span id="footerRight">Designed with intention / Lagos</span></footer>
+
+<a class="floating-badge" id="floatingBadge" href="contact.html" aria-label="Go to contact page">
+  <svg viewBox="0 0 120 120" class="floating-badge-ring" aria-hidden="true">
+    <defs><path id="badgeCirclePath" d="M60,60 m-50,0 a50,50 0 1,1 100,0 a50,50 0 1,1 -100,0"/></defs>
+    <text><textPath id="badgeCircleText" href="#badgeCirclePath" startOffset="0%"></textPath></text>
+  </svg>
+  <span class="floating-badge-center"><b id="floatingBadgeInitials">SA</b><i>.</i></span>
+</a>
+
+<script src="script.js" defer></script>
+</body></html>

@@ -17,10 +17,10 @@
       eyebrow: 'Independent designer · Lagos, Nigeria',
       titlePre: 'Designing ', titleEm: "what's", titlePost: ' next.',
       paragraph: 'I turn ideas into identities, digital experiences and visual systems people can feel.',
-      lensLabel: 'Zoom to reveal',
-      opticNote: 'Scroll / drag the lens · reveal the work',
+      lensLabel: 'Tap to reveal',
+      opticNote: 'Tap the lens · reveal the work',
       note: 'The work is hidden in the lens.',
-      zoomInstruction: 'Scroll / drag to explore',
+      zoomInstruction: 'Tap to explore',
     },
     about: {
       label: 'About me', viewCV: 'View CV ↗', downloadCV: 'Download CV ↓',
@@ -54,7 +54,7 @@
       { label: 'Work ↗', href: '#work' }, { label: 'About ↗', href: '#about' }, { label: 'Contact ↗', href: '#contact' },
     ]},
     signature: { name: 'ADEDEJI SUNDAY SAMUEL' },
-    contact: { small: 'Start a project', headingLines: ["LET'S MAKE","SOMETHING","WORTH SEEING."], available: 'Available for selected projects', emailText: 'hello@example.com ↗', emailHref: 'mailto:hello@example.com' },
+    contact: { ctaLabel: "Let's talk ↗", small: 'Start a project', headingLines: ["LET'S MAKE","SOMETHING","WORTH SEEING."], available: 'Available for selected projects', emailText: 'hello@example.com ↗', emailHref: 'mailto:hello@example.com' },
     footer: { left: '© 2026 Adedeji Sunday Samuel', right: 'Designed with intention / Lagos' },
   };
   function loadContent(){
@@ -70,6 +70,7 @@
       c.social.items = c.social.names.map(n => ({ name:n, logo:'' }));
     }
     if(!c.testimonials) c.testimonials = DEFAULT_CONTENT.testimonials;
+    if(c.contact && !c.contact.ctaLabel) c.contact = { ...c.contact, ctaLabel: DEFAULT_CONTENT.contact.ctaLabel };
     return c;
   }
   // A clean, generic wordmark used until a real logo is uploaded in admin.html.
@@ -128,12 +129,15 @@
     const contactHeading = $('#contactHeading'); if(contactHeading) contactHeading.innerHTML = c.contact.headingLines.map(esc).join('<br>');
     set('contactAvailable', c.contact.available);
     const emailEl = $('#contactEmail'); if(emailEl){ emailEl.textContent = c.contact.emailText; emailEl.href = c.contact.emailHref; }
+    set('contactCtaBtn', c.contact.ctaLabel || "Let's talk ↗");
+    // keep the form's plain-HTML fallback pointed at the same address, so it still posts correctly even if scripting fails
+    const formEl = $('#contactForm'); if(formEl) formEl.action = 'https://formsubmit.co/' + String(c.contact.emailHref||'').replace(/^mailto:/,'').split('?')[0];
     set('footerLeft', c.footer.left); set('footerRight', c.footer.right);
   }
   applyContent(loadContent());
 
   const THEME_STORAGE_KEY = 'ferricool-portfolio-theme';
-  const DEFAULT_THEME = { paper:'#ffffff', ink:'#000000', muted:'#747474', line:'#dedede', contactBg:'#a91624', scale:1 };
+  const DEFAULT_THEME = { paper:'#faf6ee', ink:'#141211', muted:'#747474', line:'#e2ddd2', contactBg:'#E8223E', scale:1 };
   function loadTheme(){
     try{
       const saved = JSON.parse(localStorage.getItem(THEME_STORAGE_KEY));
@@ -180,6 +184,44 @@
   const PROJECTS = loadProjects();
   const img = (p,w,q=85) => /^https?:/.test(p.image) ? `${p.image}${p.image.includes('?')?'&':'?'}auto=format&fit=crop&w=${w}&q=${q}` : p.image;
 
+  /* ---------- theme ---------- */
+  const theme = $('#theme');
+  const savedTheme = localStorage.getItem('portfolio-theme');
+  if (savedTheme === 'dark') document.body.classList.add('dark');
+  function syncTheme(){ if(theme) theme.querySelector('b').textContent = document.body.classList.contains('dark') ? 'White' : 'Black'; }
+  syncTheme();
+  theme?.addEventListener('click', () => { document.body.classList.toggle('dark'); localStorage.setItem('portfolio-theme', document.body.classList.contains('dark')?'dark':'light'); syncTheme(); });
+
+  /* ---------- nav: subtle border once you've scrolled past the very top ---------- */
+  const navEl = $('.nav');
+  if (navEl) {
+    const syncNavScroll = () => navEl.classList.toggle('is-scrolled', window.scrollY > 4);
+    syncNavScroll();
+    window.addEventListener('scroll', syncNavScroll, { passive: true });
+  }
+
+  /* ---------- portrait colour toggle ---------- */
+  $$('.portrait').forEach(p => {
+    const toggle=()=>p.classList.toggle('is-color');
+    p.addEventListener('click',toggle);
+    p.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();}});
+  });
+
+  /* ---------- CV actions ---------- */
+  $('#viewCV')?.addEventListener('click',e=>{e.preventDefault();window.open('cv.pdf','_blank','noopener');});
+  $('#downloadCV')?.addEventListener('click',()=>{
+    const a=document.createElement('a'); a.href='cv.pdf'; a.download='Adedeji-Sunday-Samuel-CV.pdf'; document.body.appendChild(a); a.click(); a.remove();
+  });
+
+  /* ============================================================
+     Everything in this block is specific to the homepage layout (the
+     lens, floating cards, moving gallery and the collection/case-study
+     modals). It lives in one guard so a page like contact.html, which
+     has none of those elements, safely skips all of it instead of a
+     missing element throwing partway through and silently breaking
+     the rest of the file.
+  ============================================================ */
+  if ($('#stage')) {
   /* ---------- render floating hero cards ---------- */
   const cardsEl = $('#cards');
   cardsEl.innerHTML = PROJECTS.map((p,i)=>`
@@ -225,30 +267,7 @@
     galleryEl.addEventListener('pointerleave', () => galleryCursor.classList.remove('is-visible'));
   }
 
-  /* ---------- theme ---------- */
-  const theme = $('#theme');
-  const savedTheme = localStorage.getItem('portfolio-theme');
-  if (savedTheme === 'dark') document.body.classList.add('dark');
-  function syncTheme(){ if(theme) theme.querySelector('b').textContent = document.body.classList.contains('dark') ? 'White' : 'Black'; }
-  syncTheme();
-  theme?.addEventListener('click', () => { document.body.classList.toggle('dark'); localStorage.setItem('portfolio-theme', document.body.classList.contains('dark')?'dark':'light'); syncTheme(); });
-
-  /* ---------- nav: subtle border once you've scrolled past the very top ---------- */
-  const navEl = $('.nav');
-  if (navEl) {
-    const syncNavScroll = () => navEl.classList.toggle('is-scrolled', window.scrollY > 4);
-    syncNavScroll();
-    window.addEventListener('scroll', syncNavScroll, { passive: true });
-  }
-
-  /* ---------- portrait colour toggle ---------- */
-  $$('.portrait').forEach(p => {
-    const toggle=()=>p.classList.toggle('is-color');
-    p.addEventListener('click',toggle);
-    p.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();}});
-  });
-
-  /* ---------- optical lens: scroll / drag to zoom, reveals cards progressively ---------- */
+  /* ---------- optical lens: tap to reveal the work ---------- */
   const lens=$('#lens'), lensImg=$('#lensImg'), zoomValue=$('#zoomValue'), hero=$('.hero');
   lensImg.src = img(PROJECTS[0],900);
   let zoom=0;
@@ -289,20 +308,30 @@
     cards.forEach((card,i)=>card.classList.toggle('show', zoom >= (i+1)*.82));
     if(Math.abs(zoom-prev)>.001) opticalSound(zoom-prev);
   }
-  lens.addEventListener('wheel',e=>{e.preventDefault();initSound();setZoom(zoom+(e.deltaY>0?.34:-.34));},{passive:false});
-  let lensDrag=false,lastY=0;
-  lens.addEventListener('pointerdown',e=>{initSound();lensDrag=true;lastY=e.clientY;try{lens.setPointerCapture(e.pointerId)}catch(_){}});
-  lens.addEventListener('pointermove',e=>{if(!lensDrag)return;const dy=e.clientY-lastY;lastY=e.clientY;if(Math.abs(dy)>.2)setZoom(zoom-dy*.018);});
-  ['pointerup','pointercancel'].forEach(ev=>lens.addEventListener(ev,()=>lensDrag=false));
+  // Tap (or press Enter / Space on) the lens to reveal everything at once; tap
+  // it again, tap any empty space, or press Escape to tuck it away. The zoom
+  // still animates smoothly (with its soft sound) — it just runs on its own
+  // instead of needing a scroll or drag.
+  let revealed=false, zoomAnim=null;
+  function animateZoomTo(target){
+    cancelAnimationFrame(zoomAnim);
+    const start=zoom, t0=performance.now(), dur=1100;
+    const ease=t=>1-Math.pow(1-t,3);
+    const step=now=>{
+      const p=Math.min(1,(now-t0)/dur);
+      setZoom(start+(target-start)*ease(p));
+      if(p<1) zoomAnim=requestAnimationFrame(step);
+    };
+    zoomAnim=requestAnimationFrame(step);
+  }
+  function setRevealed(on){ revealed=on; lens.setAttribute('aria-pressed', String(on)); animateZoomTo(on?5:0); }
+  lens.addEventListener('click',e=>{e.stopPropagation();initSound();setRevealed(!revealed);});
+  lens.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();initSound();setRevealed(!revealed);}});
+  hero.addEventListener('click',e=>{if(revealed && !e.target.closest('.card, .lens')) setRevealed(false);});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape' && revealed && !$('#modal').classList.contains('open') && !$('#collectionModal').classList.contains('open')) setRevealed(false);});
   setZoom(0);
 
   cards.forEach(card=>card.addEventListener('click', ()=>openCollection(card.dataset.id)));
-
-  /* ---------- CV actions ---------- */
-  $('#viewCV')?.addEventListener('click',e=>{e.preventDefault();window.open('cv.pdf','_blank','noopener');});
-  $('#downloadCV')?.addEventListener('click',()=>{
-    const a=document.createElement('a'); a.href='cv.pdf'; a.download='Adedeji-Sunday-Samuel-CV.pdf'; document.body.appendChild(a); a.click(); a.remove();
-  });
 
   /* ---------- collection + case-study viewer ----------
      PROJECTS (above) are the 5 category cards. Each category holds its own
@@ -433,6 +462,8 @@
     if(modal.classList.contains('open')&&e.key==='ArrowRight')moveWork(1);
     if(modal.classList.contains('open')&&e.key==='ArrowLeft')moveWork(-1);
   });
+
+  }
 
   /* ---------- contact form: submits without leaving the page ----------
      Sends to FormSubmit.co's AJAX endpoint, using whatever email is set as
