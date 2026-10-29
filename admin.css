@@ -1,3 +1,6 @@
+/* An element's own display rule (flex, grid...) beats the browser's built-in [hidden] rule, which is why the
+   lock screen stayed on top after unlocking. This makes the hidden attribute always win. */
+[hidden]{display:none!important}
 .admin-body{background:var(--paper);color:var(--ink)}
 .admin-wrap{max-width:860px;margin:0 auto;padding:130px 24px 100px}
 .admin-eyebrow{font:500 10px 'DM Mono',monospace;text-transform:uppercase;color:var(--muted)}
