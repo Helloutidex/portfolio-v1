@@ -47,21 +47,21 @@
         },
         {
           "name": "Ferricool Studios",
-          "logo": ""
+          "logo": "assets/uploads/mvuvj6jb-0.png"
         },
         {
           "name": "Shop Soma",
-          "logo": ""
+          "logo": "assets/uploads/mvuvj8cv-1.png"
         },
         {
           "name": "Independent Collaborations",
-          "logo": ""
+          "logo": "assets/uploads/mvuv9d3s-1.png"
         }
       ]
     },
     "work": {
-      "label": "Gallery / automatic",
-      "description": "Selected work, continuously moving. Tap any frame to explore.",
+      "label": "utidex Gallery",
+      "description": "Selected work, tap any frame to explore.",
       "noteRight": "Tap any frame to explore"
     },
     "testimonials": {
@@ -115,12 +115,12 @@
         },
         {
           "label": "Contact ↗",
-          "href": "#contact"
+          "href": "#samuel.s.adedeji@gmail.com"
         }
       ]
     },
     "signature": {
-      "name": "ADEDEJI SUNDAY SAMUEL"
+      "name": "Adedeji Sunday Samuel"
     },
     "contact": {
       "ctaLabel": "Let's talk ↗",
@@ -135,7 +135,7 @@
       "emailHref": "mailto:samuel.s.adedeji@gmail.com"
     },
     "footer": {
-      "left": "© 2026 Adedeji Sunday Samuel",
+      "left": "© 2026 Helloutidex",
       "right": "Designed with intention / Lagos"
     }
   },
@@ -189,5 +189,5 @@
       "desc": "Generative visuals, experiments and emerging creative systems."
     }
   ],
-  "updatedAt": "2026-10-30T11:05:54.938Z"
+  "updatedAt": "2026-10-30T11:13:35.548Z"
 }
