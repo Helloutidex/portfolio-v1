@@ -90,3 +90,9 @@
   .admin-card img{width:100%;height:160px}
   .admin-fields{grid-template-columns:1fr}
 }
+
+.admin-group input[type=password]{font:14px Manrope,Arial,sans-serif;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink)}
+.admin-status{white-space:pre-wrap;line-height:1.6}
+.admin-steps{margin:0 0 16px;padding-left:20px;font-size:14px;line-height:1.7;color:var(--muted)}
+.admin-steps b,.admin-steps code{color:var(--ink)}
+.admin-steps li{margin-bottom:6px}

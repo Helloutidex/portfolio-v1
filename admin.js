@@ -1,6 +1,21 @@
-(() => {
+(async () => {
 try {
   const $ = s => document.querySelector(s);
+
+  // What's currently live (site-data.json), so the editor starts from the published site rather than
+  // from the defaults. Right after you publish, your own copy wins over the CDN's until it catches up.
+  const fetchJSON = async url => {
+    try {
+      const c = new AbortController(); const t = setTimeout(() => c.abort(), 4000);
+      const r = await fetch(url, { cache: 'no-cache', signal: c.signal }); clearTimeout(t);
+      return r.ok ? await r.json() : null;
+    } catch (e) { return null; }
+  };
+  const REMOTE = (await fetchJSON('site-data.json')) || {};
+  const LAST_PUB_KEY = 'ferricool-last-published';
+  let LASTPUB = null; try { LASTPUB = JSON.parse(localStorage.getItem(LAST_PUB_KEY)); } catch (e) {}
+  const BASE = (LASTPUB && (!REMOTE.updatedAt || LASTPUB.updatedAt >= REMOTE.updatedAt)) ? LASTPUB : REMOTE;
+  const draftOf = key => { try { return JSON.parse(localStorage.getItem(key)); } catch (e) { return null; } };
   const $$ = s => [...document.querySelectorAll(s)];
   function esc(s){ return String(s==null?'':s).replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
   function getPath(obj, path){ return path.split('.').reduce((o,k)=> (o==null?undefined:o[k]), obj); }
@@ -145,7 +160,7 @@ try {
   }
   function loadContent(){
     try{
-      const saved = JSON.parse(localStorage.getItem(CONTENT_STORAGE_KEY));
+      const saved = draftOf(CONTENT_STORAGE_KEY) || BASE.content;
       if(saved && typeof saved === 'object') return migrateContent({ ...cloneDefaultContent(), ...saved });
     }catch(e){}
     return cloneDefaultContent();
@@ -282,7 +297,7 @@ try {
 
   $('#saveContent').addEventListener('click', () => {
     localStorage.setItem(CONTENT_STORAGE_KEY, JSON.stringify(content));
-    setStatus('contentStatus', 'Saved — reload index.html in this browser to see it.');
+    setStatus('contentStatus', 'Saved as a draft in this browser only. Use the Publish tab to put it live on every device.');
   });
   $('#resetContent').addEventListener('click', () => {
     if(!confirm('Reset all text to the defaults? This clears your local edits.')) return;
@@ -302,7 +317,7 @@ try {
   const DEFAULT_THEME = { paper:'#faf6ee', ink:'#141211', muted:'#747474', line:'#e2ddd2', contactBg:'#E8223E', scale:1 };
   function loadTheme(){
     try{
-      const saved = JSON.parse(localStorage.getItem(THEME_STORAGE_KEY));
+      const saved = draftOf(THEME_STORAGE_KEY) || BASE.theme;
       if(saved && typeof saved === 'object') return { ...DEFAULT_THEME, ...saved };
     }catch(e){}
     return { ...DEFAULT_THEME };
@@ -319,7 +334,7 @@ try {
   }));
   $('#saveTheme').addEventListener('click', () => {
     localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(theme));
-    setStatus('themeStatus', 'Saved — reload index.html in this browser to see it.');
+    setStatus('themeStatus', 'Saved as a draft in this browser only. Use the Publish tab to put it live on every device.');
   });
   $('#resetTheme').addEventListener('click', () => {
     if(!confirm('Reset colors and heading size to the defaults?')) return;
@@ -345,7 +360,7 @@ try {
   ];
   function loadProjects(){
     try{
-      const saved = JSON.parse(localStorage.getItem(PROJECTS_STORAGE_KEY));
+      const saved = draftOf(PROJECTS_STORAGE_KEY) || BASE.projects;
       if(Array.isArray(saved) && saved.length) return saved;
     }catch(e){}
     return DEFAULT_PROJECTS.map(p=>({...p}));
@@ -610,7 +625,7 @@ try {
   });
   $('#saveProjects').addEventListener('click', () => {
     localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(projects.map(({__i,...rest})=>rest)));
-    setStatus('projectsStatus', 'Saved — reload index.html in this browser to see it.');
+    setStatus('projectsStatus', 'Saved as a draft in this browser only. Use the Publish tab to put it live on every device.');
   });
   $('#resetProjects').addEventListener('click', () => {
     if(!confirm('Reset to the five default projects? This clears your local edits, including any case studies you\'ve written.')) return;
@@ -623,6 +638,92 @@ try {
   $('#copyProjectsCode').addEventListener('click', async () => {
     const code = 'const DEFAULT_PROJECTS = ' + JSON.stringify(projects.map(({__i,...rest})=>rest), null, 2) + ';';
     await copyOrLog(code, 'projectsStatus');
+  });
+
+  /* ============================================================
+     PUBLISH TAB — sends your edits to GitHub so every device sees them
+     Writes site-data.json (text, colors, work) to the repo, and uploads any
+     freshly added images/videos into assets/uploads/. The token is the real
+     key: without it nobody can publish, and it never goes into the code.
+  ============================================================ */
+  const GH_KEY = 'ferricool-github-settings';
+  const ghDefaults = { owner:'Helloutidex', repo:'portfolio-v1', branch:'main', token:'' };
+  let gh = { ...ghDefaults };
+  try { gh = { ...ghDefaults, ...(JSON.parse(localStorage.getItem(GH_KEY)) || {}) }; } catch (e) {}
+  ['owner','repo','branch','token'].forEach(k => {
+    const el = $('#gh-' + k); if (!el) return;
+    el.value = gh[k] || '';
+    el.addEventListener('input', () => { gh[k] = el.value.trim(); localStorage.setItem(GH_KEY, JSON.stringify(gh)); });
+  });
+  $('#ghForget')?.addEventListener('click', () => {
+    gh.token = ''; localStorage.setItem(GH_KEY, JSON.stringify(gh)); const t = $('#gh-token'); if (t) t.value = '';
+    setStatus('publishStatus', 'Token removed from this device.');
+  });
+  const b64 = str => btoa(unescape(encodeURIComponent(str)));
+  async function ghApi(method, path, body){
+    const url = `https://api.github.com/repos/${gh.owner}/${gh.repo}/contents/${path}` + (method === 'GET' ? `?ref=${encodeURIComponent(gh.branch)}` : '');
+    const res = await fetch(url, {
+      method,
+      headers: { 'Authorization': `Bearer ${gh.token}`, 'Accept': 'application/vnd.github+json', 'X-GitHub-Api-Version': '2022-11-28', ...(body ? { 'Content-Type': 'application/json' } : {}) },
+      body: body ? JSON.stringify(body) : undefined,
+    });
+    let data = null; try { data = await res.json(); } catch (e) {}
+    if (!res.ok && !(method === 'GET' && res.status === 404)) {
+      const msg = (data && data.message) || res.statusText;
+      throw new Error(
+        res.status === 401 ? 'GitHub rejected the token (401). Check it was pasted in full and has not expired.' :
+        res.status === 403 ? `GitHub refused (403): ${msg}. The token needs "Contents: Read and write" on this repository.` :
+        res.status === 404 ? 'Repository not found (404). Check the username and repository name, and that the token has access to this repository.' :
+        res.status === 409 || res.status === 422 ? `GitHub could not save the file (${res.status}): ${msg}. Wait a few seconds and try again.` :
+        `GitHub error ${res.status}: ${msg}`);
+    }
+    return { status: res.status, data };
+  }
+  const EXT = { 'image/jpeg':'jpg','image/jpg':'jpg','image/png':'png','image/webp':'webp','image/gif':'gif','image/svg+xml':'svg','image/avif':'avif','video/mp4':'mp4','video/webm':'webm','video/quicktime':'mov' };
+  const uploadCache = new Map(); // data URL -> repo path, so the same file isn't uploaded twice in one session
+  function collectDataUrls(v, found = new Set()){
+    if (typeof v === 'string') { if (v.startsWith('data:')) found.add(v); }
+    else if (Array.isArray(v)) v.forEach(x => collectDataUrls(x, found));
+    else if (v && typeof v === 'object') Object.values(v).forEach(x => collectDataUrls(x, found));
+    return found;
+  }
+  async function swapDataUrls(v, progress){
+    if (typeof v === 'string' && v.startsWith('data:')) {
+      if (uploadCache.has(v)) return uploadCache.get(v);
+      const m = v.match(/^data:([^;,]+)(?:;[^,]*)?;base64,(.*)$/);
+      if (!m) return v;
+      const path = `assets/uploads/${Date.now().toString(36)}-${progress.n}.${EXT[m[1]] || 'bin'}`;
+      progress.n++;
+      setStatus('publishStatus', `Uploading file ${progress.n} of ${progress.total}…`);
+      await ghApi('PUT', path, { message: `Upload ${path} from admin`, content: m[2], branch: gh.branch });
+      uploadCache.set(v, path);
+      return path;
+    }
+    if (Array.isArray(v)) { const out = []; for (const x of v) out.push(await swapDataUrls(x, progress)); return out; }
+    if (v && typeof v === 'object') { const out = {}; for (const k of Object.keys(v)) { if (k === '__i') continue; out[k] = await swapDataUrls(v[k], progress); } return out; }
+    return v;
+  }
+  $('#publishBtn')?.addEventListener('click', async () => {
+    const btn = $('#publishBtn');
+    if (!gh.token) { setStatus('publishStatus', 'Paste your GitHub token first — the steps are just below.'); return; }
+    btn.disabled = true;
+    try {
+      setStatus('publishStatus', 'Preparing…');
+      const payload = JSON.parse(JSON.stringify({ content, theme, projects }));
+      const progress = { n: 0, total: [...collectDataUrls(payload)].filter(u => !uploadCache.has(u)).length };
+      const clean = await swapDataUrls(payload, progress);
+      clean.updatedAt = new Date().toISOString();
+      setStatus('publishStatus', 'Saving your changes to GitHub…');
+      const existing = await ghApi('GET', 'site-data.json');
+      const sha = existing.status === 200 && existing.data ? existing.data.sha : undefined;
+      await ghApi('PUT', 'site-data.json', { message: 'Publish site changes from admin', content: b64(JSON.stringify(clean, null, 2)), branch: gh.branch, ...(sha ? { sha } : {}) });
+      localStorage.setItem(LAST_PUB_KEY, JSON.stringify(clean));
+      [CONTENT_STORAGE_KEY, THEME_STORAGE_KEY, PROJECTS_STORAGE_KEY].forEach(k => localStorage.removeItem(k));
+      setStatus('publishStatus', `Published at ${new Date().toLocaleTimeString()}. GitHub is rebuilding the site — it should be live on every device in about a minute (some phones can take up to 10).`);
+    } catch (err) {
+      setStatus('publishStatus', 'Could not publish: ' + (err && err.message ? err.message : err));
+      console.error(err);
+    } finally { btn.disabled = false; }
   });
 } catch (err) {
   // If anything above throws, show it directly on the page — no DevTools needed

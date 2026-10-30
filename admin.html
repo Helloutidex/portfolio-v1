@@ -45,6 +45,7 @@
     <button class="admin-tab active" data-tab="content" type="button">Content</button>
     <button class="admin-tab" data-tab="theme" type="button">Theme</button>
     <button class="admin-tab" data-tab="projects" type="button">Work / Projects</button>
+    <button class="admin-tab" data-tab="publish" type="button">Publish</button>
   </div>
 
   <!-- ===== CONTENT TAB ===== -->
@@ -211,6 +212,38 @@
       <button class="modal-nav" id="copyProjectsCode" type="button">Copy code for script.js</button>
     </div>
     <p class="admin-status" id="projectsStatus" aria-live="polite"></p>
+  </section>
+
+  <!-- ===== PUBLISH TAB ===== -->
+  <section class="admin-panel" id="panel-publish" hidden>
+    <div class="admin-group">
+      <h2>Publish to the live site</h2>
+      <p class="admin-note">"Save changes" only keeps a draft in <b>this browser</b>. <b>Publish</b> sends your text, colors, work and any uploaded images to GitHub, so visitors on every device see them about a minute later.</p>
+      <div class="admin-row2">
+        <label>GitHub username<input id="gh-owner" autocomplete="off"></label>
+        <label>Repository<input id="gh-repo" autocomplete="off"></label>
+      </div>
+      <div class="admin-row2">
+        <label>Branch<input id="gh-branch" autocomplete="off"></label>
+        <label>Access token<input id="gh-token" type="password" autocomplete="off" placeholder="github_pat_..."></label>
+      </div>
+      <div class="admin-actions">
+        <button class="modal-nav" id="publishBtn" type="button">Publish to live site</button>
+        <button class="modal-nav" id="ghForget" type="button">Forget token on this device</button>
+      </div>
+      <p class="admin-status" id="publishStatus" aria-live="polite"></p>
+    </div>
+    <div class="admin-group">
+      <h2>One-time setup: create your access token</h2>
+      <ol class="admin-steps">
+        <li>On github.com click your profile picture &rarr; <b>Settings</b> &rarr; scroll down to <b>Developer settings</b> &rarr; <b>Personal access tokens</b> &rarr; <b>Fine-grained tokens</b> &rarr; <b>Generate new token</b>.</li>
+        <li>Name it "portfolio admin" and set an expiry (90 days is sensible).</li>
+        <li>Under <b>Repository access</b> choose <b>Only select repositories</b> and pick <b>portfolio-v1</b>.</li>
+        <li>Under <b>Permissions &rarr; Repository permissions</b> set <b>Contents</b> to <b>Read and write</b>. Leave everything else alone.</li>
+        <li>Click <b>Generate token</b>, copy it (it starts with <code>github_pat_</code>) and paste it above. It's only shown once.</li>
+      </ol>
+      <p class="admin-note">The token stays in this browser only &mdash; it is never put in the website's code or the repo. It's the real lock: without it nobody can publish. Don't use it on a shared computer, and if it ever leaks, delete it on GitHub and make a new one.</p>
+    </div>
   </section>
 
   <a class="modal-nav admin-preview" href="index.html" target="_blank" rel="noopener">Preview site ↗</a>

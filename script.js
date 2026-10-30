@@ -1,7 +1,21 @@
-(() => {
+(async () => {
   const $ = s => document.querySelector(s);
   const $$ = s => [...document.querySelectorAll(s)];
   const esc = s => String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+  // Published edits: admin.html's "Publish" button saves everything to site-data.json in the repo,
+  // and every visitor loads it here — so edits show up on every device. If the file doesn't exist
+  // (or can't be reached) the defaults in this file are used instead. A draft saved with "Save
+  // changes" in this same browser still wins, so you can preview before publishing.
+  const fetchJSON = async url => {
+    try {
+      const c = new AbortController(); const t = setTimeout(() => c.abort(), 4000);
+      const r = await fetch(url, { cache: 'no-cache', signal: c.signal }); clearTimeout(t);
+      return r.ok ? await r.json() : null;
+    } catch (e) { return null; }
+  };
+  const REMOTE = (await fetchJSON('site-data.json')) || {};
+  const draftOf = key => { try { return JSON.parse(localStorage.getItem(key)); } catch (e) { return null; } };
 
   /* ============================================================
      SITE TEXT + THEME — the other half of the single-source setup
@@ -59,7 +73,7 @@
   };
   function loadContent(){
     try{
-      const saved = JSON.parse(localStorage.getItem(CONTENT_STORAGE_KEY));
+      const saved = draftOf(CONTENT_STORAGE_KEY) || REMOTE.content;
       if(saved && typeof saved === 'object') return migrateContent({ ...DEFAULT_CONTENT, ...saved });
     }catch(e){}
     return DEFAULT_CONTENT;
@@ -140,7 +154,7 @@
   const DEFAULT_THEME = { paper:'#faf6ee', ink:'#141211', muted:'#747474', line:'#e2ddd2', contactBg:'#E8223E', scale:1 };
   function loadTheme(){
     try{
-      const saved = JSON.parse(localStorage.getItem(THEME_STORAGE_KEY));
+      const saved = draftOf(THEME_STORAGE_KEY) || REMOTE.theme;
       if(saved && typeof saved === 'object') return { ...DEFAULT_THEME, ...saved };
     }catch(e){}
     return DEFAULT_THEME;
@@ -176,7 +190,7 @@
   ];
   function loadProjects(){
     try{
-      const saved = JSON.parse(localStorage.getItem(PORTFOLIO_STORAGE_KEY));
+      const saved = draftOf(PORTFOLIO_STORAGE_KEY) || REMOTE.projects;
       if(Array.isArray(saved) && saved.length) return saved;
     }catch(e){}
     return DEFAULT_PROJECTS;

@@ -36,6 +36,11 @@ uploaded image is embedded as a long `data:image/...` string — fine for
 preview, but for a real site swap it for an actual file in `assets/` and a
 normal path, so `script.js` doesn't balloon in size.
 
+## Publishing edits so every device sees them
+The admin's **Save changes** buttons only keep a draft in your own browser. To put edits live for everyone, use the **Publish** tab in admin.html: it writes your text, colors, work and uploaded images straight to the GitHub repo (as `site-data.json` plus files in `assets/uploads/`), and GitHub Pages rebuilds the site about a minute later. You need a fine-grained access token for the repo with *Contents: Read and write* — the Publish tab walks through creating one.
+
+Because the admin now commits to the repo, **run `git pull` before you push code changes from your computer**, otherwise git will reject the push. And never copy a `site-data.json` from an old zip over the live one — it holds your published edits.
+
 ## Latest changes
 - **Tap to reveal** — the lens no longer needs scrolling or dragging. Tap it (or press Enter) and every project card appears; tap it again, tap empty space, or press Escape to tuck them away.
 - **Contact is its own page** (`contact.html`). The homepage keeps a big "Let's talk" button that leads there; the nav's Contact link and the floating badge go straight to it. The form posts through FormSubmit.co to the email set in admin → Content → Contact. The first message ever sent triggers a one-time activation email from FormSubmit — click it, or messages won't arrive.
