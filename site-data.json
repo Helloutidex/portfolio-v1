@@ -1,0 +1,193 @@
+{
+  "content": {
+    "nav": {
+      "logo": "ADEDEJI SAMUEL / DESIGN"
+    },
+    "hero": {
+      "eyebrow": "Independent designer · Lagos, Nigeria",
+      "titlePre": "Designing ",
+      "titleEm": "what's",
+      "titlePost": " next.",
+      "paragraph": "I turn ideas into identities, digital experiences and visual systems people can feel.",
+      "lensLabel": "Tap to reveal",
+      "opticNote": "Tap the lens · reveal the work",
+      "note": "The work is hidden in the lens.",
+      "zoomInstruction": "Tap to explore"
+    },
+    "about": {
+      "label": "About me",
+      "viewCV": "View CV ↗",
+      "downloadCV": "Download CV ↓",
+      "portraitImage": "assets/portrait.jpg",
+      "portraitCaption": "Portrait · tap for colour",
+      "headingPre": "I design for the space between an ",
+      "headingEm": "idea",
+      "headingPost": " and what it can become.",
+      "paragraph1": "I'm a multidisciplinary designer working across brand identity, digital design, campaigns and AI / generative visuals.",
+      "paragraph2": "I'm interested in clear ideas, strong visual systems and work that can live beyond a single screen.",
+      "skills": [
+        "Brand identity",
+        "Art direction",
+        "Digital design",
+        "AI / generative",
+        "Visual systems"
+      ]
+    },
+    "social": {
+      "label": "Selected collaborators",
+      "count": "01 — 05",
+      "items": [
+        {
+          "name": "Champtop Academy",
+          "logo": "assets/uploads/mvuv9ag0-0.png"
+        },
+        {
+          "name": "AWS Community",
+          "logo": "assets/uploads/mvuv9d3s-1.png"
+        },
+        {
+          "name": "Ferricool Studios",
+          "logo": ""
+        },
+        {
+          "name": "Shop Soma",
+          "logo": ""
+        },
+        {
+          "name": "Independent Collaborations",
+          "logo": ""
+        }
+      ]
+    },
+    "work": {
+      "label": "Gallery / automatic",
+      "description": "Selected work, continuously moving. Tap any frame to explore.",
+      "noteRight": "Tap any frame to explore"
+    },
+    "testimonials": {
+      "label": "Praise",
+      "description": "What collaborators say about working together.",
+      "items": [
+        {
+          "quote": "Sam translated a vague brief into a brand system that felt inevitable — like it always should have looked that way.",
+          "name": "Client name",
+          "role": "Urban Food Fest"
+        },
+        {
+          "quote": "Fast, sharp, and genuinely collaborative. The kind of designer who makes the whole project easier.",
+          "name": "Client name",
+          "role": "Shop Soma"
+        }
+      ]
+    },
+    "experience": {
+      "headingLine1": "Experience",
+      "headingLine2": "& practice.",
+      "rows": [
+        {
+          "tag": "01 / Now",
+          "role": "Independent designer",
+          "meta": "Identity · Digital · AI"
+        },
+        {
+          "tag": "02 / Practice",
+          "role": "Brand & visual systems",
+          "meta": "Strategy · Art direction"
+        },
+        {
+          "tag": "03 / Community",
+          "role": "Design volunteering & mentoring",
+          "meta": "People · Events"
+        }
+      ]
+    },
+    "links": {
+      "label": "Links",
+      "description": "Find the work, the process, or start a conversation.",
+      "items": [
+        {
+          "label": "Work ↗",
+          "href": "#work"
+        },
+        {
+          "label": "About ↗",
+          "href": "#about"
+        },
+        {
+          "label": "Contact ↗",
+          "href": "#contact"
+        }
+      ]
+    },
+    "signature": {
+      "name": "ADEDEJI SUNDAY SAMUEL"
+    },
+    "contact": {
+      "ctaLabel": "Let's talk ↗",
+      "small": "Start a project",
+      "headingLines": [
+        "LET'S MAKE",
+        "SOMETHING",
+        "WORTH SEEING."
+      ],
+      "available": "Available for selected projects",
+      "emailText": "samuel.s.adedeji@gmail.com ↗",
+      "emailHref": "mailto:samuel.s.adedeji@gmail.com"
+    },
+    "footer": {
+      "left": "© 2026 Adedeji Sunday Samuel",
+      "right": "Designed with intention / Lagos"
+    }
+  },
+  "theme": {
+    "paper": "#e6e0d8",
+    "ink": "#141211",
+    "muted": "#747474",
+    "line": "#e2ddd2",
+    "contactBg": "#141211",
+    "scale": 1
+  },
+  "projects": [
+    {
+      "id": "caseStudy",
+      "num": "01",
+      "category": "Brand Identity",
+      "title": "Case Study",
+      "image": "https://images.unsplash.com/photo-1518005020951-eccb494ad742",
+      "desc": "Selected identity and digital case studies."
+    },
+    {
+      "id": "food",
+      "num": "02",
+      "category": "Brand marks",
+      "title": "Logo Archive",
+      "image": "https://images.unsplash.com/photo-1504674900247-0877df9cc836",
+      "desc": "A growing archive of marks, symbols and identity explorations."
+    },
+    {
+      "id": "editorial",
+      "num": "03",
+      "category": "Editorial",
+      "title": "Presentation",
+      "image": "https://images.unsplash.com/photo-1483985988355-763728e1935b",
+      "desc": "Selected presentations, decks and visual storytelling systems."
+    },
+    {
+      "id": "generative",
+      "num": "04",
+      "category": "Digital / Web",
+      "title": "Web Design",
+      "image": "https://images.unsplash.com/photo-1518770660439-4636190af475",
+      "desc": "Responsive websites, interfaces and digital experiences."
+    },
+    {
+      "id": "studio",
+      "num": "05",
+      "category": "AI / Generative",
+      "title": "AI / Generative",
+      "image": "https://images.unsplash.com/photo-1523726491678-bf852e717f6a",
+      "desc": "Generative visuals, experiments and emerging creative systems."
+    }
+  ],
+  "updatedAt": "2026-10-30T11:05:54.938Z"
+}
