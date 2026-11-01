@@ -149,13 +149,13 @@
     }
   },
   "theme": {
-    "paper": "#e6e0d8",
+    "paper": "#ffffff",
     "ink": "#141211",
     "muted": "#747474",
     "line": "#e2ddd2",
     "contactBg": "#e8223e",
-    "tint1": "#e6e0d8",
-    "tint2": "#e6e0d8",
+    "tint1": "#ffffff",
+    "tint2": "#ffffff",
     "scale": 1
   },
   "projects": [
@@ -169,9 +169,9 @@
       "locked": true,
       "lockNote": "Enter your password",
       "enc": {
-        "salt": "8TWANwBGQk5v5C6UikPnKg==",
-        "iv": "iVnneehZwYxFHHMg",
-        "data": "L0WEj9LNq4pxmH658GMnfxmeeQpcKaTwt+3T98dl25NRZzSJd3iPj93bzrQM5Vnknjw0FRFW2CTnmfcCqHIu4O+Jh72UQGTOUfmNiZUlayRyPQWanI6oQoIyMLNYWgiRtE6gWy0dciTXsbr69vG7MazK8N/E/NM1iYdRT2TJI4IdEspnyAUsb+x4rxudZ4CU4l+ZhFv7FnayKpziBZ3JoHw6On6Qvgu/yRTUouiIhu41Bi4HuqaaQFg4vIiKrbOvrB0RyAEpBhdI7OLcN4Z0PtHJAPnqGL0lRxTCdfhVCWqFMkxQ06wLH8uZoLDEv5BxeWBWfXVfiNx+Ay7mLBA/B2HrWf1r19jCQoPg/2dhE6UUDT1U1TIz82+BR7g4XWgJlU0iez71C66YfLG3RtCOKEthHsp3puyORAkhxSAgs+8+4tKQjehkBx5ujYiOTMxNiXBZODIbittFElQ9jd2EKhbbSwW/r0I1J1Hi99oasAxS6ZAYctjX014cbspc1EpBwev2QVTJudGfOW4yUN+0zXNpfKGVq/1vhuV+9ekOTjMxIcTh+g0aRCD1CFD+0SaImESBlDen8e8jBSQXeczaBsahhMENdmFzGz3u4zy8fVTME6+jYqFdTr7K3Gcm9Bjv522xDU7sIRQV5lQc4iGgJ9L2kYv3IdIIqIZfVVTbvt96GLwbQR/EdjObhGrLj0vrcI3klDWxjzwLqSNdHcPpfg1L/3CxlByJy7XUiCISE32ZhMDRz0RWqH9dL5JI0rxTHEdidY/yvW1h"
+        "salt": "RmjtsbU3OhJQhZqQ9clEOg==",
+        "iv": "z6oWuU7o+FmxsIKH",
+        "data": "/xyeDXG+ABA7U4XD31f2Ic1FwRhXVmOPE4WSBb11QggJFDnwK3goTG4g98IicjSBcdMaNt1FkDZ+dC+Ez8lhoyVOp6oNNMUGGccFBACT6KVlAl+gSOcDKreXAZlsl4S/ljKl8gg9YxpzrRWR6IcTialaZXG/a/SQnn8Bx2kUTO1WXf5RiNOat8U2YJaQRUh5dtAHik9nOP8Sj1L+kBuEilaDNzGMRPsIykBtltBggGzXEQaRax79TR8ZsGWkIjw1r+0+oJSYYfFDOsJCdbDh4tjuQBCNw7O3ey8rx/fjR0uffgoeRnZXutZloSmdb0brP7qqcqYphZ9Ax91FjhCLQEf2CI/vmLPpi8hakflwDFPPAXtA4rBuDQ+UR2vqsUYu6D8sV8ayZn1JrJmODA3seSej5dOjYvfIJT+lLYWiXdSnc1dEopF6FHayssWEvjNVtM2elXPWtqT5B2+j92izSqWHzlgJ/X86qO+oob5zky0h7v2d9aiUI76pc6Ws0bIG5HOnUGYJK/OpWlBxXZbiw0/ExFSA0xPTHkuPb7FHlnwNxCE41BdL8at1Rbzben9Hb294LMCo67SKLmLye7MJNdN6ex9d8VK1jMJ8L3gLUYgncdyo5VMjRbtWty1nhtzjlphOyhhZzwEGt5o8cZ5AZ/L8op3Blurxn1xO//vIqqBHp6D5J9t8H3UzerFvewyLf7Sk9FynOqsHz+nFbB3qTh3kXI2SQZfWCY2Qfab0SBAgqCjDkPXB/au7Z/DyiM9ebvEVh8KUNk/c"
       }
     },
     {
@@ -283,5 +283,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-11-01T20:34:34.778Z"
+  "updatedAt": "2026-11-01T20:57:54.376Z"
 }
