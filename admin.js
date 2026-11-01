@@ -116,18 +116,22 @@ try {
       opticNote: 'Tap the lens · reveal the work',
       note: 'The work is hidden in the lens.',
       zoomInstruction: 'Tap to explore',
+      lensImage: '', ctaLabel: 'View my work ↗', ctaHref: '#work',
     },
     about: {
       label: 'About me', viewCV: 'View CV ↗', downloadCV: 'Download CV ↓',
-      portraitImage: 'assets/portrait.jpg', portraitCaption: 'Portrait · tap for colour',
+      portraitImage: 'assets/portrait.jpg', portraitCaption: 'Portrait · tap for colour', cvFile: 'cv.pdf',
       headingPre: 'I design for the space between an ', headingEm: 'idea', headingPost: ' and what it can become.',
       paragraph1: "I'm a multidisciplinary designer working across brand identity, digital design, campaigns and AI / generative visuals.",
       paragraph2: "I'm interested in clear ideas, strong visual systems and work that can live beyond a single screen.",
       skills: ['Brand identity','Art direction','Digital design','AI / generative','Visual systems'],
     },
     social: { label: 'Selected collaborators', count: '01 — 05', items: [
-      { name:'Urban Food Fest', logo:'' }, { name:'AWS Community', logo:'' }, { name:'Ferricool Studios', logo:'' },
-      { name:'Shop Soma', logo:'' }, { name:'Independent Collaborations', logo:'' },
+      { name:'Urban Food Fest', logo:'' },
+      { name:'AWS Community', logo:'' },
+      { name:'Ferricool Studios', logo:'' },
+      { name:'Shop Soma', logo:'' },
+      { name:'Independent Collaborations', logo:'' },
     ]},
     work: { label: 'Gallery / automatic', description: 'Selected work, continuously moving. Tap any frame to explore.', noteRight: 'Tap any frame to explore' },
     testimonials: { label: 'Praise', description: 'What collaborators say about working together.', items: [
@@ -145,31 +149,51 @@ try {
     links: { label: 'Links', description: 'Find the work, the process, or start a conversation.', items: [
       { label: 'Work ↗', href: '#work' }, { label: 'About ↗', href: '#about' }, { label: 'Contact ↗', href: '#contact' },
     ]},
+    badge: { initials: 'AS', ringText: 'ADEDEJI SUNDAY SAMUEL', href: 'contact.html' },
     signature: { name: 'ADEDEJI SUNDAY SAMUEL' },
     contact: { ctaLabel: "Let's talk ↗", small: 'Start a project', headingLines: ["LET'S MAKE","SOMETHING","WORTH SEEING."], available: 'Available for selected projects', emailText: 'hello@example.com ↗', emailHref: 'mailto:hello@example.com' },
     footer: { left: '© 2026 Adedeji Sunday Samuel', right: 'Designed with intention / Lagos' },
   };
+
   function cloneDefaultContent(){ return JSON.parse(JSON.stringify(DEFAULT_CONTENT)); }
-  function migrateContent(c){
-    if (c.social && Array.isArray(c.social.names) && !Array.isArray(c.social.items)) {
-      c.social.items = c.social.names.map(n => ({ name:n, logo:'' }));
+  function mergeContent(saved){
+    const d = cloneDefaultContent(), out = {};
+    for (const k of Object.keys(d)) {
+      const dv = d[k], sv = saved ? saved[k] : undefined;
+      if (dv && typeof dv === 'object' && !Array.isArray(dv)) out[k] = { ...dv, ...((sv && typeof sv === 'object') ? sv : {}) };
+      else out[k] = sv !== undefined ? sv : dv;
     }
-    if (!c.testimonials) c.testimonials = cloneDefaultContent().testimonials;
-    if (c.contact && !c.contact.ctaLabel) c.contact = { ...c.contact, ctaLabel: "Let's talk ↗" };
-    return c;
+    if (saved && saved.social && Array.isArray(saved.social.names) && !Array.isArray(saved.social.items)) out.social.items = saved.social.names.map(n => ({ name: n, logo: '' }));
+    if (!saved || !saved.badge) out.badge.ringText = out.signature.name;
+    return out;
   }
   function loadContent(){
-    try{
-      const saved = draftOf(CONTENT_STORAGE_KEY) || BASE.content;
-      if(saved && typeof saved === 'object') return migrateContent({ ...cloneDefaultContent(), ...saved });
-    }catch(e){}
-    return cloneDefaultContent();
+    const saved = draftOf(CONTENT_STORAGE_KEY) || BASE.content;
+    return (saved && typeof saved === 'object') ? mergeContent(saved) : cloneDefaultContent();
   }
   let content = loadContent();
 
+  // Resize big pictures to 1920px wide before they're stored/published (taller is fine).
+  async function readImageResized(file, maxW){
+    const url = await readFileAsDataURL(file);
+    if (!/^image\/(jpeg|png|webp)$/.test(file.type)) return url;
+    try {
+      const img = await new Promise((res, rej) => {
+        const i = new Image(); const t = setTimeout(() => rej(new Error('timeout')), 4000);
+        i.onload = () => { clearTimeout(t); res(i); }; i.onerror = () => { clearTimeout(t); rej(new Error('bad image')); }; i.src = url;
+      });
+      if (img.width <= maxW) return url;
+      const h = Math.round(img.height * (maxW / img.width));
+      if (maxW * h > 16000000) return url;
+      const c = document.createElement('canvas'); c.width = maxW; c.height = h;
+      c.getContext('2d').drawImage(img, 0, 0, maxW, h);
+      const out = c.toDataURL(file.type, 0.88);
+      return out.startsWith('data:image') ? out : url;
+    } catch (e) { return url; }
+  }
+
   function renderExpRows(){
-    const wrap = $('#expRowsEditor');
-    wrap.innerHTML = content.experience.rows.map((r,i)=>`
+    $('#expRowsEditor').innerHTML = content.experience.rows.map((r, i) => `
       <div class="admin-mini-row" data-index="${i}">
         <label>Tag<input data-exp-field="tag" value="${esc(r.tag)}"></label>
         <label>Role<input data-exp-field="role" value="${esc(r.role)}"></label>
@@ -178,8 +202,7 @@ try {
       </div>`).join('');
   }
   function renderLinks(){
-    const wrap = $('#linksEditor');
-    wrap.innerHTML = content.links.items.map((it,i)=>`
+    $('#linksEditor').innerHTML = content.links.items.map((it, i) => `
       <div class="admin-mini-row" data-index="${i}">
         <label>Label<input data-link-field="label" value="${esc(it.label)}"></label>
         <label>Href<input data-link-field="href" value="${esc(it.href)}"></label>
@@ -187,16 +210,10 @@ try {
         <button class="admin-mini-remove" type="button" data-link-remove="${i}">Remove</button>
       </div>`).join('');
   }
-  function collabThumb(item){
-    return item.logo
-      ? `<img src="${esc(item.logo)}" alt="${esc(item.name)} logo">`
-      : `<span class="admin-thumb-empty">No logo</span>`;
-  }
   function renderCollabs(){
-    const wrap = $('#collabEditor');
-    wrap.innerHTML = content.social.items.map((it,i)=>`
+    $('#collabEditor').innerHTML = content.social.items.map((it, i) => `
       <div class="admin-mini-row admin-collab-row" data-index="${i}">
-        <label>Logo<div class="admin-image-field" data-collab-thumb>${collabThumb(it)}
+        <label>Logo<div class="admin-image-field">${it.logo ? `<img src="${esc(it.logo)}" alt="">` : `<span class="admin-thumb-empty">No logo</span>`}
           <input type="file" accept="image/*" data-collab-upload="${i}" class="admin-upload-input">
           <button type="button" class="admin-upload-btn" data-collab-upload-btn="${i}">Upload logo</button>
         </div></label>
@@ -206,8 +223,7 @@ try {
       </div>`).join('');
   }
   function renderTestimonials(){
-    const wrap = $('#testimonialsEditor');
-    wrap.innerHTML = content.testimonials.items.map((t,i)=>`
+    $('#testimonialsEditor').innerHTML = content.testimonials.items.map((t, i) => `
       <div class="admin-mini-row admin-testimonial-row" data-index="${i}">
         <label class="full">Quote<textarea data-testimonial-field="quote">${esc(t.quote)}</textarea></label>
         <label>Name<input data-testimonial-field="name" value="${esc(t.name)}"></label>
@@ -215,106 +231,91 @@ try {
         <button class="admin-mini-remove" type="button" data-testimonial-remove="${i}">Remove</button>
       </div>`).join('');
   }
-  function renderPortraitField(){
-    const wrap = $('[data-image-path="about.portraitImage"]');
-    if (!wrap) return;
-    const val = content.about.portraitImage;
-    wrap.innerHTML = `
-      ${val ? `<img src="${esc(val)}" alt="Portrait preview">` : `<span class="admin-thumb-empty">No image</span>`}
-      <input type="text" data-path="about.portraitImage" value="${esc(val)}" placeholder="assets/portrait.jpg or a URL">
-      <input type="file" accept="image/*" id="portraitUpload" class="admin-upload-input">
-      <button type="button" class="admin-upload-btn" id="portraitUploadBtn">Upload photo</button>`;
+  // Every [data-image-path] box becomes: preview + path box + Upload + Remove (works for pictures and for the PDF).
+  function renderFileFields(){
+    $$('#panel-content [data-image-path]').forEach(wrap => {
+      const path = wrap.dataset.imagePath, kind = wrap.dataset.kind || 'image', accept = wrap.dataset.accept || 'image/*';
+      const val = String(getPath(content, path) || ''), isData = val.startsWith('data:');
+      const preview = !val ? `<span class="admin-thumb-empty">None</span>`
+        : kind === 'file' ? `<span class="admin-thumb-empty">${isData ? 'New file' : 'File'}</span>` : `<img src="${esc(val)}" alt="">`;
+      wrap.innerHTML = `${preview}
+        <input type="text" data-file-text="${path}" value="${isData ? '' : esc(val)}" placeholder="${isData ? 'Uploaded — saved when you publish' : (kind === 'file' ? 'Path such as cv.pdf, or upload' : 'Path / URL, or upload')}">
+        <input type="file" accept="${accept}" data-file-upload="${path}" class="admin-upload-input">
+        <button type="button" class="admin-upload-btn" data-file-upload-btn>Upload</button>
+        <button type="button" class="admin-upload-btn" data-file-clear="${path}">Remove</button>`;
+    });
   }
   function fillContentForm(){
-    $$('#panel-content [data-path]').forEach(el=>{
+    $$('#panel-content [data-path]').forEach(el => {
       const val = getPath(content, el.dataset.path);
       if (el.dataset.list === 'comma') el.value = Array.isArray(val) ? val.join(', ') : '';
       else if (el.dataset.list === 'lines') el.value = Array.isArray(val) ? val.join('\n') : '';
-      else if (el.type !== 'file') el.value = val == null ? '' : val;
+      else el.value = val == null ? '' : val;
     });
-    renderPortraitField(); renderExpRows(); renderLinks(); renderCollabs(); renderTestimonials();
+    renderFileFields(); renderExpRows(); renderLinks(); renderCollabs(); renderTestimonials();
   }
   fillContentForm();
 
   $('#panel-content').addEventListener('input', e => {
     const el = e.target;
-    if (el.dataset.path && el.type !== 'file') {
+    if (el.dataset.path) {
       let val = el.value;
-      if (el.dataset.list === 'comma') val = val.split(',').map(s=>s.trim()).filter(Boolean);
-      else if (el.dataset.list === 'lines') val = val.split('\n').map(s=>s.trim()).filter(Boolean);
+      if (el.dataset.list === 'comma') val = val.split(',').map(s => s.trim()).filter(Boolean);
+      else if (el.dataset.list === 'lines') val = val.split('\n').map(s => s.trim()).filter(Boolean);
       setPath(content, el.dataset.path, val);
-      if (el.dataset.path === 'about.portraitImage') renderPortraitField();
     }
-    if (el.dataset.expField) {
-      const row = el.closest('.admin-mini-row'); const i = Number(row.dataset.index);
-      content.experience.rows[i][el.dataset.expField] = el.value;
-    }
-    if (el.dataset.linkField) {
-      const row = el.closest('.admin-mini-row'); const i = Number(row.dataset.index);
-      content.links.items[i][el.dataset.linkField] = el.value;
-    }
-    if (el.dataset.collabField) {
-      const row = el.closest('.admin-mini-row'); const i = Number(row.dataset.index);
-      content.social.items[i][el.dataset.collabField] = el.value;
-    }
-    if (el.dataset.testimonialField) {
-      const row = el.closest('.admin-mini-row'); const i = Number(row.dataset.index);
-      content.testimonials.items[i][el.dataset.testimonialField] = el.value;
-    }
+    if (el.dataset.fileText) setPath(content, el.dataset.fileText, el.value);
+    const idx = () => Number(el.closest('.admin-mini-row').dataset.index);
+    if (el.dataset.expField) content.experience.rows[idx()][el.dataset.expField] = el.value;
+    if (el.dataset.linkField) content.links.items[idx()][el.dataset.linkField] = el.value;
+    if (el.dataset.collabField) content.social.items[idx()][el.dataset.collabField] = el.value;
+    if (el.dataset.testimonialField) content.testimonials.items[idx()][el.dataset.testimonialField] = el.value;
   });
-  $('#panel-content').addEventListener('click', async e => {
-    const rm = e.target.closest('[data-exp-remove]');
-    if (rm) { content.experience.rows.splice(Number(rm.dataset.expRemove),1); renderExpRows(); }
-    const rml = e.target.closest('[data-link-remove]');
-    if (rml) { content.links.items.splice(Number(rml.dataset.linkRemove),1); renderLinks(); }
-    const rmc = e.target.closest('[data-collab-remove]');
-    if (rmc) { content.social.items.splice(Number(rmc.dataset.collabRemove),1); renderCollabs(); }
-    const rmt = e.target.closest('[data-testimonial-remove]');
-    if (rmt) { content.testimonials.items.splice(Number(rmt.dataset.testimonialRemove),1); renderTestimonials(); }
-
-    const collabUploadBtn = e.target.closest('[data-collab-upload-btn]');
-    if (collabUploadBtn) { $(`[data-collab-upload="${collabUploadBtn.dataset.collabUploadBtn}"]`)?.click(); }
-
-    const portraitBtn = e.target.closest('#portraitUploadBtn');
-    if (portraitBtn) { $('#portraitUpload')?.click(); }
+  $('#panel-content').addEventListener('change', e => { if (e.target.dataset.fileText) renderFileFields(); });
+  $('#panel-content').addEventListener('click', e => {
+    const t = e.target;
+    let m;
+    if ((m = t.closest('[data-exp-remove]'))) { content.experience.rows.splice(Number(m.dataset.expRemove), 1); renderExpRows(); }
+    if ((m = t.closest('[data-link-remove]'))) { content.links.items.splice(Number(m.dataset.linkRemove), 1); renderLinks(); }
+    if ((m = t.closest('[data-collab-remove]'))) { content.social.items.splice(Number(m.dataset.collabRemove), 1); renderCollabs(); }
+    if ((m = t.closest('[data-testimonial-remove]'))) { content.testimonials.items.splice(Number(m.dataset.testimonialRemove), 1); renderTestimonials(); }
+    if ((m = t.closest('[data-collab-upload-btn]'))) $(`[data-collab-upload="${m.dataset.collabUploadBtn}"]`)?.click();
+    if ((m = t.closest('[data-file-upload-btn]'))) m.parentElement.querySelector('input[type=file]')?.click();
+    if ((m = t.closest('[data-file-clear]'))) { setPath(content, m.dataset.fileClear, ''); renderFileFields(); }
   });
   $('#panel-content').addEventListener('change', async e => {
-    const collabFile = e.target.closest('[data-collab-upload]');
-    if (collabFile && collabFile.files[0]) {
-      const i = Number(collabFile.dataset.collabUpload);
-      content.social.items[i].logo = await readFileAsDataURL(collabFile.files[0]);
-      renderCollabs();
+    const t = e.target;
+    if (t.matches('[data-collab-upload]') && t.files[0]) {
+      content.social.items[Number(t.dataset.collabUpload)].logo = await readImageResized(t.files[0], 600); renderCollabs();
     }
-    if (e.target.id === 'portraitUpload' && e.target.files[0]) {
-      content.about.portraitImage = await readFileAsDataURL(e.target.files[0]);
-      renderPortraitField();
+    if (t.matches('[data-file-upload]') && t.files[0]) {
+      const kind = t.parentElement.dataset.kind || 'image';
+      setPath(content, t.dataset.fileUpload, kind === 'file' ? await readFileAsDataURL(t.files[0]) : await readImageResized(t.files[0], 1600));
+      renderFileFields();
     }
   });
-  $('#addExpRow').addEventListener('click', () => { content.experience.rows.push({tag:'',role:'',meta:''}); renderExpRows(); });
-  $('#addLink').addEventListener('click', () => { content.links.items.push({label:'',href:'#'}); renderLinks(); });
-  $('#addCollab').addEventListener('click', () => { content.social.items.push({name:'New collaborator',logo:''}); renderCollabs(); });
-  $('#addTestimonial').addEventListener('click', () => { content.testimonials.items.push({quote:'',name:'',role:''}); renderTestimonials(); });
+  $('#addExpRow').addEventListener('click', () => { content.experience.rows.push({ tag: '', role: '', meta: '' }); renderExpRows(); });
+  $('#addLink').addEventListener('click', () => { content.links.items.push({ label: '', href: '#' }); renderLinks(); });
+  $('#addCollab').addEventListener('click', () => { content.social.items.push({ name: 'New collaborator', logo: '' }); renderCollabs(); });
+  $('#addTestimonial').addEventListener('click', () => { content.testimonials.items.push({ quote: '', name: '', role: '' }); renderTestimonials(); });
 
-  $('#saveContent').addEventListener('click', () => {
-    localStorage.setItem(CONTENT_STORAGE_KEY, JSON.stringify(content));
-    setStatus('contentStatus', 'Saved as a draft in this browser only. Use the Publish tab to put it live on every device.');
-  });
+  function saveDraft(key, value, statusId){
+    try { localStorage.setItem(key, JSON.stringify(value)); setStatus(statusId, 'Saved as a draft in this browser only. Use the Publish tab to put it live on every device.'); }
+    catch (e) { setStatus(statusId, 'This is too big to keep as a draft in the browser (big uploads). That is fine — go to the Publish tab, it does not need the draft.'); }
+  }
+  $('#saveContent').addEventListener('click', () => saveDraft(CONTENT_STORAGE_KEY, content, 'contentStatus'));
   $('#resetContent').addEventListener('click', () => {
-    if(!confirm('Reset all text to the defaults? This clears your local edits.')) return;
+    if (!confirm('Reset all text to the defaults? This clears your local edits.')) return;
     localStorage.removeItem(CONTENT_STORAGE_KEY);
     content = cloneDefaultContent(); fillContentForm();
     setStatus('contentStatus', 'Reset to defaults.');
-  });
-  $('#copyContentCode').addEventListener('click', async () => {
-    const code = 'const DEFAULT_CONTENT = ' + JSON.stringify(content, null, 2) + ';';
-    await copyOrLog(code, 'contentStatus');
   });
 
   /* ============================================================
      THEME TAB
   ============================================================ */
   const THEME_STORAGE_KEY = 'ferricool-portfolio-theme';
-  const DEFAULT_THEME = { paper:'#faf6ee', ink:'#141211', muted:'#747474', line:'#e2ddd2', contactBg:'#E8223E', scale:1 };
+  const DEFAULT_THEME = { paper:'#faf6ee', ink:'#141211', muted:'#747474', line:'#e2ddd2', contactBg:'#E8223E', tint1:'#f7d6c6', tint2:'#f5e3a3', scale:1 };
   function loadTheme(){
     try{
       const saved = draftOf(THEME_STORAGE_KEY) || BASE.theme;
@@ -342,302 +343,234 @@ try {
     theme = { ...DEFAULT_THEME }; fillThemeForm();
     setStatus('themeStatus', 'Reset to defaults.');
   });
-  $('#copyThemeCode').addEventListener('click', async () => {
-    const code = 'const DEFAULT_THEME = ' + JSON.stringify(theme, null, 2) + ';';
-    await copyOrLog(code, 'themeStatus');
-  });
 
   /* ============================================================
-     PROJECTS TAB
+     PROJECTS TAB — one simple list. Each project: title, cover, optional intro,
+     background colour, lock, and a stack of blocks (images / text / video).
   ============================================================ */
   const PROJECTS_STORAGE_KEY = 'ferricool-portfolio-projects';
-  const DEFAULT_PROJECTS = [
-    { id:'caseStudy', num:'01', category:'Brand Identity',      title:'Case Study',      image:'https://images.unsplash.com/photo-1518005020951-eccb494ad742', desc:'Selected identity and digital case studies.' },
-    { id:'food',      num:'02', category:'Brand marks',         title:'Logo Archive',    image:'https://images.unsplash.com/photo-1504674900247-0877df9cc836', desc:'A growing archive of marks, symbols and identity explorations.' },
-    { id:'editorial', num:'03', category:'Editorial',           title:'Presentation',    image:'https://images.unsplash.com/photo-1483985988355-763728e1935b', desc:'Selected presentations, decks and visual storytelling systems.' },
-    { id:'generative',num:'04', category:'Digital / Web',       title:'Web Design',      image:'https://images.unsplash.com/photo-1518770660439-4636190af475', desc:'Responsive websites, interfaces and digital experiences.' },
-    { id:'studio',    num:'05', category:'AI / Generative',     title:'AI / Generative', image:'https://images.unsplash.com/photo-1523726491678-bf852e717f6a', desc:'Generative visuals, experiments and emerging creative systems.' },
+  // ---- tiny AES-GCM helpers: password-locked projects are encrypted before they are published ----
+  const toB64 = bytes => { let s = ''; for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]); return btoa(s); };
+  const fromB64 = str => Uint8Array.from(atob(str), c => c.charCodeAt(0));
+  async function lockKey(password, salt){
+    const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey']);
+    return crypto.subtle.deriveKey({ name: 'PBKDF2', salt, iterations: 200000, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+  }
+  async function encryptJSON(obj, password){
+    const salt = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12));
+    const key = await lockKey(password, salt);
+    const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, new TextEncoder().encode(JSON.stringify(obj)));
+    return { salt: toB64(salt), iv: toB64(iv), data: toB64(new Uint8Array(ct)) };
+  }
+  async function decryptJSON(enc, password){
+    const key = await lockKey(password, fromB64(enc.salt));
+    const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: fromB64(enc.iv) }, key, fromB64(enc.data));
+    return JSON.parse(new TextDecoder().decode(plain));
+  }
+
+  /*__PD_START__*/
+  const PHOTOS = [
+    'https://images.unsplash.com/photo-1518005020951-eccb494ad742',
+    'https://images.unsplash.com/photo-1504674900247-0877df9cc836',
+    'https://images.unsplash.com/photo-1483985988355-763728e1935b',
+    'https://images.unsplash.com/photo-1518770660439-4636190af475',
+    'https://images.unsplash.com/photo-1523726491678-bf852e717f6a',
   ];
+  const photoUrl = (src, w = 1920, q = 82) => `${src}?auto=format&fit=crop&w=${w}&q=${q}`;
+  function makeDefaultProjects(){
+    return PHOTOS.map((src, i) => ({
+      id: 'project-' + (i + 1), title: 'Project ' + (i + 1), image: src,
+      tagline: 'A short line about this project — change it in the admin.',
+      bg: '', tight: true,
+      blocks: [
+        { type: 'text', heading: 'About this project', body: 'Tell the story in a few lines — what it was, who it was for, what you made. Delete this block if you want the images to speak for themselves.' },
+        { type: 'image', src: photoUrl(PHOTOS[(i + 1) % 5]) },
+        { type: 'image', src: photoUrl(PHOTOS[(i + 2) % 5]) },
+        { type: 'image', src: photoUrl(PHOTOS[(i + 3) % 5]) },
+      ],
+    }));
+  }
+  const DEFAULT_PROJECTS = makeDefaultProjects();
+  const OLD_TITLES = ['Case Study', 'Logo Archive', 'Presentation', 'Web Design', 'AI / Generative'];
+  // Turns whatever was saved (including the older category → case-study layout) into the current shape.
+  function migrateProjects(list){
+    return list.map((p, i) => {
+      let blocks = p.blocks;
+      if (!Array.isArray(blocks)) {
+        const w = p.works && p.works[0] && p.works[0].blocks;
+        if (Array.isArray(w)) blocks = w;
+        else if (p.locked && p.enc) blocks = undefined;
+        else blocks = DEFAULT_PROJECTS[i % DEFAULT_PROJECTS.length].blocks;
+      }
+      const out = {
+        id: p.id || ('project-' + (i + 1)),
+        title: OLD_TITLES.includes(p.title) ? ('Project ' + (i + 1)) : (p.title || ('Project ' + (i + 1))),
+        image: p.image || '',
+        tagline: p.tagline != null ? p.tagline : (p.desc || ''),
+        bg: p.bg || '',
+        tight: p.tight !== false,
+      };
+      if (blocks) out.blocks = blocks;
+      if (p.locked) { out.locked = true; if (p.enc) out.enc = p.enc; if (p.lockNote) out.lockNote = p.lockNote; if (p.password) out.password = p.password; }
+      return out;
+    });
+  }
+  /*__PD_END__*/
+
   function loadProjects(){
-    try{
-      const saved = draftOf(PROJECTS_STORAGE_KEY) || BASE.projects;
-      if(Array.isArray(saved) && saved.length) return saved;
-    }catch(e){}
-    return DEFAULT_PROJECTS.map(p=>({...p}));
+    const saved = draftOf(PROJECTS_STORAGE_KEY) || BASE.projects;
+    if (Array.isArray(saved) && saved.length) return migrateProjects(JSON.parse(JSON.stringify(saved)));
+    return makeDefaultProjects();
   }
   let projects = loadProjects();
-  let expandedWorks = new Set();   // category indices whose "case studies" list is open
-  let expandedBlocks = new Set();  // "catIndex-workIndex" keys whose blocks editor is open
+  let openIdx = -1;
   const listEl = $('#adminList');
-  function thumb(src){
-    return /^https?:/.test(src) ? `${src}${src.includes('?')?'&':'?'}auto=format&fit=crop&w=200&q=70` : src;
-  }
-  function imageFieldHTML(value, uploadAttr, textAttr, placeholder){
-    return `<div class="admin-image-field">
-      ${value ? `<img src="${thumb(value)}" alt="" onerror="this.style.opacity=0">` : `<span class="admin-thumb-empty">No image</span>`}
-      <input type="text" ${textAttr} value="${esc(value)}" placeholder="${placeholder||'Paste a URL, or upload'}">
-      <input type="file" accept="image/*" ${uploadAttr} class="admin-upload-input">
-      <button type="button" class="admin-upload-btn" data-upload-trigger>Upload</button>
-    </div>`;
-  }
-  function ensureWorks(p){
-    if (!p.works || !p.works.length) {
-      p.works = [{
-        id: p.id+'-work-1', title: p.title, cover: p.image, tagline: p.desc,
-        blocks: [ { type:'text', heading:`What ${p.title} needed to solve.`, body:p.desc }, { type:'image', src:p.image } ],
-      }];
-    }
-    return p.works;
-  }
-  function blockRowHTML(b,bi){
+  const pad2 = n => String(n).padStart(2, '0');
+  const isDataUrl = s => String(s || '').startsWith('data:');
+
+  function blockHTML(b, bi){
+    const acts = `<div class="admin-block-actions"><button type="button" data-b-move="-1" title="Move up">↑</button><button type="button" data-b-move="1" title="Move down">↓</button><button type="button" data-b-remove>Remove</button></div>`;
     if (b.type === 'image') {
-      return `<div class="admin-mini-row admin-block-row" data-block-index="${bi}">
-        <span class="admin-block-type">Image block</span>
-        <label class="full">Image${imageFieldHTML(b.src||'', `data-block-upload="${bi}"`, `data-block-field="src"`)}</label>
-        <label class="full">Caption (optional)<input data-block-field="caption" value="${esc(b.caption||'')}"></label>
-        <div class="admin-block-actions">
-          <button class="admin-mini-remove" type="button" data-block-move="-1" data-block-index="${bi}">↑</button>
-          <button class="admin-mini-remove" type="button" data-block-move="1" data-block-index="${bi}">↓</button>
-          <button class="admin-mini-remove" type="button" data-block-remove="${bi}">Remove</button>
-        </div>
-      </div>`;
+      return `<div class="admin-block" data-bi="${bi}"><div class="admin-block-head"><span>Image</span>${acts}</div>
+        <div class="admin-image-field">${b.src ? `<img src="${esc(b.src)}" alt="">` : `<span class="admin-thumb-empty">None</span>`}
+          <input type="text" data-bf="src" value="${isDataUrl(b.src) ? '' : esc(b.src || '')}" placeholder="${isDataUrl(b.src) ? 'Uploaded image' : 'Image URL'}">
+          <input type="file" accept="image/*" class="admin-upload-input" data-b-upload>
+          <button type="button" class="admin-upload-btn" data-b-upload-btn>Replace</button></div>
+        <input data-bf="caption" placeholder="Caption (optional)" value="${esc(b.caption || '')}"></div>`;
     }
     if (b.type === 'video') {
-      return `<div class="admin-mini-row admin-block-row" data-block-index="${bi}">
-        <span class="admin-block-type">Video block</span>
-        <label class="full">Video file or URL (.mp4 works everywhere)
-          <div class="admin-image-field">
-            ${b.src ? `<span class="admin-thumb-empty">🎬 Video</span>` : `<span class="admin-thumb-empty">No video</span>`}
-            <input type="text" data-block-field="src" value="${esc(b.src||'')}" placeholder="Paste a URL, or upload">
-            <input type="file" accept="video/*" data-block-upload="${bi}" class="admin-upload-input">
-            <button type="button" class="admin-upload-btn" data-upload-trigger>Upload</button>
-          </div>
-        </label>
-        <label class="full">Caption (optional)<input data-block-field="caption" value="${esc(b.caption||'')}"></label>
-        <p class="admin-hint">Uploaded video is embedded directly in the page as data — great for previewing, but large files bloat script.js fast. For a real deploy, put the file in assets/ and paste that path here instead.</p>
-        <div class="admin-block-actions">
-          <button class="admin-mini-remove" type="button" data-block-move="-1" data-block-index="${bi}">↑</button>
-          <button class="admin-mini-remove" type="button" data-block-move="1" data-block-index="${bi}">↓</button>
-          <button class="admin-mini-remove" type="button" data-block-remove="${bi}">Remove</button>
-        </div>
-      </div>`;
+      return `<div class="admin-block" data-bi="${bi}"><div class="admin-block-head"><span>Video</span>${acts}</div>
+        <div class="admin-image-field"><span class="admin-thumb-empty">${b.src ? 'Video' : 'None'}</span>
+          <input type="text" data-bf="src" value="${isDataUrl(b.src) ? '' : esc(b.src || '')}" placeholder="${isDataUrl(b.src) ? 'Uploaded video' : 'Video URL or path (.mp4)'}">
+          <input type="file" accept="video/*" class="admin-upload-input" data-b-upload>
+          <button type="button" class="admin-upload-btn" data-b-upload-btn>Upload</button></div>
+        <input data-bf="caption" placeholder="Caption (optional)" value="${esc(b.caption || '')}"></div>`;
     }
-    return `<div class="admin-mini-row admin-block-row" data-block-index="${bi}">
-      <span class="admin-block-type">Text block</span>
-      <label class="full">Heading<input data-block-field="heading" value="${esc(b.heading||'')}"></label>
-      <label class="full">Body<textarea data-block-field="body">${esc(b.body||'')}</textarea></label>
-      <label class="full">"What we did" tags (comma-separated, optional)<input data-block-field="tagsText" value="${esc((b.tags||[]).join(', '))}"></label>
-      <div class="admin-block-actions">
-        <button class="admin-mini-remove" type="button" data-block-move="-1" data-block-index="${bi}">↑</button>
-        <button class="admin-mini-remove" type="button" data-block-move="1" data-block-index="${bi}">↓</button>
-        <button class="admin-mini-remove" type="button" data-block-remove="${bi}">Remove</button>
+    return `<div class="admin-block" data-bi="${bi}"><div class="admin-block-head"><span>Text</span>${acts}</div>
+      <input data-bf="heading" placeholder="Heading" value="${esc(b.heading || '')}">
+      <textarea data-bf="body" placeholder="Text">${esc(b.body || '')}</textarea>
+      <input data-bf="tagsText" placeholder='Optional tags, comma-separated' value="${esc((b.tags || []).join(', '))}"></div>`;
+  }
+  function projectHTML(p, i){
+    const open = openIdx === i;
+    const needsUnlock = p.locked && p.enc && !Array.isArray(p.blocks);
+    const lockBox = !open ? '' : `<div class="admin-lock-panel">
+      <label class="admin-check"><input type="checkbox" data-pf-lock ${p.locked ? 'checked' : ''}> 🔒 Lock this project — it stays visible but needs a password to open</label>
+      ${p.locked ? `<div class="admin-row2"><label>Password<input data-pf="password" autocomplete="off" value="${esc(p.password || '')}" placeholder="at least 4 characters"></label>
+        <label>Message on the password box (optional)<input data-pf="lockNote" value="${esc(p.lockNote || '')}" placeholder="This project is private…"></label></div>` : ''}</div>`;
+    const blocksBox = !open ? '' : needsUnlock
+      ? `<div class="admin-lock-panel"><p class="admin-hint">This project is locked and its content is hidden here. Enter its password to edit it.</p>
+          <div class="admin-image-field"><input data-unlock-pw placeholder="Password" autocomplete="off"><button type="button" class="admin-upload-btn" data-unlock-btn>Unlock to edit</button></div><p class="admin-status" data-unlock-status></p></div>`
+      : `<p class="admin-hint">Images should be 1920 px wide (any height). Wider ones are shrunk to 1920 for you. Pick many at once — they're added in file-name order.</p>
+        ${(p.blocks || []).map(blockHTML).join('')}
+        <div class="admin-block-add">
+          <label class="admin-add-small admin-upload-label">+ Upload images (many at once)<input type="file" accept="image/*" multiple class="admin-upload-input" data-bulk-upload></label>
+          <button type="button" class="admin-add-small" data-add-block="text">+ Text</button>
+          <button type="button" class="admin-add-small" data-add-block="video">+ Video</button>
+        </div>`;
+    return `<article class="admin-project${open ? ' is-open' : ''}" data-index="${i}">
+      <header class="admin-project-head">
+        <span class="admin-project-num">${pad2(i + 1)}</span>
+        ${p.image ? `<img class="admin-project-thumb" src="${esc(p.image)}" alt="">` : `<span class="admin-thumb-empty">No cover</span>`}
+        <strong data-title-label>${esc(p.title || 'Untitled')}${p.locked ? ' 🔒' : ''}</strong>
+        <div class="admin-project-actions">
+          <button type="button" data-p-move="-1" title="Move up">↑</button><button type="button" data-p-move="1" title="Move down">↓</button>
+          <button type="button" data-p-toggle>${open ? 'Close' : 'Edit'}</button><button type="button" data-p-remove>Remove</button>
+        </div>
+      </header>
+      <div class="admin-project-body"${open ? '' : ' hidden'}>
+        <div class="admin-row2">
+          <label>Title (also on its floating card)<input data-pf="title" value="${esc(p.title || '')}"></label>
+          <label>Short intro under the title (optional)<input data-pf="tagline" value="${esc(p.tagline || '')}"></label>
+        </div>
+        <label>Cover image (floating card, gallery, "more projects")
+          <div class="admin-image-field"><input type="text" data-pf="image" value="${isDataUrl(p.image) ? '' : esc(p.image || '')}" placeholder="${isDataUrl(p.image) ? 'Uploaded image' : 'Image URL, or upload'}">
+            <input type="file" accept="image/*" class="admin-upload-input" data-p-cover-upload><button type="button" class="admin-upload-btn" data-p-cover-btn>Upload</button></div></label>
+        <div class="admin-row2">
+          <label class="admin-check"><input type="checkbox" data-pf="tight" ${p.tight !== false ? 'checked' : ''}> No gaps between images (seamless, edge to edge)</label>
+          <label class="admin-check"><input type="checkbox" data-pf-bgon ${p.bg ? 'checked' : ''}> Custom page background <input type="color" data-pf-bg value="${p.bg || '#faf6ee'}" ${p.bg ? '' : 'disabled'}></label>
+        </div>
+        ${lockBox}
+        ${blocksBox}
       </div>
-    </div>`;
+    </article>`;
   }
-  function workCardHTML(p,w,wi){
-    const key = expandedBlocks.has(`${p.__i}-${wi}`);
-    return `<div class="admin-work-card" data-work-index="${wi}">
-      <div class="admin-work-head">
-        <div class="admin-image-field">${imageFieldHTML(w.cover||'', `data-work-cover-upload="${wi}"`, `data-work-field="cover"`, 'Cover image')}</div>
-        <div class="admin-work-fields">
-          <label>Title<input data-work-field="title" value="${esc(w.title)}"></label>
-          <label>Tagline (subhead under the title — optional)<input data-work-field="tagline" value="${esc(w.tagline||'')}"></label>
-        </div>
-        <button class="admin-remove" type="button" data-work-remove="${wi}">Remove</button>
-      </div>
-      <button class="admin-add-small" type="button" data-toggle-blocks="${wi}">${key?'Hide content blocks ▴':`Edit content blocks (${(w.blocks||[]).length}) ▾`}</button>
-      <div class="admin-blocks-editor" ${key?'':'hidden'}>
-        <p class="admin-hint">Add blocks in whatever order and mix you want — text, then all images, alternating, anything. Reorder with the arrows.</p>
-        ${(w.blocks||[]).map((b,bi)=>blockRowHTML(b,bi)).join('')}
-        <div class="admin-block-add-row">
-          <button class="admin-add-small" type="button" data-add-block="text">+ Add text block</button>
-          <button class="admin-add-small" type="button" data-add-block="image">+ Add image block</button>
-          <button class="admin-add-small" type="button" data-add-block="video">+ Add video block</button>
-        </div>
-      </div>
-    </div>`;
-  }
-  function worksEditorHTML(p,i){
-    p.__i = i; // scratch index used only while rendering, for the blocks-expanded key
-    const works = p.works || [];
-    return `<div class="admin-works-editor" ${expandedWorks.has(i)?'':'hidden'}>
-      <p class="admin-hint">These are the individual case studies inside "${esc(p.title)}" — what someone sees after clicking through the collection grid. Starts from one generated from the title/description above; add as many as you like.</p>
-      ${works.map((w,wi)=>workCardHTML(p,w,wi)).join('')}
-      <button class="admin-add-small" type="button" data-add-work>+ Add a case study</button>
-    </div>`;
-  }
-  function renderProjects(){
-    listEl.innerHTML = projects.map((p,i)=>`
-      <article class="admin-card" data-index="${i}">
-        <div class="admin-image-field">
-          ${p.image ? `<img src="${thumb(p.image)}" alt="${esc(p.title)||'Untitled'} preview" onerror="this.style.opacity=0">` : `<span class="admin-thumb-empty">No image</span>`}
-        </div>
-        <div class="admin-fields">
-          <label>Title<input data-field="title" value="${esc(p.title)}"></label>
-          <label>Category<input data-field="category" value="${esc(p.category)}"></label>
-          <label class="full">Image
-            <div class="admin-image-field">
-              <input type="text" data-field="image" value="${esc(p.image)}" placeholder="Paste a URL, or upload">
-              <input type="file" accept="image/*" data-project-upload="${i}" class="admin-upload-input">
-              <button type="button" class="admin-upload-btn" data-project-upload-btn="${i}">Upload</button>
-            </div>
-          </label>
-          <label>Order no.<input data-field="num" value="${esc(p.num)}"></label>
-          <label class="full">Description<textarea data-field="desc">${esc(p.desc)}</textarea></label>
-        </div>
-        <button class="admin-remove" type="button" data-remove="${i}">Remove</button>
-        <button class="admin-add-small" type="button" data-toggle-works="${i}" style="grid-column:1/-1">${expandedWorks.has(i) ? 'Hide case studies ▴' : (p.works && p.works.length ? `Manage case studies (${p.works.length}) ▾` : 'Manage case studies ▾')}</button>
-        ${worksEditorHTML(p,i)}
-      </article>`).join('');
-  }
+  function renderProjects(){ listEl.innerHTML = projects.map(projectHTML).join(''); }
   renderProjects();
 
-  // Top-level project fields (title/category/image/num/desc) — unchanged behaviour.
+  const ctx = el => { const card = el.closest('.admin-project'); if (!card) return null; const i = Number(card.dataset.index); const bEl = el.closest('[data-bi]'); return { i, p: projects[i], bi: bEl ? Number(bEl.dataset.bi) : -1, card }; };
+
   listEl.addEventListener('input', e => {
-    const card = e.target.closest('.admin-card'); if(!card) return;
-    const i = Number(card.dataset.index);
-    const field = e.target.dataset.field;
-    if (field && !e.target.closest('.admin-work-card')) { projects[i][field] = e.target.value; if(field==='image') renderProjects(); return; }
-
-    const workCard = e.target.closest('.admin-work-card');
-    if (workCard) {
-      const wi = Number(workCard.dataset.workIndex);
-      const work = projects[i].works[wi];
-      const blockRow = e.target.closest('.admin-block-row');
-      if (blockRow) {
-        const bi = Number(blockRow.dataset.blockIndex);
-        const bf = e.target.dataset.blockField;
-        if (bf === 'tagsText') work.blocks[bi].tags = e.target.value.split(',').map(s=>s.trim()).filter(Boolean);
-        else if (bf) work.blocks[bi][bf] = e.target.value;
-      } else if (e.target.dataset.workField) {
-        work[e.target.dataset.workField] = e.target.value;
-        if (e.target.dataset.workField === 'cover') renderProjects();
-      }
+    const c = ctx(e.target); if (!c) return;
+    const t = e.target;
+    if (t.dataset.bf !== undefined) {
+      const b = c.p.blocks[c.bi];
+      if (t.dataset.bf === 'tagsText') b.tags = t.value.split(',').map(s => s.trim()).filter(Boolean); else b[t.dataset.bf] = t.value;
+      return;
+    }
+    if (t.matches('[data-pf-bgon]')) { const col = c.card.querySelector('[data-pf-bg]'); col.disabled = !t.checked; c.p.bg = t.checked ? col.value : ''; return; }
+    if (t.matches('[data-pf-bg]')) { c.p.bg = t.value; return; }
+    if (t.matches('[data-pf-lock]')) { c.p.locked = t.checked; if (!t.checked) { delete c.p.password; delete c.p.enc; } renderProjects(); return; }
+    if (t.dataset.pf) {
+      const f = t.dataset.pf; c.p[f] = t.type === 'checkbox' ? t.checked : t.value;
+      if (f === 'title') c.card.querySelector('[data-title-label]').textContent = (t.value || 'Untitled') + (c.p.locked ? ' 🔒' : '');
     }
   });
-
-  listEl.addEventListener('click', async e => {
-    const card = e.target.closest('.admin-card'); if(!card) return;
-    const i = Number(card.dataset.index);
-
-    const rm = e.target.closest('[data-remove]');
-    if (rm) { projects.splice(Number(rm.dataset.remove), 1); renderProjects(); setStatus('projectsStatus', 'Removed — click "Save changes" to keep it.'); return; }
-
-    const upBtn = e.target.closest('[data-project-upload-btn]');
-    if (upBtn) { $(`[data-project-upload="${upBtn.dataset.projectUploadBtn}"]`)?.click(); return; }
-
-    const toggleWorks = e.target.closest('[data-toggle-works]');
-    if (toggleWorks) {
-      const ci = Number(toggleWorks.dataset.toggleWorks);
-      if (expandedWorks.has(ci)) { expandedWorks.delete(ci); }
-      else { ensureWorks(projects[ci]); expandedWorks.add(ci); }
-      renderProjects();
-      return;
-    }
-
-    const workCard = e.target.closest('.admin-work-card');
-    if (workCard) {
-      const wi = Number(workCard.dataset.workIndex);
-      const key = `${i}-${wi}`;
-
-      const uploadTrigger = e.target.closest('[data-upload-trigger]');
-      if (uploadTrigger) { uploadTrigger.parentElement.querySelector('.admin-upload-input')?.click(); return; }
-
-      const toggleBlocks = e.target.closest('[data-toggle-blocks]');
-      if (toggleBlocks) {
-        if (expandedBlocks.has(key)) expandedBlocks.delete(key); else expandedBlocks.add(key);
-        renderProjects();
-        return;
-      }
-      const rmWork = e.target.closest('[data-work-remove]');
-      if (rmWork) { projects[i].works.splice(wi,1); renderProjects(); return; }
-
-      const addBlock = e.target.closest('[data-add-block]');
-      if (addBlock) {
-        const type = addBlock.dataset.addBlock;
-        const newBlock = type==='image' ? {type:'image',src:'',caption:''}
-          : type==='video' ? {type:'video',src:'',caption:''}
-          : {type:'text',heading:'',body:'',tags:[]};
-        projects[i].works[wi].blocks.push(newBlock);
-        expandedBlocks.add(key);
-        renderProjects();
-        return;
-      }
-      const blockRow = e.target.closest('.admin-block-row');
-      if (blockRow) {
-        const bi = Number(blockRow.dataset.blockIndex);
-        const rmBlock = e.target.closest('[data-block-remove]');
-        if (rmBlock) { projects[i].works[wi].blocks.splice(bi,1); renderProjects(); return; }
-        const moveBlock = e.target.closest('[data-block-move]');
-        if (moveBlock) {
-          const dir = Number(moveBlock.dataset.blockMove);
-          const blocks = projects[i].works[wi].blocks;
-          const nbi = bi+dir;
-          if (nbi>=0 && nbi<blocks.length) { const tmp=blocks[bi]; blocks[bi]=blocks[nbi]; blocks[nbi]=tmp; renderProjects(); }
-          return;
-        }
-      }
-      return;
-    }
-
-    const addWork = e.target.closest('[data-add-work]');
-    if (addWork) {
-      const n = (projects[i].works||[]).length + 1;
-      projects[i].works = projects[i].works || [];
-      projects[i].works.push({ id: projects[i].id+'-work-'+Date.now(), title:'New case study', cover:'', tagline:'', blocks:[] });
-      renderProjects();
-      return;
-    }
-  });
-
   listEl.addEventListener('change', async e => {
-    const projFile = e.target.closest('[data-project-upload]');
-    if (projFile && projFile.files[0]) {
-      const i = Number(projFile.dataset.projectUpload);
-      projects[i].image = await readFileAsDataURL(projFile.files[0]);
+    const c = ctx(e.target); if (!c) return; const t = e.target;
+    if (t.dataset.pf === 'image') { renderProjects(); return; }
+    if (t.matches('[data-p-cover-upload]') && t.files[0]) { c.p.image = await readImageResized(t.files[0], 1400); renderProjects(); return; }
+    if (t.matches('[data-b-upload]') && t.files[0]) { c.p.blocks[c.bi].src = await readImageResized(t.files[0], 1920); renderProjects(); return; }
+    if (t.matches('[data-bulk-upload]') && t.files.length) {
+      const files = Array.from(t.files).sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+      setStatus('projectsStatus', `Adding ${files.length} image${files.length > 1 ? 's' : ''}…`);
+      c.p.blocks = c.p.blocks || [];
+      for (const f of files) c.p.blocks.push({ type: 'image', src: await readImageResized(f, 1920) });
+      setStatus('projectsStatus', `Added ${files.length}. Drag them into order with the ↑ ↓ buttons, then Publish.`);
       renderProjects();
+    }
+    if (t.dataset.bf === 'src') renderProjects();
+  });
+  listEl.addEventListener('click', async e => {
+    const t = e.target, c = ctx(t); if (!c) return;
+    let m;
+    if (t.closest('[data-p-toggle]')) { openIdx = openIdx === c.i ? -1 : c.i; renderProjects(); return; }
+    if ((m = t.closest('[data-p-move]'))) {
+      const j = c.i + Number(m.dataset.pMove);
+      if (j >= 0 && j < projects.length) { [projects[c.i], projects[j]] = [projects[j], projects[c.i]]; if (openIdx === c.i) openIdx = j; else if (openIdx === j) openIdx = c.i; renderProjects(); }
       return;
     }
-    const card = e.target.closest('.admin-card'); if(!card) return;
-    const i = Number(card.dataset.index);
-    const workCoverFile = e.target.closest('[data-work-cover-upload]');
-    if (workCoverFile && workCoverFile.files[0]) {
-      const wi = Number(workCoverFile.dataset.workCoverUpload);
-      projects[i].works[wi].cover = await readFileAsDataURL(workCoverFile.files[0]);
-      renderProjects();
+    if (t.closest('[data-p-remove]')) { if (confirm(`Remove "${c.p.title}"?`)) { projects.splice(c.i, 1); openIdx = -1; renderProjects(); } return; }
+    if (t.closest('[data-p-cover-btn]')) { c.card.querySelector('[data-p-cover-upload]').click(); return; }
+    if (t.closest('[data-b-upload-btn]')) { t.closest('.admin-block').querySelector('[data-b-upload]').click(); return; }
+    if ((m = t.closest('[data-b-move]'))) {
+      const j = c.bi + Number(m.dataset.bMove), bl = c.p.blocks;
+      if (j >= 0 && j < bl.length) { [bl[c.bi], bl[j]] = [bl[j], bl[c.bi]]; renderProjects(); }
       return;
     }
-    const blockFile = e.target.closest('[data-block-upload]');
-    if (blockFile && blockFile.files[0]) {
-      const workCard = e.target.closest('.admin-work-card');
-      const wi = Number(workCard.dataset.workIndex);
-      const bi = Number(blockFile.dataset.blockUpload);
-      projects[i].works[wi].blocks[bi].src = await readFileAsDataURL(blockFile.files[0]);
-      renderProjects();
+    if (t.closest('[data-b-remove]')) { c.p.blocks.splice(c.bi, 1); renderProjects(); return; }
+    if ((m = t.closest('[data-add-block]'))) {
+      c.p.blocks = c.p.blocks || [];
+      c.p.blocks.push(m.dataset.addBlock === 'video' ? { type: 'video', src: '', caption: '' } : { type: 'text', heading: '', body: '', tags: [] });
+      renderProjects(); return;
+    }
+    if (t.closest('[data-unlock-btn]')) {
+      const pw = c.card.querySelector('[data-unlock-pw]').value, st = c.card.querySelector('[data-unlock-status]');
+      if (!(window.crypto && crypto.subtle)) { st.textContent = 'This browser cannot unlock here (needs https).'; return; }
+      try { const d = await decryptJSON(c.p.enc, pw); c.p.blocks = d.blocks || []; c.p.password = pw; delete c.p.enc; renderProjects(); }
+      catch (err) { st.textContent = 'Wrong password'; }
     }
   });
-
   $('#addProject').addEventListener('click', () => {
-    const n = projects.length + 1;
-    projects.push({ id:'project'+Date.now(), num:String(n).padStart(2,'0'), category:'New category', title:'New project', image:'', desc:'' });
-    renderProjects();
-    listEl.lastElementChild?.scrollIntoView({behavior:'smooth', block:'center'});
+    projects.push({ id: 'project-' + Date.now(), title: 'Project ' + (projects.length + 1), image: '', tagline: '', bg: '', tight: true, blocks: [] });
+    openIdx = projects.length - 1; renderProjects();
+    listEl.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   });
-  $('#saveProjects').addEventListener('click', () => {
-    localStorage.setItem(PROJECTS_STORAGE_KEY, JSON.stringify(projects.map(({__i,...rest})=>rest)));
-    setStatus('projectsStatus', 'Saved as a draft in this browser only. Use the Publish tab to put it live on every device.');
-  });
+  $('#saveProjects').addEventListener('click', () => saveDraft(PROJECTS_STORAGE_KEY, projects, 'projectsStatus'));
   $('#resetProjects').addEventListener('click', () => {
-    if(!confirm('Reset to the five default projects? This clears your local edits, including any case studies you\'ve written.')) return;
-    localStorage.removeItem(PROJECTS_STORAGE_KEY);
-    projects = DEFAULT_PROJECTS.map(p=>({...p}));
-    expandedWorks = new Set(); expandedBlocks = new Set();
-    renderProjects();
-    setStatus('projectsStatus', 'Reset to defaults.');
-  });
-  $('#copyProjectsCode').addEventListener('click', async () => {
-    const code = 'const DEFAULT_PROJECTS = ' + JSON.stringify(projects.map(({__i,...rest})=>rest), null, 2) + ';';
-    await copyOrLog(code, 'projectsStatus');
+    if (!confirm('Reset to the five starter projects? This clears your local draft.')) return;
+    localStorage.removeItem(PROJECTS_STORAGE_KEY); projects = makeDefaultProjects(); openIdx = -1; renderProjects();
+    setStatus('projectsStatus', 'Reset to the starter projects.');
   });
 
   /* ============================================================
@@ -679,7 +612,7 @@ try {
     }
     return { status: res.status, data };
   }
-  const EXT = { 'image/jpeg':'jpg','image/jpg':'jpg','image/png':'png','image/webp':'webp','image/gif':'gif','image/svg+xml':'svg','image/avif':'avif','video/mp4':'mp4','video/webm':'webm','video/quicktime':'mov' };
+  const EXT = { 'image/jpeg':'jpg','image/jpg':'jpg','image/png':'png','image/webp':'webp','image/gif':'gif','image/svg+xml':'svg','image/avif':'avif','video/mp4':'mp4','video/webm':'webm','video/quicktime':'mov','application/pdf':'pdf' };
   const uploadCache = new Map(); // data URL -> repo path, so the same file isn't uploaded twice in one session
   function collectDataUrls(v, found = new Set()){
     if (typeof v === 'string') { if (v.startsWith('data:')) found.add(v); }
@@ -709,14 +642,29 @@ try {
     btn.disabled = true;
     try {
       setStatus('publishStatus', 'Preparing…');
+      for (const p of projects) {
+        if (p.locked && Array.isArray(p.blocks) && String(p.password || '').length < 4) throw new Error(`"${p.title}" is locked but has no password yet — type one of at least 4 characters in that project.`);
+      }
+      if (projects.some(p => p.locked && Array.isArray(p.blocks)) && !(window.crypto && crypto.subtle)) throw new Error('This browser cannot lock projects here (it needs https). Use the live admin page.');
       const payload = JSON.parse(JSON.stringify({ content, theme, projects }));
       const progress = { n: 0, total: [...collectDataUrls(payload)].filter(u => !uploadCache.has(u)).length };
       const clean = await swapDataUrls(payload, progress);
       clean.updatedAt = new Date().toISOString();
+      // What goes online: locked projects are encrypted with their password, and the password itself is never sent.
+      const published = { ...clean, projects: [] };
+      for (const p of clean.projects) {
+        const { password, ...rest } = p;
+        if (p.locked && Array.isArray(p.blocks)) {
+          const { blocks, ...pub } = rest;
+          published.projects.push({ ...pub, locked: true, enc: await encryptJSON({ blocks }, password) });
+        } else if (p.locked && p.enc) {
+          const { blocks, ...pub } = rest; published.projects.push({ ...pub, locked: true });
+        } else { const { enc, locked, lockNote, ...pub } = rest; published.projects.push(pub); }
+      }
       setStatus('publishStatus', 'Saving your changes to GitHub…');
       const existing = await ghApi('GET', 'site-data.json');
       const sha = existing.status === 200 && existing.data ? existing.data.sha : undefined;
-      await ghApi('PUT', 'site-data.json', { message: 'Publish site changes from admin', content: b64(JSON.stringify(clean, null, 2)), branch: gh.branch, ...(sha ? { sha } : {}) });
+      await ghApi('PUT', 'site-data.json', { message: 'Publish site changes from admin', content: b64(JSON.stringify(published, null, 2)), branch: gh.branch, ...(sha ? { sha } : {}) });
       localStorage.setItem(LAST_PUB_KEY, JSON.stringify(clean));
       [CONTENT_STORAGE_KEY, THEME_STORAGE_KEY, PROJECTS_STORAGE_KEY].forEach(k => localStorage.removeItem(k));
       setStatus('publishStatus', `Published at ${new Date().toLocaleTimeString()}. GitHub is rebuilding the site — it should be live on every device in about a minute (some phones can take up to 10).`);

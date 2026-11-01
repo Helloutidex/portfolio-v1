@@ -19,6 +19,7 @@
     <div class="eyebrow" id="heroEyebrow">Independent designer · Lagos, Nigeria</div>
     <h1><span id="heroTitlePre">Designing </span><em id="heroTitleEm">what's</em><span id="heroTitlePost"> next.</span></h1>
     <p id="heroParagraph">I turn ideas into identities, digital experiences and visual systems people can feel.</p>
+    <a class="hero-cta" id="heroCta" href="#work">View my work ↗</a>
   </div>
   <div class="stage" id="stage">
     <div class="cards" id="cards" aria-label="Selected work"></div>
@@ -92,13 +93,6 @@
 </section>
 <footer class="footer"><span id="footerLeft">© 2026 Adedeji Sunday Samuel</span><span id="footerRight">Designed with intention / Lagos</span></footer>
 
-<div class="collection-modal" id="collectionModal" aria-hidden="true">
-  <div class="collection-box">
-    <div class="collection-head"><span id="collectionMeta">Collection</span><button id="collectionClose" class="modal-nav">Close ×</button></div>
-    <div class="collection-title"><span>Explore</span><h2 id="collectionTitle">Brand Identity</h2></div>
-    <div class="collection-grid" id="collectionGrid"></div>
-  </div>
-</div>
 <div class="modal" id="modal">
   <div class="modal-box">
     <div class="modal-head">
@@ -106,18 +100,33 @@
       <div class="modal-actions">
         <button class="modal-nav" id="prevProject">← Prev</button>
         <button class="modal-nav" id="nextProject">Next →</button>
-        <button class="modal-nav" id="backWork">Back to collection</button>
         <button class="close" id="close" aria-label="Close">×</button>
       </div>
     </div>
     <div class="modal-body" id="modalBody">
       <div class="case-title-track" id="caseTitleTrack"></div>
       <p class="case-tagline reveal" id="caseTagline"></p>
-      <div class="case-meta reveal" id="caseMeta"></div>
-      <div class="case-sections" id="caseSections"></div>
+      <div class="pblocks" id="caseSections"></div>
+      <div id="caseMore"></div>
       <div class="case-next reveal" id="caseNext"></div>
     </div>
   </div>
+</div>
+
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <div class="lightbox-bar"><span id="lbCount"></span><button class="modal-nav" id="lbClose" type="button">Collapse ×</button></div>
+  <div class="lightbox-body" id="lbBody"></div>
+</div>
+
+<div class="pwdialog" id="pwDialog" aria-hidden="true">
+  <form class="pwbox" id="pwForm" autocomplete="off">
+    <span class="pw-eyebrow">Private project</span>
+    <h3 id="pwTitle">Project</h3>
+    <p id="pwNote"></p>
+    <input type="password" id="pwInput" placeholder="Password" autocomplete="off">
+    <p id="pwError" role="status"></p>
+    <div class="pwbox-actions"><button class="pwbtn" type="submit">View project</button><button class="pwbtn ghost" type="button" id="pwCancel">Cancel</button></div>
+  </form>
 </div>
 
 <a class="floating-badge" id="floatingBadge" href="contact.html" aria-label="Go to contact page">

@@ -82,30 +82,9 @@ that does and doesn't protect:
    live site without permission" is a real risk for you.
 
 ## How the work is structured
-There are two layers, matching what you click through on the site:
+Every **project** is three things at once: a floating card around the lens (the first five), a frame in the moving gallery (all of them), and its own full-page view that opens when you pick it. A project page is a title, an optional intro line, and a stack of blocks — **images** (1920 px wide, any height), **text**, and **video**. Options per project: seamless no-gap stacking, its own background colour, and a password lock. Tapping an image opens a pop-up viewer you can scroll and collapse. At the bottom, visitors are offered the other projects.
 
-1. **Categories** — the 5 floating cards / gallery frames (Case Study, Logo
-   Archive, Presentation, Web Design, AI / Generative). Clicking one opens a
-   collection grid.
-2. **Case studies** — the individual projects *inside* a category (e.g.
-   "Premium Clothes" inside "Case Study"). A category can hold as many as
-   you like. Clicking one opens its full, vertically-scrolling case-study
-   page — a large scrolling title, an optional tagline, and then a plain
-   ordered list of **content blocks**: a text block (heading + body,
-   optional "what we did" tags), an image block (optional caption), or a
-   video block (optional caption) — in whatever order and mix you choose.
-   There's no fixed template forcing an image after every paragraph — a
-   case study can be two text blocks up top and nothing but images (or
-   video) after that, or alternate the whole way down, or be all images
-   with a single intro block. Each block fades and rises into view as you
-   scroll to it. At the bottom, a link goes to the next case study in the
-   *same* category, or back to the collection once you've seen all of them.
-
-If a category has no case studies written yet, two placeholder ones are
-generated automatically from its title and description so the site isn't
-empty — open "Manage case studies" on a category in admin.html to replace
-them with your own, add more, reorder blocks with the arrow buttons, or
-delete what you don't need.
+**Locked projects** stay visible on the site but need a password to open. The content is encrypted (AES) before it is published, so it isn't sitting in the page for anyone to read — but use a proper password (10+ characters), and remember the cover picture and title are still public.
 
 ## Placeholder images and logos
 The five projects still use royalty-free Unsplash photos as stand-ins, and

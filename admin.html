@@ -64,6 +64,11 @@
         <label>Headline — after<input data-path="hero.titlePost"></label>
       </div>
       <label>Paragraph<textarea data-path="hero.paragraph"></textarea></label>
+      <div class="admin-row2">
+        <label>Hero button text (leave empty to remove the button)<input data-path="hero.ctaLabel"></label>
+        <label>Hero button goes to<input data-path="hero.ctaHref" placeholder="#work, contact.html, or any link"></label>
+      </div>
+      <label>Picture inside the lens (empty = Project 1's cover)<div class="admin-image-field" data-image-path="hero.lensImage"></div></label>
       <label>Lens label (small text on the lens)<input data-path="hero.lensLabel"></label>
       <label>Text under the lens<input data-path="hero.opticNote"></label>
       <div class="admin-row2">
@@ -82,6 +87,7 @@
         <label>"View CV" button text<input data-path="about.viewCV"></label>
         <label>"Download CV" button text<input data-path="about.downloadCV"></label>
       </div>
+      <label>CV file (PDF) — used by the View / Download buttons; remove it to hide them<div class="admin-image-field" data-image-path="about.cvFile" data-kind="file" data-accept="application/pdf,.pdf"></div></label>
       <label>Portrait image<div class="admin-image-field" data-image-path="about.portraitImage"></div></label>
       <div class="admin-row3">
         <label>Heading — before<input data-path="about.headingPre"></label>
@@ -142,6 +148,15 @@
       <button class="admin-add-small" type="button" id="addLink">+ Add a link</button>
     </div>
 
+    <div class="admin-group" data-group="badge">
+      <h2>Floating badge <span class="admin-hint">(the spinning circle in the bottom corner — clear both boxes to hide it)</span></h2>
+      <div class="admin-row2">
+        <label>Initials in the middle<input data-path="badge.initials" maxlength="4"></label>
+        <label>Where it links<input data-path="badge.href" placeholder="contact.html"></label>
+      </div>
+      <label>Text around the ring<input data-path="badge.ringText"></label>
+    </div>
+
     <div class="admin-group" data-group="signature">
       <h2>Signature marquee</h2>
       <label>Name<input data-path="signature.name"></label>
@@ -170,7 +185,6 @@
     <div class="admin-actions">
       <button class="modal-nav" id="saveContent" type="button">Save changes</button>
       <button class="modal-nav" id="resetContent" type="button">Reset to defaults</button>
-      <button class="modal-nav" id="copyContentCode" type="button">Copy code for script.js</button>
     </div>
     <p class="admin-status" id="contentStatus" aria-live="polite"></p>
   </section>
@@ -184,7 +198,9 @@
         <label>Text / ink<input type="color" data-theme="ink"></label>
         <label>Secondary text<input type="color" data-theme="muted"></label>
         <label>Lines / borders<input type="color" data-theme="line"></label>
-        <label>Contact section<input type="color" data-theme="contactBg"></label>
+        <label>Red accent (buttons, contact section)<input type="color" data-theme="contactBg"></label>
+        <label>Soft tint 1 (peach)<input type="color" data-theme="tint1"></label>
+        <label>Soft tint 2 (butter)<input type="color" data-theme="tint2"></label>
       </div>
     </div>
     <div class="admin-group">
@@ -197,19 +213,18 @@
     <div class="admin-actions">
       <button class="modal-nav" id="saveTheme" type="button">Save changes</button>
       <button class="modal-nav" id="resetTheme" type="button">Reset to defaults</button>
-      <button class="modal-nav" id="copyThemeCode" type="button">Copy code for script.js</button>
     </div>
     <p class="admin-status" id="themeStatus" aria-live="polite"></p>
   </section>
 
   <!-- ===== PROJECTS TAB ===== -->
   <section class="admin-panel" id="panel-projects" hidden>
+    <p class="admin-note">Each project is a floating card, a frame in the moving gallery, and its own full page. The first five also float around the lens. Click <b>Edit</b> on a project to change its pictures, text, colors, or to lock it with a password.</p>
     <div class="admin-list" id="adminList" aria-label="Projects"></div>
     <button class="admin-add" id="addProject" type="button">+ Add a project</button>
     <div class="admin-actions">
-      <button class="modal-nav" id="saveProjects" type="button">Save changes</button>
-      <button class="modal-nav" id="resetProjects" type="button">Reset to defaults</button>
-      <button class="modal-nav" id="copyProjectsCode" type="button">Copy code for script.js</button>
+      <button class="modal-nav" id="saveProjects" type="button">Save draft</button>
+      <button class="modal-nav" id="resetProjects" type="button">Reset to starter projects</button>
     </div>
     <p class="admin-status" id="projectsStatus" aria-live="polite"></p>
   </section>
