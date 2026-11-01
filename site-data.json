@@ -13,7 +13,7 @@
       "opticNote": "Tap the lens · reveal the work",
       "note": "The work is hidden in the lens.",
       "zoomInstruction": "Tap to explore",
-      "lensImage": "",
+      "lensImage": "assets/uploads/mvybotwj-0.png",
       "ctaLabel": "View my work ↗",
       "ctaHref": "#work"
     },
@@ -161,17 +161,17 @@
   "projects": [
     {
       "id": "caseStudy",
-      "title": "Project 1",
-      "image": "https://images.unsplash.com/photo-1518005020951-eccb494ad742",
+      "title": "Swyftsend",
+      "image": "assets/uploads/mvybox7f-1.jpg",
       "tagline": "Selected identity and digital case studies.",
       "bg": "#ffffff",
       "tight": true,
       "locked": true,
       "lockNote": "Enter your password",
       "enc": {
-        "salt": "RmjtsbU3OhJQhZqQ9clEOg==",
-        "iv": "z6oWuU7o+FmxsIKH",
-        "data": "/xyeDXG+ABA7U4XD31f2Ic1FwRhXVmOPE4WSBb11QggJFDnwK3goTG4g98IicjSBcdMaNt1FkDZ+dC+Ez8lhoyVOp6oNNMUGGccFBACT6KVlAl+gSOcDKreXAZlsl4S/ljKl8gg9YxpzrRWR6IcTialaZXG/a/SQnn8Bx2kUTO1WXf5RiNOat8U2YJaQRUh5dtAHik9nOP8Sj1L+kBuEilaDNzGMRPsIykBtltBggGzXEQaRax79TR8ZsGWkIjw1r+0+oJSYYfFDOsJCdbDh4tjuQBCNw7O3ey8rx/fjR0uffgoeRnZXutZloSmdb0brP7qqcqYphZ9Ax91FjhCLQEf2CI/vmLPpi8hakflwDFPPAXtA4rBuDQ+UR2vqsUYu6D8sV8ayZn1JrJmODA3seSej5dOjYvfIJT+lLYWiXdSnc1dEopF6FHayssWEvjNVtM2elXPWtqT5B2+j92izSqWHzlgJ/X86qO+oob5zky0h7v2d9aiUI76pc6Ws0bIG5HOnUGYJK/OpWlBxXZbiw0/ExFSA0xPTHkuPb7FHlnwNxCE41BdL8at1Rbzben9Hb294LMCo67SKLmLye7MJNdN6ex9d8VK1jMJ8L3gLUYgncdyo5VMjRbtWty1nhtzjlphOyhhZzwEGt5o8cZ5AZ/L8op3Blurxn1xO//vIqqBHp6D5J9t8H3UzerFvewyLf7Sk9FynOqsHz+nFbB3qTh3kXI2SQZfWCY2Qfab0SBAgqCjDkPXB/au7Z/DyiM9ebvEVh8KUNk/c"
+        "salt": "ykoj/VrYHuNW/dpo8a54Fg==",
+        "iv": "I6i3d1zKCNGd7muy",
+        "data": "7ft96OISYmrivM0JZZB/4XbTyOsTgTk2MJ5WvAgFAWOpgM/RIoBoiDWSoHJqt0qf1tgnaHHWIkUZZHfyylxxfPpTehViftDAiNnHJerAVIBUmX8LsyLFr1yoXl8gDYQHg3iwD+Ic7KMqFDPQ34bcStPjMxp2SUX8IiDtaVye+6/iFH3+/Dw9/NDVxWZEztlKS9gMkcH+YGF8IatWamsMQ3jwi87mk2w4kg3VmhaayDIAViMxlY7vEqFwQHoYFtaMLOZ0z3JzL3tKzMQ4/SqcVzPw4pGz3kKDe/K0DxM086kSABETHLxZKkkX+WidJKoEdTr6vAZnUvORMoWRZ4xko2SLh+DYPPCf9xNiiUtfy3njy2MwqFvwmSjQlFn1es5rorkL4rrnPUlEL//1zXpEEcBbxXabcM7A7yHrkqsjbKbIFBi0DHUIivI59RCylk1Uam6BvQ6JKG3vt7F9sGodj51pExXdz56NfkWeLkxO3hLNlEWRxVLMUpdtacFZHLFPCJZq6T4WZWFo5Yd/ueg9vmJzISxoKt4Dg1RPM7i7pcd15js5HWN5N4lkJztgUu1Rwl4FCUepSDWUcFz1vdRMk97jo8kYmW7ANRwsQy03D4kYjRDMQjj2jA5seYnYbEqXs4tTk6A6XQs/cwGhU5Kixu5v5n8fj8vXIu3qewBSyrle0Kq1dgqIa0HIWMpxLXb1iVIo4w8D7J3VE4nJWFGQT2uFz+41/UmoA56dPgQzDC582AqtOJEySyGm3glNnyEy1wX9q2lLfUdpnIjRY4N7xlCjbidrABtvw3j2iTpSvpUorjbWn2KQWhiKWEpUhroSZ43J/EdXpnGWN0ydY4XaDllK8J61rIf+JYZ+hfvr6HIJZmB2FUPoEMijHg7aatcrsDKNfuVEp5AxIGu7qKusllxHOLaY56+Hsj8AmssGf5UfPkvjMYXRULJ10GcuVgQa9J7NHeLzLboj87YttstkuMxvheL3n22Cpaw/CIjN8+XVOo0QovilCsjvG2wsORB0yquGM/v1Ya1a6d/K+y1Fpkh6Oq3HPnKLdf5BO6Ckr52U9dKI840FPeGdRxKFmREIne6xTwB15VQAd0a0BI3yJpUCgfDsG0W/jBfM3YeE9JhC0syCJHTSK4/STtqHBTpof08wHtv6X3zbqhc2fWWaqCQhRIgKjs12ICV15+U6SBp+"
       }
     },
     {
@@ -283,5 +283,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-11-01T20:57:54.376Z"
+  "updatedAt": "2026-11-01T21:09:36.575Z"
 }
