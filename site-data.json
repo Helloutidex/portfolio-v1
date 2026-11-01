@@ -153,9 +153,9 @@
     "ink": "#141211",
     "muted": "#747474",
     "line": "#e2ddd2",
-    "contactBg": "#141211",
-    "tint1": "#f7d6c6",
-    "tint2": "#f5e3a3",
+    "contactBg": "#e8223e",
+    "tint1": "#e6e0d8",
+    "tint2": "#e6e0d8",
     "scale": 1
   },
   "projects": [
@@ -164,27 +164,15 @@
       "title": "Project 1",
       "image": "https://images.unsplash.com/photo-1518005020951-eccb494ad742",
       "tagline": "Selected identity and digital case studies.",
-      "bg": "",
+      "bg": "#ffffff",
       "tight": true,
-      "blocks": [
-        {
-          "type": "text",
-          "heading": "About this project",
-          "body": "Tell the story in a few lines — what it was, who it was for, what you made. Delete this block if you want the images to speak for themselves."
-        },
-        {
-          "type": "image",
-          "src": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1920&q=82"
-        },
-        {
-          "type": "image",
-          "src": "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1920&q=82"
-        },
-        {
-          "type": "image",
-          "src": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1920&q=82"
-        }
-      ]
+      "locked": true,
+      "lockNote": "Enter your password",
+      "enc": {
+        "salt": "8TWANwBGQk5v5C6UikPnKg==",
+        "iv": "iVnneehZwYxFHHMg",
+        "data": "L0WEj9LNq4pxmH658GMnfxmeeQpcKaTwt+3T98dl25NRZzSJd3iPj93bzrQM5Vnknjw0FRFW2CTnmfcCqHIu4O+Jh72UQGTOUfmNiZUlayRyPQWanI6oQoIyMLNYWgiRtE6gWy0dciTXsbr69vG7MazK8N/E/NM1iYdRT2TJI4IdEspnyAUsb+x4rxudZ4CU4l+ZhFv7FnayKpziBZ3JoHw6On6Qvgu/yRTUouiIhu41Bi4HuqaaQFg4vIiKrbOvrB0RyAEpBhdI7OLcN4Z0PtHJAPnqGL0lRxTCdfhVCWqFMkxQ06wLH8uZoLDEv5BxeWBWfXVfiNx+Ay7mLBA/B2HrWf1r19jCQoPg/2dhE6UUDT1U1TIz82+BR7g4XWgJlU0iez71C66YfLG3RtCOKEthHsp3puyORAkhxSAgs+8+4tKQjehkBx5ujYiOTMxNiXBZODIbittFElQ9jd2EKhbbSwW/r0I1J1Hi99oasAxS6ZAYctjX014cbspc1EpBwev2QVTJudGfOW4yUN+0zXNpfKGVq/1vhuV+9ekOTjMxIcTh+g0aRCD1CFD+0SaImESBlDen8e8jBSQXeczaBsahhMENdmFzGz3u4zy8fVTME6+jYqFdTr7K3Gcm9Bjv522xDU7sIRQV5lQc4iGgJ9L2kYv3IdIIqIZfVVTbvt96GLwbQR/EdjObhGrLj0vrcI3klDWxjzwLqSNdHcPpfg1L/3CxlByJy7XUiCISE32ZhMDRz0RWqH9dL5JI0rxTHEdidY/yvW1h"
+      }
     },
     {
       "id": "food",
@@ -295,5 +283,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-11-01T20:24:23.718Z"
+  "updatedAt": "2026-11-01T20:34:34.778Z"
 }
