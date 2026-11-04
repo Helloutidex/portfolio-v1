@@ -82,9 +82,9 @@ that does and doesn't protect:
    live site without permission" is a real risk for you.
 
 ## How the work is structured
-Every **project** is three things at once: a floating card around the lens (the first five), a frame in the moving gallery (all of them), and its own full-page view that opens when you pick it. A project page is a title, an optional intro line, and a stack of blocks — **images** (1920 px wide, any height), **text**, and **video**. Options per project: seamless no-gap stacking, its own background colour, and a password lock. Tapping an image opens a pop-up viewer you can scroll and collapse. At the bottom, visitors are offered the other projects.
+The lens opens **sections** (Case study, Editorial, Campaign ads, Logo folio, Events branding — add or reorder as you like). Each is a floating card (the first five; visitors can drag them, tap to open), a frame in the moving gallery, and a page of its own, laid out the way you choose: a vertical list of **case studies** (each its own page, with a cover you pick), **natural size** (pictures and PDFs as uploaded), a **2-column grid**, a **3-column grid** (good for logos) or a simple **stack**. Pictures should be 1920 px wide, any height; bigger ones are shrunk automatically. Tapping a picture opens a pop-up viewer you can scroll and collapse.
 
-**Locked projects** stay visible on the site but need a password to open. The content is encrypted (AES) before it is published, so it isn't sitting in the page for anyone to read — but use a proper password (10+ characters), and remember the cover picture and title are still public.
+Any section or case study can be **locked**: it stays visible, but opens a password page first. The content is encrypted (AES) before it is published, so it isn't readable in the page source — use a proper password (10+ characters); the title and cover stay public.
 
 ## Placeholder images and logos
 The five projects still use royalty-free Unsplash photos as stand-ins, and

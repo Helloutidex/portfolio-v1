@@ -121,3 +121,11 @@
 .admin-block-add .admin-add-small{flex:1;min-width:140px;text-align:center}
 .admin-upload-label{cursor:pointer;display:block!important;flex-direction:initial!important;gap:0!important;color:var(--ink)!important}
 .admin-note{font-size:14px;line-height:1.6;color:var(--muted)}
+
+/* ---- v4 ---- */
+.admin-group select,.admin-project-body select{font:14px Manrope,Arial,sans-serif;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink);max-width:100%}
+.admin-group input[type=number]{font:14px Manrope,Arial,sans-serif;padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:var(--paper);color:var(--ink)}
+.admin-case{border:1px solid var(--line);border-radius:12px;margin:8px 0;background:var(--paper)}
+.admin-case .admin-project-body{border-top:1px dashed var(--line)}
+/* the admin has its own light/dark switch (separate from the public site's mode) */
+body.admin-body.dark{--paper:#141211;--ink:#faf6ee;--muted:#9a948b;--line:#2c2926;--surface:#141211}

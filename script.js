@@ -26,7 +26,7 @@
   ============================================================ */
   const CONTENT_STORAGE_KEY = 'ferricool-portfolio-content';
   const DEFAULT_CONTENT = {
-    nav: { logo: 'ADEDEJI SUNDAY / DESIGN' },
+    nav: { logo: 'ADEDEJI SUNDAY / DESIGN', links: [{ label: 'About', href: '#about' }, { label: 'Work', href: '#work' }], ctaLabel: "Let's talk", ctaHref: 'contact.html' },
     hero: {
       eyebrow: 'Independent designer · Lagos, Nigeria',
       titlePre: 'Designing ', titleEm: "what's", titlePost: ' next.',
@@ -68,13 +68,15 @@
     links: { label: 'Links', description: 'Find the work, the process, or start a conversation.', items: [
       { label: 'Work ↗', href: '#work' }, { label: 'About ↗', href: '#about' }, { label: 'Contact ↗', href: '#contact' },
     ]},
-    badge: { initials: 'AS', ringText: 'ADEDEJI SUNDAY SAMUEL', href: 'contact.html' },
-    signature: { name: 'ADEDEJI SUNDAY SAMUEL' },
-    contact: { ctaLabel: "Let's talk ↗", small: 'Start a project', headingLines: ["LET'S MAKE","SOMETHING","WORTH SEEING."], available: 'Available for selected projects', emailText: 'hello@example.com ↗', emailHref: 'mailto:hello@example.com' },
+    badge: { initials: 'AS', ringText: 'ADEDEJI SUNDAY SAMUEL', ringImage: '', size: 96, href: 'contact.html' },
+    signature: { name: 'ADEDEJI SUNDAY SAMUEL', font: 'UnifrakturCook', nameColor: '#E8223E', bg: '#141211', textColor: '#faf6ee' },
+    contact: { ctaLabel: "Let's talk ↗", pageHeading: "Let's talk.", subheading: 'Tell me about your project.', body: 'Share a little about what you have in mind — the goal, the timeline, anything that helps. I read every message and reply personally.', whatsappLabel: 'WhatsApp number (optional)', backLabel: '← Back home', small: 'Start a project', headingLines: ["LET'S MAKE","SOMETHING","WORTH SEEING."], available: 'Available for selected projects', emailText: 'hello@example.com ↗', emailHref: 'mailto:hello@example.com' },
     footer: { left: '© 2026 Adedeji Sunday Samuel', right: 'Designed with intention / Lagos' },
+    effects: { particles: true },
   };
+
   const cloneDefaultContent = () => JSON.parse(JSON.stringify(DEFAULT_CONTENT));
-  // Fills in any setting a saved/published copy doesn't have yet, so new features never break old data.
+  // Fills in any setting a saved / published copy doesn't have yet, so new features never break old data.
   function mergeContent(saved){
     const d = cloneDefaultContent(), out = {};
     for (const k of Object.keys(d)) {
@@ -82,118 +84,150 @@
       if (dv && typeof dv === 'object' && !Array.isArray(dv)) out[k] = { ...dv, ...((sv && typeof sv === 'object') ? sv : {}) };
       else out[k] = sv !== undefined ? sv : dv;
     }
+    if (saved && saved.social && Array.isArray(saved.social.names) && !Array.isArray(saved.social.items)) out.social.items = saved.social.names.map(n => ({ name: n, logo: '' }));
     if (!saved || !saved.badge) out.badge.ringText = out.signature.name;
     return out;
   }
   function loadContent(){
     const saved = draftOf(CONTENT_STORAGE_KEY) || REMOTE.content;
-    return migrateContent(mergeContent(saved && typeof saved === 'object' ? saved : null));
-  }
-  // Keeps older saved content (from before "logos" or "testimonials" existed) from breaking the page.
-  function migrateContent(c){
-    if(c.social && Array.isArray(c.social.names) && !Array.isArray(c.social.items)){
-      c.social.items = c.social.names.map(n => ({ name:n, logo:'' }));
-    }
-    if(!c.testimonials) c.testimonials = DEFAULT_CONTENT.testimonials;
-    if(c.contact && !c.contact.ctaLabel) c.contact = { ...c.contact, ctaLabel: DEFAULT_CONTENT.contact.ctaLabel };
-    return c;
+    return mergeContent(saved && typeof saved === 'object' ? saved : null);
   }
   // A clean, generic wordmark used until a real logo is uploaded in admin.html.
   function placeholderLogo(name){
-    const initials = String(name||'?').split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0].toUpperCase()).join('') || '?';
-    return `<svg viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(name)} logo placeholder">
-      <rect x="1" y="1" width="118" height="38" rx="8" fill="none" stroke="currentColor" stroke-width="1.4"/>
-      <text x="60" y="25" text-anchor="middle" font-family="'DM Mono',monospace" font-size="15" letter-spacing="1" fill="currentColor">${esc(initials)}</text>
-    </svg>`;
+    const initials = String(name || '?').split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join('') || '?';
+    return `<svg viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(name)} logo placeholder"><rect x="1" y="1" width="118" height="38" rx="8" fill="none" stroke="currentColor" stroke-width="1.4"/><text x="60" y="25" text-anchor="middle" font-family="'DM Mono',monospace" font-size="15" letter-spacing="1" fill="currentColor">${esc(initials)}</text></svg>`;
+  }
+  // Old English / blackletter faces you can pick for the signature line (loaded only when chosen).
+  const SIGNATURE_FONTS = ['UnifrakturCook', 'UnifrakturMaguntia', 'Pirata One', 'Grenze Gotisch', 'New Rocker', 'Metamorphous', 'Cinzel Decorative', 'Texturina'];
+  const loadedFonts = new Set();
+  function loadFont(name){
+    if (!name || name === 'UnifrakturCook' || loadedFonts.has(name) || !SIGNATURE_FONTS.includes(name)) return;
+    loadedFonts.add(name);
+    const l = document.createElement('link'); l.rel = 'stylesheet';
+    l.href = 'https://fonts.googleapis.com/css2?family=' + encodeURIComponent(name).replace(/%20/g, '+') + '&display=swap';
+    document.head.appendChild(l);
+  }
+  function renderNav(c){
+    const home = !!document.getElementById('stage');
+    const fix = h => (!home && String(h || '').startsWith('#')) ? 'index.html' + h : (h || '#');
+    const links = $('#navLinks');
+    if (links) links.innerHTML = (c.nav.links || []).map(l => `<a href="${esc(fix(l.href))}">${esc(l.label)}</a>`).join('');
+    const cta = $('#navCta');
+    if (cta) { cta.textContent = c.nav.ctaLabel || ''; cta.href = fix(c.nav.ctaHref || 'contact.html'); cta.hidden = !c.nav.ctaLabel; }
   }
   function applyContent(c){
-    const set = (id,val) => { const el=document.getElementById(id); if(el) el.textContent = val; };
-    set('navLogo', c.nav.logo);
+    const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
+    set('navLogo', c.nav.logo); renderNav(c);
     set('heroEyebrow', c.hero.eyebrow); set('heroTitlePre', c.hero.titlePre); set('heroTitleEm', c.hero.titleEm); set('heroTitlePost', c.hero.titlePost);
     set('heroParagraph', c.hero.paragraph); set('lensLabel', c.hero.lensLabel); set('opticNote', c.hero.opticNote);
     set('heroNote', c.hero.note); set('heroZoomInstruction', c.hero.zoomInstruction);
+    const cta = $('#heroCta');
+    if (cta) { cta.textContent = c.hero.ctaLabel || ''; cta.href = c.hero.ctaHref || '#work'; cta.hidden = !c.hero.ctaLabel; }
     set('aboutLabel', c.about.label); set('viewCV', c.about.viewCV); set('downloadCV', c.about.downloadCV);
-    const portraitImg = $('#portraitImg'); if(portraitImg && c.about.portraitImage) portraitImg.src = c.about.portraitImage;
+    const cvBox = $('.cv-cta'); if (cvBox) cvBox.hidden = !c.about.cvFile;
+    const portraitImg = $('#portraitImg'); if (portraitImg && c.about.portraitImage) portraitImg.src = c.about.portraitImage;
     set('portraitCaption', c.about.portraitCaption);
     set('aboutHeadingPre', c.about.headingPre); set('aboutHeadingEm', c.about.headingEm); set('aboutHeadingPost', c.about.headingPost);
     set('aboutParagraph1', c.about.paragraph1); set('aboutParagraph2', c.about.paragraph2);
-    const skillsList = $('#skillsList'); if(skillsList) skillsList.innerHTML = c.about.skills.map(s=>`<span class="skill">${esc(s)}</span>`).join('');
+    const skillsList = $('#skillsList'); if (skillsList) skillsList.innerHTML = c.about.skills.map(s => `<span class="skill">${esc(s)}</span>`).join('');
     set('socialLabel', c.social.label); set('socialCount', c.social.count);
     const logoTrack = $('#logoTrack');
-    if(logoTrack){
+    if (logoTrack) {
       const mark = item => `<div class="logo-mark" title="${esc(item.name)}">${item.logo ? `<img src="${esc(item.logo)}" alt="${esc(item.name)} logo">` : placeholderLogo(item.name)}</div>`;
       const oneSet = c.social.items.map(mark).join('');
-      // Repeat the set enough times that it comfortably outspans the widest
-      // screen it could load on, so the marquee always fills edge to edge —
-      // no dead gap at the end of a short set on a wide monitor. Keep the
-      // count even so the halfway point (where the loop's -50% scroll wraps)
-      // always lands on a repeat boundary.
       let repeats = Math.max(2, Math.ceil((window.innerWidth * 2.2) / Math.max(1, c.social.items.length * 200)));
       if (repeats % 2 !== 0) repeats++;
       logoTrack.innerHTML = oneSet.repeat(repeats);
     }
-    set('workLabel', c.work.label); set('workDescription', c.work.description);
-    set('galleryNoteRight', c.work.noteRight);
+    set('workLabel', c.work.label); set('workDescription', c.work.description); set('galleryNoteRight', c.work.noteRight);
     set('testimonialsLabel', c.testimonials.label); set('testimonialsDescription', c.testimonials.description);
-    const testimonialGrid = $('#testimonialGrid');
-    if(testimonialGrid) testimonialGrid.innerHTML = c.testimonials.items.map(t=>`<article class="testimonial-card"><blockquote>${esc(t.quote)}</blockquote><cite><b>${esc(t.name)}</b>${esc(t.role)}</cite></article>`).join('');
+    const tg = $('#testimonialGrid');
+    if (tg) tg.innerHTML = c.testimonials.items.map(t => `<article class="testimonial-card"><blockquote>${esc(t.quote)}</blockquote><cite><b>${esc(t.name)}</b>${esc(t.role)}</cite></article>`).join('');
     set('expHeadingLine1', c.experience.headingLine1); set('expHeadingLine2', c.experience.headingLine2);
-    const expRows = $('#expRows'); if(expRows) expRows.innerHTML = c.experience.rows.map(r=>`<div class="exp-row"><span>${esc(r.tag)}</span><strong>${esc(r.role)}</strong><span>${esc(r.meta)}</span></div>`).join('');
+    const expRows = $('#expRows'); if (expRows) expRows.innerHTML = c.experience.rows.map(r => `<div class="exp-row"><span>${esc(r.tag)}</span><strong>${esc(r.role)}</strong><span>${esc(r.meta)}</span></div>`).join('');
     set('linksLabel', c.links.label); set('linksDescription', c.links.description);
-    const linksGrid = $('#linksGrid'); if(linksGrid) linksGrid.innerHTML = c.links.items.map(it=>`<a class="big-link" href="${esc(it.href)}">${esc(it.label)}</a>`).join('');
-    const nameTrack = $('#nameTrack'); if(nameTrack) nameTrack.innerHTML = [c.signature.name,c.signature.name].map(n=>`<span>${esc(n)}</span>`).join('');
-    // Floating badge: initials, ring text and link are all editable (admin → Content → Floating badge).
+    const lg = $('#linksGrid'); if (lg) lg.innerHTML = c.links.items.map(it => `<a class="big-link" href="${esc(it.href)}">${esc(it.label)}</a>`).join('');
+    // signature line + the dark band behind it
+    const sg = c.signature || {};
+    const nt = $('#nameTrack');
+    if (nt) { nt.innerHTML = [sg.name, sg.name].map(n => `<span>${esc(n)}</span>`).join(''); nt.style.fontFamily = `'${sg.font || 'UnifrakturCook'}', cursive`; }
+    loadFont(sg.font);
+    $$('.links-section, .signature').forEach(el => {
+      el.style.setProperty('--band-bg', sg.bg || '#141211'); el.style.setProperty('--band-text', sg.textColor || '#faf6ee'); el.style.setProperty('--band-name', sg.nameColor || '#E8223E');
+    });
+    // contact: homepage call-to-action + the contact page
+    set('contactSmall', c.contact.small);
+    const ch = $('#contactHeading'); if (ch) ch.innerHTML = c.contact.headingLines.map(esc).join('<br>');
+    set('contactPageHeading', c.contact.pageHeading); set('contactSub', c.contact.subheading); set('contactBody', c.contact.body);
+    set('contactBack', c.contact.backLabel); set('whatsappLabel', c.contact.whatsappLabel);
+    set('contactAvailable', c.contact.available);
+    const emailEl = $('#contactEmail'); if (emailEl) { emailEl.textContent = c.contact.emailText; emailEl.href = c.contact.emailHref; }
+    set('contactCtaBtn', c.contact.ctaLabel || "Let's talk ↗");
+    const formEl = $('#contactForm'); if (formEl) formEl.action = 'https://formsubmit.co/' + String(c.contact.emailHref || '').replace(/^mailto:/, '').split('?')[0];
+    set('footerLeft', c.footer.left); set('footerRight', c.footer.right);
+    // floating badge: initials, ring text OR your own spinning PNG, size and link
     const badge = $('#floatingBadge');
     if (badge) {
       const bd = c.badge || {};
-      const initials = (bd.initials || '').trim(), ring = (bd.ringText || '').trim();
-      badge.hidden = !initials && !ring;
+      const initials = (bd.initials || '').trim(), ring = (bd.ringText || '').trim(), ringImg = (bd.ringImage || '').trim();
+      badge.hidden = !initials && !ring && !ringImg;
       badge.href = bd.href || 'contact.html';
+      badge.style.setProperty('--badge-size', (Number(bd.size) || 96) + 'px');
       const ini = $('#floatingBadgeInitials'); if (ini) ini.textContent = initials;
+      const bimg = $('#floatingBadgeImg'), bsvg = $('#floatingBadgeSvg');
+      if (bimg) { bimg.hidden = !ringImg; if (ringImg) bimg.src = ringImg; }
+      if (bsvg) bsvg.style.display = ringImg ? 'none' : '';
       const ringPath = $('#badgeCircleText');
       if (ringPath && ring) {
         const unit = ring + ' · ';
-        ringPath.textContent = (unit.repeat(Math.max(1, Math.round(57 / unit.length)))).trim() + ' ·';
+        ringPath.textContent = unit.repeat(Math.max(1, Math.round(57 / unit.length))).trim() + ' ·';
         ringPath.setAttribute('textLength', '312'); ringPath.setAttribute('lengthAdjust', 'spacing');
       } else if (ringPath) ringPath.textContent = '';
     }
-    const cta = $('#heroCta');
-    if (cta) { cta.textContent = c.hero.ctaLabel || ''; cta.href = c.hero.ctaHref || '#work'; cta.hidden = !c.hero.ctaLabel; }
-    const cvBox = $('.cv-cta'); if (cvBox) cvBox.hidden = !c.about.cvFile;
-    set('contactSmall', c.contact.small);
-    const contactHeading = $('#contactHeading'); if(contactHeading) contactHeading.innerHTML = c.contact.headingLines.map(esc).join('<br>');
-    set('contactAvailable', c.contact.available);
-    const emailEl = $('#contactEmail'); if(emailEl){ emailEl.textContent = c.contact.emailText; emailEl.href = c.contact.emailHref; }
-    set('contactCtaBtn', c.contact.ctaLabel || "Let's talk ↗");
-    // keep the form's plain-HTML fallback pointed at the same address, so it still posts correctly even if scripting fails
-    const formEl = $('#contactForm'); if(formEl) formEl.action = 'https://formsubmit.co/' + String(c.contact.emailHref||'').replace(/^mailto:/,'').split('?')[0];
-    set('footerLeft', c.footer.left); set('footerRight', c.footer.right);
   }
   const C = loadContent();
   applyContent(C);
 
+  /* ---------- colours: one light palette and one dark palette; admin picks which one the site uses ---------- */
   const THEME_STORAGE_KEY = 'ferricool-portfolio-theme';
-  const DEFAULT_THEME = { paper:'#faf6ee', ink:'#141211', muted:'#747474', line:'#e2ddd2', contactBg:'#E8223E', tint1:'#f7d6c6', tint2:'#f5e3a3', scale:1 };
-  function loadTheme(){
-    try{
-      const saved = draftOf(THEME_STORAGE_KEY) || REMOTE.theme;
-      if(saved && typeof saved === 'object') return { ...DEFAULT_THEME, ...saved };
-    }catch(e){}
-    return DEFAULT_THEME;
+  const DEFAULT_THEME = {
+    mode: 'light', scale: 1,
+    light: { paper: '#faf6ee', ink: '#141211', muted: '#747474', line: '#e2ddd2', accent: '#E8223E', contactBg: '#E8223E', contactText: '#ffffff', tint1: '#f7d6c6', tint2: '#f5e3a3' },
+    dark:  { paper: '#141211', ink: '#faf6ee', muted: '#9a948b', line: '#2c2926', accent: '#ff4d63', contactBg: '#E8223E', contactText: '#ffffff', tint1: '#2d211d', tint2: '#2b2618' },
+  };
+  function migrateTheme(saved){
+    const d = JSON.parse(JSON.stringify(DEFAULT_THEME));
+    if (!saved || typeof saved !== 'object') return d;
+    const out = { mode: saved.mode === 'dark' ? 'dark' : 'light', scale: saved.scale != null ? Number(saved.scale) : 1, light: { ...d.light }, dark: { ...d.dark } };
+    if (saved.light || saved.dark) { Object.assign(out.light, saved.light || {}); Object.assign(out.dark, saved.dark || {}); }
+    else {   // older single-palette shape
+      ['paper', 'ink', 'muted', 'line', 'tint1', 'tint2'].forEach(k => { if (saved[k]) out.light[k] = saved[k]; });
+      if (saved.contactBg) { out.light.accent = saved.contactBg; out.light.contactBg = saved.contactBg; }
+    }
+    return out;
   }
   function applyTheme(t){
-    const r = document.documentElement.style;
-    r.setProperty('--paper', t.paper); r.setProperty('--ink', t.ink); r.setProperty('--muted', t.muted);
-    r.setProperty('--line', t.line); r.setProperty('--contact-bg', t.contactBg); r.setProperty('--tint1', t.tint1); r.setProperty('--tint2', t.tint2); r.setProperty('--scale', t.scale);
+    const pal = t.mode === 'dark' ? t.dark : t.light, r = document.documentElement.style;
+    ['paper', 'ink', 'muted', 'line', 'accent', 'tint1', 'tint2'].forEach(k => r.setProperty('--' + k, pal[k]));
+    r.setProperty('--surface', pal.paper); r.setProperty('--contact-bg', pal.contactBg); r.setProperty('--contact-text', pal.contactText); r.setProperty('--scale', t.scale);
+    document.body.classList.toggle('dark', t.mode === 'dark');
+    document.documentElement.classList.remove('predark');
+    try { localStorage.setItem('ferricool-mode', t.mode); } catch (e) {}
   }
-  applyTheme(loadTheme());
+  applyTheme(migrateTheme(draftOf(THEME_STORAGE_KEY) || REMOTE.theme));
 
   /* ============================================================
-     PROJECTS — each one is a floating card + a gallery frame, and opens straight
-     into its own full-page view. A project is just a title, a cover image and an
-     ordered list of blocks (images, text, video). Edit them in admin.html.
+     SECTIONS — each one is a floating card around the lens, a frame in the moving
+     gallery, and a page of its own. How the page lays out depends on the section:
+       cases   → a vertical list of case studies; each opens its own page
+       natural → pictures / PDFs at the size you uploaded them
+       grid2   → two columns on a computer, one on a phone
+       grid3   → three columns (two on a phone), good for logos
+       stack   → one under another, optionally with no gaps
+     Everything is edited in admin.html.
   ============================================================ */
-  const PORTFOLIO_STORAGE_KEY = 'ferricool-portfolio-projects';
+  const CATEGORIES_KEY = 'ferricool-portfolio-categories';
+  const LEGACY_PROJECTS_KEY = 'ferricool-portfolio-projects';
   // ---- tiny AES-GCM helpers: password-locked projects are encrypted before they are published ----
   const toB64 = bytes => { let s = ''; for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]); return btoa(s); };
   const fromB64 = str => Uint8Array.from(atob(str), c => c.charCodeAt(0));
@@ -213,7 +247,7 @@
     return JSON.parse(new TextDecoder().decode(plain));
   }
 
-  /*__PD_START__*/
+  const LAYOUTS = ['cases', 'natural', 'grid2', 'grid3', 'stack'];
   const PHOTOS = [
     'https://images.unsplash.com/photo-1518005020951-eccb494ad742',
     'https://images.unsplash.com/photo-1504674900247-0877df9cc836',
@@ -221,67 +255,62 @@
     'https://images.unsplash.com/photo-1518770660439-4636190af475',
     'https://images.unsplash.com/photo-1523726491678-bf852e717f6a',
   ];
-  const photoUrl = (src, w = 1920, q = 82) => `${src}?auto=format&fit=crop&w=${w}&q=${q}`;
-  function makeDefaultProjects(){
-    return PHOTOS.map((src, i) => ({
-      id: 'project-' + (i + 1), title: 'Project ' + (i + 1), image: src,
-      tagline: 'A short line about this project — change it in the admin.',
-      bg: '', tight: true,
-      blocks: [
-        { type: 'text', heading: 'About this project', body: 'Tell the story in a few lines — what it was, who it was for, what you made. Delete this block if you want the images to speak for themselves.' },
-        { type: 'image', src: photoUrl(PHOTOS[(i + 1) % 5]) },
-        { type: 'image', src: photoUrl(PHOTOS[(i + 2) % 5]) },
-        { type: 'image', src: photoUrl(PHOTOS[(i + 3) % 5]) },
-      ],
-    }));
+  const photoUrl = (i, w = 1920, q = 82) => `${PHOTOS[((i % 5) + 5) % 5]}?auto=format&fit=crop&w=${w}&q=${q}`;
+  const lockFields = o => { const r = {}; if (o.locked) { r.locked = true; if (o.enc) r.enc = o.enc; if (o.lockNote) r.lockNote = o.lockNote; if (o.password) r.password = o.password; } return r; };
+  function migrateCase(s, i){
+    const out = { id: s.id || ('case-' + (i + 1)), title: s.title || ('Case study ' + (i + 1)), cover: s.cover || s.image || '', tagline: s.tagline != null ? s.tagline : (s.desc || ''), bg: s.bg || '', tight: s.tight !== false };
+    let blocks = s.blocks;
+    if (!Array.isArray(blocks)) { const w = s.works && s.works[0] && s.works[0].blocks; blocks = Array.isArray(w) ? w : ((s.locked && s.enc) ? undefined : []); }
+    if (blocks) out.blocks = blocks;
+    return Object.assign(out, lockFields(s));
   }
-  const DEFAULT_PROJECTS = makeDefaultProjects();
-  const OLD_TITLES = ['Case Study', 'Logo Archive', 'Presentation', 'Web Design', 'AI / Generative'];
-  // Turns whatever was saved (including the older category → case-study layout) into the current shape.
-  function migrateProjects(list){
-    return list.map((p, i) => {
-      let blocks = p.blocks;
-      if (!Array.isArray(blocks)) {
-        const w = p.works && p.works[0] && p.works[0].blocks;
-        if (Array.isArray(w)) blocks = w;
-        else if (p.locked && p.enc) blocks = undefined;
-        else blocks = DEFAULT_PROJECTS[i % DEFAULT_PROJECTS.length].blocks;
-      }
-      const out = {
-        id: p.id || ('project-' + (i + 1)),
-        title: OLD_TITLES.includes(p.title) ? ('Project ' + (i + 1)) : (p.title || ('Project ' + (i + 1))),
-        image: p.image || '',
-        tagline: p.tagline != null ? p.tagline : (p.desc || ''),
-        bg: p.bg || '',
-        tight: p.tight !== false,
-      };
-      if (blocks) out.blocks = blocks;
-      if (p.locked) { out.locked = true; if (p.enc) out.enc = p.enc; if (p.lockNote) out.lockNote = p.lockNote; if (p.password) out.password = p.password; }
-      return out;
+  function makeDefaultCategories(){
+    const caseStudy = n => ({ id: 'case-' + n, title: 'Case study ' + n, cover: PHOTOS[(n - 1) % 5], tagline: 'A short line about this case study.', bg: '', tight: true, blocks: [
+      { type: 'text', heading: 'About this case study', body: 'Tell the story in a few lines — the brief, the thinking, the result. Delete this block if you want the pictures to speak for themselves.' },
+      { type: 'image', src: photoUrl(n) }, { type: 'image', src: photoUrl(n + 1) }, { type: 'image', src: photoUrl(n + 2) } ] });
+    const pics = (list, w = 1920) => list.map(i => ({ type: 'image', src: photoUrl(i, w) }));
+    return [
+      { id: 'cat-case', title: 'Case study', layout: 'cases', image: PHOTOS[0], intro: 'Selected projects, told from the brief to the result.', bg: '', tight: true, tile: false, items: [caseStudy(1), caseStudy(2), caseStudy(3)] },
+      { id: 'cat-editorial', title: 'Editorial', layout: 'natural', image: PHOTOS[2], intro: 'Pages, spreads and documents — shown at the size they were made.', bg: '', tight: false, tile: false, items: pics([2, 3, 4]) },
+      { id: 'cat-campaign', title: 'Campaign ads', layout: 'grid2', image: PHOTOS[1], intro: 'Social media and campaign creatives.', bg: '', tight: false, tile: false, items: pics([0, 1, 2, 3, 4, 0], 1200) },
+      { id: 'cat-logo', title: 'Logo folio', layout: 'grid3', image: PHOTOS[3], intro: 'A selection of marks and identities.', bg: '', tight: false, tile: true, items: pics([0, 1, 2, 3, 4, 1], 900) },
+      { id: 'cat-events', title: 'Events branding', layout: 'stack', image: PHOTOS[4], intro: 'Identity, signage and collateral for events.', bg: '', tight: true, tile: false, items: pics([4, 0, 1]) },
+    ];
+  }
+  function migrateCategories(list){
+    return list.map((c, i) => {
+      const layout = LAYOUTS.includes(c.layout) ? c.layout : 'stack';
+      const out = { id: c.id || ('cat-' + (i + 1)), title: c.title || ('Section ' + (i + 1)), layout, image: c.image || '', intro: c.intro || '', bg: c.bg || '', tight: c.tight !== false, tile: !!c.tile };
+      let items = c.items;
+      if (!Array.isArray(items)) items = (c.locked && c.enc) ? undefined : [];
+      if (items) out.items = layout === 'cases' ? items.map(migrateCase) : items;
+      return Object.assign(out, lockFields(c));
     });
   }
-  /*__PD_END__*/
-
-  function loadProjects(){
-    const saved = draftOf(PORTFOLIO_STORAGE_KEY) || REMOTE.projects;
-    if (Array.isArray(saved) && saved.length) return migrateProjects(saved);
-    return DEFAULT_PROJECTS;
+  // Older sites had one flat list of "projects": they become case studies under the first section.
+  function categoriesFromLegacyProjects(projects){
+    const cases = projects.map(migrateCase);
+    const rest = makeDefaultCategories().slice(1).map(c => ({ ...c, items: [] }));
+    return [{ id: 'cat-case', title: 'Case study', layout: 'cases', image: '', intro: '', bg: '', tight: true, tile: false, items: cases }, ...rest];
   }
-  const PROJECTS = loadProjects();
-  const img = (p, w, q = 85) => /^https?:/.test(p.image) ? `${p.image}${p.image.includes('?') ? '&' : '?'}auto=format&fit=crop&w=${w}&q=${q}` : p.image;
-
-  /* ---------- theme / nav / portrait / CV (every page) ---------- */
-  const theme = $('#theme');
-  if (localStorage.getItem('portfolio-theme') === 'dark') document.body.classList.add('dark');
-  function syncTheme(){ if (theme) theme.querySelector('b').textContent = document.body.classList.contains('dark') ? 'White' : 'Black'; }
-  syncTheme();
-  theme?.addEventListener('click', () => { document.body.classList.toggle('dark'); localStorage.setItem('portfolio-theme', document.body.classList.contains('dark') ? 'dark' : 'light'); syncTheme(); });
-
-  const navEl = $('.nav');
-  if (navEl) {
-    const syncNavScroll = () => navEl.classList.toggle('is-scrolled', window.scrollY > 4);
-    syncNavScroll();
-    window.addEventListener('scroll', syncNavScroll, { passive: true });
+  function loadCategories(){
+    const saved = draftOf(CATEGORIES_KEY) || REMOTE.categories;
+    if (Array.isArray(saved) && saved.length) return migrateCategories(JSON.parse(JSON.stringify(saved)));
+    const legacy = draftOf(LEGACY_PROJECTS_KEY) || REMOTE.projects;
+    if (Array.isArray(legacy) && legacy.length) return migrateCategories(categoriesFromLegacyProjects(JSON.parse(JSON.stringify(legacy))));
+    return makeDefaultCategories();
+  }
+  const CATEGORIES = loadCategories();
+  /* ---------- every page: header, portrait, CV, soft particles ---------- */
+  const bar = $('#sitebar');
+  if (bar) {
+    const syncBar = () => bar.classList.toggle('is-scrolled', window.scrollY > 4);
+    syncBar(); window.addEventListener('scroll', syncBar, { passive: true });
+    const burger = $('#sbBurger');
+    const closeMenu = () => { bar.classList.remove('open'); burger?.setAttribute('aria-expanded', 'false'); };
+    burger?.addEventListener('click', () => { const o = bar.classList.toggle('open'); burger.setAttribute('aria-expanded', String(o)); });
+    bar.addEventListener('click', e => { if (e.target.closest('.sb-links a, .sb-cta')) closeMenu(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMenu(); });
   }
 
   $$('.portrait').forEach(p => {
@@ -290,8 +319,7 @@
     p.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } });
   });
 
-  // CV: the file is set in admin → Content → About. Data URLs (a draft you haven't published yet) are turned
-  // into a temporary link first, because browsers won't open them directly.
+  // CV: the file is set in admin → Content → About. A draft (data URL) is turned into a temporary link first.
   const cvUrl = () => (C.about && C.about.cvFile) || '';
   const fileUrlFor = async url => url.startsWith('data:') ? URL.createObjectURL(await (await fetch(url)).blob()) : url;
   $('#viewCV')?.addEventListener('click', async e => {
@@ -300,52 +328,100 @@
   });
   $('#downloadCV')?.addEventListener('click', async () => {
     const u = cvUrl(); if (!u) return;
-    const a = document.createElement('a');
-    a.href = await fileUrlFor(u);
+    const a = document.createElement('a'); a.href = await fileUrlFor(u);
     a.download = (String((C.signature && C.signature.name) || 'cv').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'cv') + '-cv.pdf';
     document.body.appendChild(a); a.click(); a.remove();
   });
 
+  // Tiny particles that bloom where the cursor moves / lands. Subtle; switch off in admin → Content → Effects.
+  const reduceMotion = typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!(C.effects && C.effects.particles === false) && !reduceMotion) {
+    const cv = document.createElement('canvas'); cv.id = 'fx'; cv.setAttribute('aria-hidden', 'true'); document.body.appendChild(cv);
+    const g = cv.getContext && cv.getContext('2d');
+    if (g) {
+      let W = 0, H = 0, raf = null, last = 0, lastMove = 0; const ps = [];
+      const resize = () => { const dpr = Math.min(window.devicePixelRatio || 1, 2); W = window.innerWidth; H = window.innerHeight; cv.width = W * dpr; cv.height = H * dpr; cv.style.width = W + 'px'; cv.style.height = H + 'px'; g.setTransform(dpr, 0, 0, dpr, 0, 0); };
+      resize(); window.addEventListener('resize', resize);
+      const accent = () => getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#E8223E';
+      function tick(t){
+        const dt = Math.min(40, t - (last || t)); last = t; g.clearRect(0, 0, W, H);
+        for (let i = ps.length - 1; i >= 0; i--) {
+          const p = ps[i]; p.life += dt;
+          if (p.life >= p.max) { ps.splice(i, 1); continue; }
+          const k = p.life / p.max; p.x += p.vx * dt / 16; p.y += p.vy * dt / 16; p.vx *= .985; p.vy *= .985;
+          g.globalAlpha = (1 - k) * .55; g.fillStyle = p.col; g.beginPath(); g.arc(p.x, p.y, p.r + p.g * k, 0, 6.2832); g.fill();
+        }
+        g.globalAlpha = 1;
+        if (ps.length) raf = requestAnimationFrame(tick); else { raf = null; last = 0; }
+      }
+      const spawn = (x, y, n, burst) => {
+        const col = accent();
+        for (let i = 0; i < n; i++) {
+          const a = Math.random() * 6.2832, sp = burst ? .6 + Math.random() * 1.6 : .15 + Math.random() * .5;
+          ps.push({ x, y, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp, r: .8 + Math.random() * 1.4, g: (burst ? 2.2 : 1.2) + Math.random() * 2, life: 0, max: (burst ? 700 : 900) + Math.random() * 500, col });
+        }
+        if (ps.length > 160) ps.splice(0, ps.length - 160);
+        if (!raf) raf = requestAnimationFrame(tick);
+      };
+      window.addEventListener('pointermove', e => { const now = performance.now(); if (e.pointerType === 'touch' || now - lastMove < 45) return; lastMove = now; spawn(e.clientX, e.clientY, 1, false); }, { passive: true });
+      window.addEventListener('pointerdown', e => spawn(e.clientX, e.clientY, e.pointerType === 'touch' ? 12 : 10, true), { passive: true });
+    }
+  }
+
   /* ============================================================
      Everything below belongs to the homepage layout (lens, floating cards,
-     moving gallery, project viewer). One guard, so a page like contact.html
+     moving gallery, section pages). One guard, so a page like contact.html
      that has none of those elements skips all of it cleanly.
   ============================================================ */
   if ($('#stage')) {
     const pad2 = n => String(n).padStart(2, '0');
-    const flag = p => p.locked ? '🔒 Locked' : 'Open ↗';
+    const BLANK = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="4" height="3"><rect width="4" height="3" fill="#d9d4ca"/></svg>');
+    const imgW = (src, w, q = 85) => (src && /^https?:\/\/images\.unsplash\.com/.test(src)) ? `${src}${src.includes('?') ? '&' : '?'}auto=format&fit=crop&w=${w}&q=${q}` : (src || BLANK);
+    const firstImage = list => { const b = (list || []).find(x => x.type === 'image' && x.src); return b ? b.src : ''; };
+    const caseCover = s => s.cover || firstImage(s.blocks);
+    const catCover = c => c.image || (c.layout === 'cases' ? ((c.items || []).map(caseCover).find(Boolean) || '') : firstImage(c.items));
+    const flag = c => c.locked ? '🔒 Locked' : 'Open ↗';
 
-    /* ---------- floating cards: the first five projects ---------- */
-    const featured = PROJECTS.slice(0, 5);
-    $('#cards').innerHTML = featured.map((p, i) => `
-      <article class="card slot${i}" data-id="${esc(p.id)}">
-        <img src="${esc(img(p, 480))}" alt="${esc(p.title)}">
-        <div class="card-meta"><span>${pad2(i + 1)}</span><span>${flag(p)}</span></div>
-        <div class="card-title">${esc(p.title)}</div>
+    /* ---------- floating cards: the first five sections (drag them around; click to open) ---------- */
+    const featured = CATEGORIES.slice(0, 5);
+    $('#cards').innerHTML = featured.map((c, i) => `
+      <article class="card slot${i}" data-id="${esc(c.id)}">
+        <img src="${esc(imgW(catCover(c), 480))}" alt="${esc(c.title)}" draggable="false">
+        <div class="card-meta"><span>${pad2(i + 1)}</span><span>${flag(c)}</span></div>
+        <div class="card-title">${esc(c.title)}</div>
       </article>`).join('');
     const cards = $$('.card');
+    cards.forEach(card => {
+      let sx = 0, sy = 0, dx = 0, dy = 0, down = false, moved = false;
+      card._reset = () => { dx = 0; dy = 0; card.style.removeProperty('--dx'); card.style.removeProperty('--dy'); };
+      card.addEventListener('pointerdown', e => { if (!card.classList.contains('show')) return; down = true; moved = false; sx = e.clientX; sy = e.clientY; try { card.setPointerCapture(e.pointerId); } catch (_) {} });
+      card.addEventListener('pointermove', e => {
+        if (!down) return; const mx = e.clientX - sx, my = e.clientY - sy;
+        if (!moved && Math.hypot(mx, my) < 6) return;
+        moved = true; card.classList.add('dragging'); card.style.setProperty('--dx', (dx + mx) + 'px'); card.style.setProperty('--dy', (dy + my) + 'px');
+      });
+      const end = e => { if (!down) return; down = false; if (moved) { dx += e.clientX - sx; dy += e.clientY - sy; card.classList.remove('dragging'); } };
+      card.addEventListener('pointerup', end); card.addEventListener('pointercancel', end);
+      card.addEventListener('click', () => { if (moved) { moved = false; return; } openCategory(card.dataset.id); });
+    });
 
-    /* ---------- moving gallery: every project ---------- */
+    /* ---------- moving gallery: every section ---------- */
     const galleryEl = $('#autoGallery');
-    const oneSet = Array.from({ length: Math.max(1, Math.ceil(6 / PROJECTS.length)) }, () => PROJECTS).flat();
-    const frame = p => `
-      <article class="gallery-frame" data-id="${esc(p.id)}">
-        <img src="${esc(img(p, 700, 85))}" alt="${esc(p.title)}" loading="lazy">
-        <div class="gf-cap"><span>${pad2(PROJECTS.indexOf(p) + 1)}${p.locked ? ' · 🔒' : ''}</span><strong>${esc(p.title)}</strong></div>
+    const oneSet = Array.from({ length: Math.max(1, Math.ceil(6 / CATEGORIES.length)) }, () => CATEGORIES).flat();
+    const frame = c => `
+      <article class="gallery-frame" data-id="${esc(c.id)}">
+        <img src="${esc(imgW(catCover(c), 700, 85))}" alt="${esc(c.title)}" loading="lazy">
+        <div class="gf-cap"><span>${pad2(CATEGORIES.indexOf(c) + 1)}${c.locked ? ' · 🔒' : ''}</span><strong>${esc(c.title)}</strong></div>
       </article>`;
     galleryEl.innerHTML =
       `<div class="gallery-row row-a">${[...oneSet, ...oneSet].map(frame).join('')}</div>` +
       `<div class="gallery-row row-b">${[...oneSet.slice().reverse(), ...oneSet.slice().reverse()].map(frame).join('')}</div>` +
       `<div class="gallery-cursor" id="galleryCursor" aria-hidden="true"><span>View</span></div>`;
-    galleryEl.addEventListener('click', e => { const f = e.target.closest('.gallery-frame'); if (f) openProject(f.dataset.id); });
+    galleryEl.addEventListener('click', e => { const f = e.target.closest('.gallery-frame'); if (f) openCategory(f.dataset.id); });
     const galleryCursor = $('#galleryCursor');
     const supportsHover = typeof window.matchMedia === 'function' && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
     if (galleryCursor && supportsHover) {
-      galleryEl.addEventListener('pointermove', e => {
-        const rect = galleryEl.getBoundingClientRect();
-        galleryCursor.style.left = (e.clientX - rect.left) + 'px';
-        galleryCursor.style.top = (e.clientY - rect.top) + 'px';
-      });
+      galleryEl.addEventListener('pointermove', e => { const r = galleryEl.getBoundingClientRect(); galleryCursor.style.left = (e.clientX - r.left) + 'px'; galleryCursor.style.top = (e.clientY - r.top) + 'px'; });
       galleryEl.addEventListener('pointerenter', () => galleryCursor.classList.add('is-visible'));
       galleryEl.addEventListener('pointerleave', () => galleryCursor.classList.remove('is-visible'));
     }
@@ -363,8 +439,7 @@
       const t = ctx.currentTime, o = ctx.createOscillator(), g = ctx.createGain(), f = ctx.createBiquadFilter();
       o.type = 'triangle';
       const dir = amount >= 0 ? 1 : -1, base = 68 + zoom * 18, end = base + dir * (30 + Math.min(55, Math.abs(amount) * 180));
-      o.frequency.setValueAtTime(Math.max(35, base), t);
-      o.frequency.exponentialRampToValueAtTime(Math.max(35, end), t + .075);
+      o.frequency.setValueAtTime(Math.max(35, base), t); o.frequency.exponentialRampToValueAtTime(Math.max(35, end), t + .075);
       f.type = 'lowpass'; f.frequency.setValueAtTime(1050, t); f.frequency.exponentialRampToValueAtTime(520, t + .09);
       g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.035, t + .006); g.gain.exponentialRampToValueAtTime(.0001, t + .11);
       o.connect(f); f.connect(g); g.connect(ctx.destination); o.start(t); o.stop(t + .115);
@@ -378,10 +453,21 @@
     }
     ['pointerdown', 'touchstart', 'keydown'].forEach(ev => document.addEventListener(ev, initSound, { once: true, passive: true }));
 
-    /* ---------- lens: tap to reveal ---------- */
+    /* ---------- page scrolling is locked while the lens is open or a page / viewer is showing ---------- */
+    const modal = $('#modal'), modalBox = $('.modal-box'), lightbox = $('#lightbox'), pwDialog = $('#pwDialog');
+    let revealed = false;
+    function updateScroll(){
+      const lock = revealed || modal.classList.contains('open') || lightbox.classList.contains('open') || pwDialog.classList.contains('open');
+      document.documentElement.style.overflow = lock ? 'hidden' : ''; document.body.style.overflow = lock ? 'hidden' : '';
+    }
+    const blockScroll = e => { if (revealed && !modal.classList.contains('open') && !lightbox.classList.contains('open') && !pwDialog.classList.contains('open')) e.preventDefault(); };
+    window.addEventListener('wheel', blockScroll, { passive: false });
+    window.addEventListener('touchmove', blockScroll, { passive: false });
+
+    /* ---------- lens: tap to reveal, tap again to collapse ---------- */
     const lens = $('#lens'), lensImg = $('#lensImg'), zoomValue = $('#zoomValue'), hero = $('.hero');
-    lensImg.src = (C.hero && C.hero.lensImage) ? C.hero.lensImage : img(PROJECTS[0], 900);
-    let zoom = 0, revealed = false, zoomAnim = null;
+    lensImg.src = (C.hero && C.hero.lensImage) ? C.hero.lensImage : imgW(catCover(CATEGORIES[0] || {}), 900);
+    let zoom = 0, zoomAnim = null;
     function setZoom(next){
       const prev = zoom; zoom = Math.max(0, Math.min(5, next));
       const eased = zoom / 5;
@@ -399,142 +485,190 @@
       zoomAnim = requestAnimationFrame(step);
     }
     function setRevealed(on){
-      revealed = on; lens.setAttribute('aria-pressed', String(on)); animateZoomTo(on ? 5 : 0);
-      if (on && window.innerWidth <= 800 && lens.scrollIntoView) lens.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      revealed = on; lens.setAttribute('aria-pressed', String(on)); animateZoomTo(on ? 5 : 0); updateScroll();
+      if (!on) cards.forEach(c => c._reset && c._reset());
+      if (on && window.innerWidth <= 800 && lens.scrollIntoView) {
+        // on a phone the area grows as it opens, so keep the lens centred on screen while it does
+        lens.scrollIntoView({ block: 'center' }); setTimeout(() => { if (revealed) lens.scrollIntoView({ block: 'center' }); }, 1150);
+      }
     }
     lens.addEventListener('click', e => { e.stopPropagation(); initSound(); setRevealed(!revealed); });
     lens.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); initSound(); setRevealed(!revealed); } });
     hero.addEventListener('click', e => { if (revealed && !e.target.closest('.card, .lens')) setRevealed(false); });
+    // anything that would scroll the page away (header links) closes the lens first
+    bar?.addEventListener('click', e => { if (revealed && e.target.closest('a')) { e.preventDefault(); setRevealed(false); } }, true);
     setZoom(0);
-    cards.forEach(card => card.addEventListener('click', () => openProject(card.dataset.id)));
 
-    /* ---------- password for locked projects ---------- */
-    const pwDialog = $('#pwDialog'), pwForm = $('#pwForm'), pwInput = $('#pwInput'), pwError = $('#pwError');
+    /* ---------- password page for locked sections / case studies ---------- */
+    const pwForm = $('#pwForm'), pwInput = $('#pwInput'), pwError = $('#pwError');
     let pwState = null;
     function closePw(result){
-      pwDialog.classList.remove('open'); pwDialog.setAttribute('aria-hidden', 'true');
+      pwDialog.classList.remove('open'); pwDialog.setAttribute('aria-hidden', 'true'); updateScroll();
       if (pwState) { const r = pwState.resolve; pwState = null; r(result); }
     }
-    function askPassword(p){
+    function askPassword(node, field){
       return new Promise(resolve => {
-        $('#pwTitle').textContent = p.title;
-        $('#pwNote').textContent = p.lockNote || 'This project is private. Enter the password to view it.';
+        $('#pwTitle').textContent = node.title;
+        $('#pwNote').textContent = node.lockNote || 'This work is private. Enter the password to view it.';
         pwError.textContent = ''; pwInput.value = '';
-        pwDialog.classList.add('open'); pwDialog.setAttribute('aria-hidden', 'false');
-        pwState = { p, resolve };
-        setTimeout(() => pwInput.focus(), 50);
+        pwDialog.classList.add('open'); pwDialog.setAttribute('aria-hidden', 'false'); updateScroll();
+        pwState = { node, field, resolve }; setTimeout(() => pwInput.focus(), 50);
       });
+    }
+    function applyDecrypted(node, field, data){
+      if (field === 'items') node.items = (Array.isArray(data.items) ? data.items : []).map((x, i) => node.layout === 'cases' ? migrateCase(x, i) : x);
+      else node.blocks = Array.isArray(data.blocks) ? data.blocks : [];
+      node._unlocked = true;
     }
     pwForm.addEventListener('submit', async e => {
       e.preventDefault(); if (!pwState) return;
-      const p = pwState.p;
-      if (!(window.crypto && crypto.subtle)) { pwError.textContent = 'This browser cannot unlock private projects here.'; return; }
+      if (!(window.crypto && crypto.subtle)) { pwError.textContent = 'This browser cannot unlock private work here.'; return; }
       try {
-        const data = await decryptJSON(p.enc, pwInput.value);
-        p.blocks = Array.isArray(data.blocks) ? data.blocks : []; p._unlocked = true;
-        try { sessionStorage.setItem('unlock:' + p.id, pwInput.value); } catch (err) {}
+        const { node, field } = pwState;
+        applyDecrypted(node, field, await decryptJSON(node.enc, pwInput.value));
+        try { sessionStorage.setItem('unlock:' + node.id, pwInput.value); } catch (err) {}
         closePw(true);
       } catch (err) { pwError.textContent = 'Wrong password'; pwInput.select(); }
     });
     $('#pwCancel').addEventListener('click', () => closePw(false));
-    pwDialog.addEventListener('click', e => { if (e.target === pwDialog) closePw(false); });
-    async function ensureUnlocked(p){
-      if (!(p.locked && p.enc) || p._unlocked) return true;
-      let saved = null; try { saved = sessionStorage.getItem('unlock:' + p.id); } catch (e) {}
+    async function ensureUnlocked(node, field){
+      if (!(node.locked && node.enc) || node._unlocked) return true;
+      let saved = null; try { saved = sessionStorage.getItem('unlock:' + node.id); } catch (e) {}
       if (saved && window.crypto && crypto.subtle) {
-        try { const d = await decryptJSON(p.enc, saved); p.blocks = Array.isArray(d.blocks) ? d.blocks : []; p._unlocked = true; return true; } catch (e) {}
+        try { applyDecrypted(node, field, await decryptJSON(node.enc, saved)); return true; } catch (e) {}
       }
-      return askPassword(p);
+      return askPassword(node, field);
     }
 
-    /* ---------- the project page ---------- */
-    const byId = Object.fromEntries(PROJECTS.map(p => [p.id, p]));
-    const modal = $('#modal'), modalBox = $('.modal-box'), mmeta = $('#mmeta'), modalBody = $('#modalBody');
-    const caseTitleTrack = $('#caseTitleTrack'), caseTagline = $('#caseTagline'), caseSections = $('#caseSections'), caseMore = $('#caseMore'), caseNext = $('#caseNext');
-    let currentId = null, revealObserver = null;
+    /* ---------- section pages and case-study pages ---------- */
+    const mmeta = $('#mmeta'), modalBody = $('#modalBody'), caseTitle = $('#caseTitle'), caseTagline = $('#caseTagline');
+    const caseSections = $('#caseSections'), caseMore = $('#caseMore'), caseNext = $('#caseNext'), backBtn = $('#backProject');
+    let view = null, revealObserver = null, currentImages = [];
 
     function armReveals(root){
       if (!('IntersectionObserver' in window)) { $$('.reveal', root).forEach(el => el.classList.add('is-visible')); return; }
       if (!revealObserver) {
-        revealObserver = new IntersectionObserver(entries => entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('is-visible'); revealObserver.unobserve(en.target); } }),
-          { root: modalBody, threshold: .12, rootMargin: '0px 0px -8% 0px' });
+        revealObserver = new IntersectionObserver(entries => entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add('is-visible'); revealObserver.unobserve(en.target); } }), { root: modalBody, threshold: .12, rootMargin: '0px 0px -8% 0px' });
       }
       root.querySelectorAll('.reveal').forEach(el => { el.classList.remove('is-visible'); revealObserver.observe(el); });
     }
-    // A project can have its own background colour; text colours flip automatically so it stays readable.
-    function applyProjectTheme(p){
+    // A page can have its own background colour; text colours flip automatically so it stays readable.
+    function applyPageBg(bg){
       const keys = ['--paper', '--ink', '--muted', '--line'];
-      if (!/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(p.bg || '')) { keys.forEach(k => modalBox.style.removeProperty(k)); return; }
-      let h = p.bg.slice(1); if (h.length === 3) h = h.split('').map(x => x + x).join('');
+      if (!/^#([0-9a-f]{3}|[0-9a-f]{6})$/i.test(bg || '')) { keys.forEach(k => modalBox.style.removeProperty(k)); return; }
+      let h = bg.slice(1); if (h.length === 3) h = h.split('').map(x => x + x).join('');
       const [r, g, b] = [0, 2, 4].map(i => parseInt(h.substr(i, 2), 16));
       const dark = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255 < .5;
-      modalBox.style.setProperty('--paper', p.bg);
-      modalBox.style.setProperty('--ink', dark ? '#faf6ee' : '#141211');
-      modalBox.style.setProperty('--muted', dark ? 'rgba(250,246,238,.62)' : 'rgba(20,18,17,.6)');
-      modalBox.style.setProperty('--line', dark ? 'rgba(250,246,238,.16)' : 'rgba(20,18,17,.12)');
+      modalBox.style.setProperty('--paper', bg); modalBox.style.setProperty('--ink', dark ? '#faf6ee' : '#141211');
+      modalBox.style.setProperty('--muted', dark ? 'rgba(250,246,238,.62)' : 'rgba(20,18,17,.6)'); modalBox.style.setProperty('--line', dark ? 'rgba(250,246,238,.16)' : 'rgba(20,18,17,.12)');
     }
-    function renderProject(id){
-      const p = byId[id] || PROJECTS[0]; currentId = p.id;
-      const idx = PROJECTS.indexOf(p), tight = p.tight !== false;
-      applyProjectTheme(p);
-      mmeta.textContent = `${pad2(idx + 1)} / ${p.title}`;
-      caseTitleTrack.innerHTML = `<div class="case-title-track-inner">${[p.title, p.title].map(t => `<span>${esc(t)}</span>`).join('')}</div>`;
-      if (p.tagline) { caseTagline.textContent = p.tagline; caseTagline.hidden = false; } else { caseTagline.hidden = true; }
-      let imgIndex = 0;
-      caseSections.classList.toggle('gaps', !tight);
-      caseSections.innerHTML = (p.blocks || []).map(b => {
-        if (b.type === 'image') {
-          return `<figure class="pimg${tight ? '' : ' reveal'}" data-lb="${imgIndex++}"><img src="${esc(b.src)}" alt="${esc(p.title)}" decoding="async">${b.caption ? `<figcaption>${esc(b.caption)}</figcaption>` : ''}</figure>`;
-        }
-        if (b.type === 'video') {
-          return `<div class="pvideo${tight ? '' : ' reveal'}"><video src="${esc(b.src)}" controls playsinline preload="metadata"></video>${b.caption ? `<figcaption>${esc(b.caption)}</figcaption>` : ''}</div>`;
-        }
+    function blocksHTML(blocks){
+      return (blocks || []).map(b => {
+        const cap = b.caption ? `<figcaption>${esc(b.caption)}</figcaption>` : '';
+        if (b.type === 'image') { currentImages.push(b.src); return `<figure class="pimg" data-lb="${currentImages.length - 1}"><img src="${esc(b.src)}" alt="" loading="lazy" decoding="async">${cap}</figure>`; }
+        if (b.type === 'pdf') return `<div class="ppdf"><iframe data-pdf="${esc(b.src)}" title="PDF document"></iframe><a class="ppdf-open" data-pdf-link="${esc(b.src)}" href="${b.src.startsWith('data:') ? '#' : esc(b.src)}" target="_blank" rel="noopener">Open PDF ↗</a>${cap}</div>`;
+        if (b.type === 'video') return `<div class="pvideo"><video src="${esc(b.src)}" controls playsinline preload="metadata"></video>${cap}</div>`;
         return `<div class="ptext reveal"><h3>${esc(b.heading)}</h3><p>${esc(b.body)}</p>${(b.tags && b.tags.length) ? `<div class="case-tags"><ul>${b.tags.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>` : ''}</div>`;
       }).join('');
-      const others = PROJECTS.filter(o => o.id !== p.id);
-      caseMore.innerHTML = others.length ? `<div class="pmore reveal"><h4>More projects</h4><div class="pmore-grid">${others.slice(0, 8).map(o => `
-        <button class="pmore-card" type="button" data-id="${esc(o.id)}"><img src="${esc(img(o, 600))}" alt="${esc(o.title)}"><span>${esc(o.title)}${o.locked ? ' 🔒' : ''}</span></button>`).join('')}</div></div>` : '';
-      const next = others.length ? PROJECTS[(idx + 1) % PROJECTS.length] : null;
-      caseNext.innerHTML = next ? `<button class="case-next-btn" id="caseNextBtn" type="button"><span>Next project</span><strong>${esc(next.title)} →</strong></button>` : '';
-      modalBody.scrollTop = 0;
-      armReveals(modalBody);
     }
-    async function openProject(id){
-      const p = byId[id]; if (!p) return;
+    async function fillPdfs(){
+      for (const f of $$('iframe[data-pdf]', caseSections)) { const u = f.dataset.pdf; f.src = u.startsWith('data:') ? await fileUrlFor(u) : u + '#view=FitH'; }
+      for (const a of $$('a[data-pdf-link]', caseSections)) { const u = a.dataset.pdfLink; if (u.startsWith('data:')) a.href = await fileUrlFor(u); }
+    }
+    function moreHTML(title, list, kind, skip){
+      const others = list.map((x, i) => ({ x, i })).filter(o => o.i !== skip);
+      if (!others.length) return '';
+      return `<div class="pmore reveal"><h4>${esc(title)}</h4><div class="pmore-grid">${others.slice(0, 8).map(o => `
+        <button class="pmore-card" type="button" data-kind="${kind}" data-i="${o.i}"><img src="${esc(imgW(kind === 'cat' ? catCover(o.x) : caseCover(o.x), 600))}" alt=""><span>${esc(o.x.title)}${o.x.locked ? ' 🔒' : ''}</span></button>`).join('')}</div></div>`;
+    }
+    function finish(){ modalBody.scrollTop = 0; armReveals(modalBody); fillPdfs(); }
+
+    function renderCategory(ci){
+      const cat = CATEGORIES[ci]; view = { t: 'cat', ci }; currentImages = [];
+      applyPageBg(cat.bg); backBtn.hidden = true;
+      mmeta.textContent = `${pad2(ci + 1)} / ${cat.title}`; caseTitle.textContent = cat.title;
+      if (cat.intro) { caseTagline.textContent = cat.intro; caseTagline.hidden = false; } else caseTagline.hidden = true;
+      const items = cat.items || [];
+      if (cat.layout === 'cases') {
+        caseSections.className = 'pcases';
+        caseSections.innerHTML = items.length ? items.map((s, si) => `
+          <button class="pcase" type="button" data-si="${si}">
+            <span class="pcase-img"><img src="${esc(imgW(caseCover(s), 1400))}" alt="" loading="lazy"></span>
+            <span class="pcase-meta"><span>${pad2(si + 1)}${s.locked ? ' · 🔒 Locked' : ''}</span><strong>${esc(s.title)}</strong>${s.tagline ? `<em>${esc(s.tagline)}</em>` : ''}<i>View case study ↗</i></span>
+          </button>`).join('') : '<p class="pempty">Case studies are coming soon.</p>';
+      } else {
+        const cls = { stack: cat.tight ? 'pblocks' : 'pblocks gaps', natural: 'pblocks gaps natural', grid2: 'pgrid g2', grid3: 'pgrid g3' }[cat.layout] + (cat.tile && cat.layout.startsWith('grid') ? ' tile' : '');
+        caseSections.className = cls;
+        caseSections.innerHTML = items.length ? blocksHTML(items) : '<p class="pempty">Work is coming soon.</p>';
+      }
+      caseMore.innerHTML = moreHTML('More work', CATEGORIES, 'cat', ci);
+      const nx = CATEGORIES[(ci + 1) % CATEGORIES.length];
+      caseNext.innerHTML = CATEGORIES.length > 1 ? `<button class="case-next-btn" id="caseNextBtn" type="button"><span>Next section</span><strong>${esc(nx.title)} →</strong></button>` : '';
+      finish();
+    }
+    function renderCase(ci, si){
+      const cat = CATEGORIES[ci], cs = cat.items[si]; view = { t: 'case', ci, si }; currentImages = [];
+      applyPageBg(cs.bg || cat.bg); backBtn.hidden = false; backBtn.textContent = '← ' + cat.title;
+      mmeta.textContent = `${cat.title} / ${cs.title}`; caseTitle.textContent = cs.title;
+      if (cs.tagline) { caseTagline.textContent = cs.tagline; caseTagline.hidden = false; } else caseTagline.hidden = true;
+      caseSections.className = cs.tight !== false ? 'pblocks' : 'pblocks gaps';
+      caseSections.innerHTML = blocksHTML(cs.blocks);
+      caseMore.innerHTML = moreHTML('More case studies', cat.items, 'case', si);
+      const nx = cat.items[(si + 1) % cat.items.length];
+      caseNext.innerHTML = cat.items.length > 1 ? `<button class="case-next-btn" id="caseNextBtn" type="button"><span>Next case study</span><strong>${esc(nx.title)} →</strong></button>`
+        : `<button class="case-next-btn" id="caseNextBtn" type="button"><span>That's all of them</span><strong>Back to ${esc(cat.title)} →</strong></button>`;
+      finish();
+    }
+    function showModal(){ modal.classList.add('open'); updateScroll(); }
+    function closeModal(){ modal.classList.remove('open'); view = null; updateScroll(); }
+    async function openCategory(id){
+      const ci = CATEGORIES.findIndex(c => c.id === id); if (ci < 0) return;
       clickSound();
-      if (!(await ensureUnlocked(p))) return;
-      renderProject(id);
-      modal.classList.add('open'); document.body.style.overflow = 'hidden';
+      if (!(await ensureUnlocked(CATEGORIES[ci], 'items'))) return;
+      renderCategory(ci); showModal();
     }
-    function closeProject(){ modal.classList.remove('open'); document.body.style.overflow = ''; }
-    async function moveProject(dir){
-      const i = PROJECTS.findIndex(p => p.id === currentId);
-      const target = PROJECTS[(i + dir + PROJECTS.length) % PROJECTS.length];
-      if (await ensureUnlocked(target)) { renderProject(target.id); clickSound(); }
+    async function openCase(ci, si){
+      const cs = (CATEGORIES[ci].items || [])[si]; if (!cs) return;
+      clickSound();
+      if (!(await ensureUnlocked(cs, 'blocks'))) return;
+      renderCase(ci, si);
     }
-    $('#prevProject')?.addEventListener('click', () => moveProject(-1));
-    $('#nextProject')?.addEventListener('click', () => moveProject(1));
-    $('#close')?.addEventListener('click', closeProject);
-    modal.addEventListener('click', e => { if (e.target === modal) closeProject(); });
-    caseNext.addEventListener('click', e => { if (e.target.closest('#caseNextBtn')) moveProject(1); });
+    async function moveView(dir){
+      if (!view) return;
+      if (view.t === 'cat') {
+        const ci = (view.ci + dir + CATEGORIES.length) % CATEGORIES.length;
+        if (await ensureUnlocked(CATEGORIES[ci], 'items')) { renderCategory(ci); clickSound(); }
+      } else {
+        const items = CATEGORIES[view.ci].items, si = (view.si + dir + items.length) % items.length;
+        if (items.length > 1 && await ensureUnlocked(items[si], 'blocks')) { renderCase(view.ci, si); clickSound(); }
+        else if (items.length === 1) renderCategory(view.ci);
+      }
+    }
+    $('#prevProject')?.addEventListener('click', () => moveView(-1));
+    $('#nextProject')?.addEventListener('click', () => moveView(1));
+    $('#close')?.addEventListener('click', closeModal);
+    backBtn.addEventListener('click', () => { if (view && view.t === 'case') { renderCategory(view.ci); clickSound(); } });
+    caseNext.addEventListener('click', e => { if (e.target.closest('#caseNextBtn')) moveView(1); });
+    caseSections.addEventListener('click', e => {
+      const c = e.target.closest('.pcase'); if (c && view) { openCase(view.ci, Number(c.dataset.si)); return; }
+      const f = e.target.closest('.pimg'); if (f) openLightbox(Number(f.dataset.lb));
+    });
     caseMore.addEventListener('click', async e => {
-      const c = e.target.closest('.pmore-card'); if (!c) return;
-      const p = byId[c.dataset.id]; clickSound();
-      if (await ensureUnlocked(p)) renderProject(p.id);
+      const c = e.target.closest('.pmore-card'); if (!c) return; const i = Number(c.dataset.i); clickSound();
+      if (c.dataset.kind === 'cat') { if (await ensureUnlocked(CATEGORIES[i], 'items')) renderCategory(i); }
+      else if (view) openCase(view.ci, i);
     });
 
-    /* ---------- click an image: pop-up viewer (scrolls vertically, collapse any time) ---------- */
-    const lightbox = $('#lightbox'), lbBody = $('#lbBody');
+    /* ---------- click a picture: pop-up viewer that scrolls vertically; collapse any time ---------- */
+    const lbBody = $('#lbBody');
     function openLightbox(start){
-      const p = byId[currentId]; const imgs = (p.blocks || []).filter(b => b.type === 'image' && b.src);
-      if (!imgs.length) return;
-      lbBody.innerHTML = imgs.map((b, i) => `<img src="${esc(b.src)}" alt="${esc(p.title)} ${i + 1}">`).join('');
-      $('#lbCount').textContent = p.title;
-      lightbox.classList.add('open'); lightbox.setAttribute('aria-hidden', 'false');
-      const target = lbBody.children[start]; if (target && target.scrollIntoView) target.scrollIntoView({ block: 'start' });
+      if (!currentImages.length) return;
+      lbBody.innerHTML = currentImages.map((s, i) => `<img src="${esc(s)}" alt="">`).join('');
+      $('#lbCount').textContent = caseTitle.textContent;
+      lightbox.classList.add('open'); lightbox.setAttribute('aria-hidden', 'false'); updateScroll();
+      const t = lbBody.children[start]; if (t && t.scrollIntoView) t.scrollIntoView({ block: 'start' });
     }
-    function closeLightbox(){ lightbox.classList.remove('open'); lightbox.setAttribute('aria-hidden', 'true'); lbBody.innerHTML = ''; }
-    caseSections.addEventListener('click', e => { const f = e.target.closest('.pimg'); if (f) openLightbox(Number(f.dataset.lb)); });
+    function closeLightbox(){ lightbox.classList.remove('open'); lightbox.setAttribute('aria-hidden', 'true'); lbBody.innerHTML = ''; updateScroll(); }
     $('#lbClose').addEventListener('click', closeLightbox);
     lightbox.addEventListener('click', e => { if (e.target === lightbox || e.target === lbBody) closeLightbox(); });
 
@@ -542,12 +676,12 @@
       if (e.key === 'Escape') {
         if (pwDialog.classList.contains('open')) closePw(false);
         else if (lightbox.classList.contains('open')) closeLightbox();
-        else if (modal.classList.contains('open')) closeProject();
+        else if (modal.classList.contains('open')) closeModal();
         else if (revealed) setRevealed(false);
       }
       if (modal.classList.contains('open') && !lightbox.classList.contains('open') && !pwDialog.classList.contains('open')) {
-        if (e.key === 'ArrowRight') moveProject(1);
-        if (e.key === 'ArrowLeft') moveProject(-1);
+        if (e.key === 'ArrowRight') moveView(1);
+        if (e.key === 'ArrowLeft') moveView(-1);
       }
     });
   }

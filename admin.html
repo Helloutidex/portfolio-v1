@@ -44,15 +44,21 @@
   <div class="admin-tabs" role="tablist">
     <button class="admin-tab active" data-tab="content" type="button">Content</button>
     <button class="admin-tab" data-tab="theme" type="button">Theme</button>
-    <button class="admin-tab" data-tab="projects" type="button">Work / Projects</button>
+    <button class="admin-tab" data-tab="sections" type="button">Sections / Work</button>
     <button class="admin-tab" data-tab="publish" type="button">Publish</button>
   </div>
 
   <!-- ===== CONTENT TAB ===== -->
   <section class="admin-panel" id="panel-content">
     <div class="admin-group" data-group="nav">
-      <h2>Nav</h2>
+      <h2>Header</h2>
       <label>Logo text<input data-path="nav.logo"></label>
+      <div id="navLinksEditor"></div>
+      <button class="admin-add-small" type="button" id="addNavLink">+ Add a link</button>
+      <div class="admin-row2" style="margin-top:14px">
+        <label>Button text (empty = no button)<input data-path="nav.ctaLabel"></label>
+        <label>Button goes to<input data-path="nav.ctaHref" placeholder="contact.html"></label>
+      </div>
     </div>
 
     <div class="admin-group" data-group="hero">
@@ -149,29 +155,56 @@
     </div>
 
     <div class="admin-group" data-group="badge">
-      <h2>Floating badge <span class="admin-hint">(the spinning circle in the bottom corner — clear both boxes to hide it)</span></h2>
-      <div class="admin-row2">
+      <h2>Floating badge <span class="admin-hint">(the spinning circle in the corner — clear initials, ring text and PNG to hide it)</span></h2>
+      <div class="admin-row3">
         <label>Initials in the middle<input data-path="badge.initials" maxlength="4"></label>
+        <label>Size (px)<input type="number" min="48" max="200" data-path="badge.size"></label>
         <label>Where it links<input data-path="badge.href" placeholder="contact.html"></label>
       </div>
       <label>Text around the ring<input data-path="badge.ringText"></label>
+      <label>Or your own PNG that spins instead of the text (transparent PNG works best)<div class="admin-image-field" data-image-path="badge.ringImage"></div></label>
     </div>
 
     <div class="admin-group" data-group="signature">
-      <h2>Signature marquee</h2>
-      <label>Name<input data-path="signature.name"></label>
+      <h2>Signature line + dark band</h2>
+      <div class="admin-row2">
+        <label>Name<input data-path="signature.name"></label>
+        <label>Old English / certificate font<select data-path="signature.font"><option value="UnifrakturCook">UnifrakturCook</option><option value="UnifrakturMaguntia">UnifrakturMaguntia</option><option value="Pirata One">Pirata One</option><option value="Grenze Gotisch">Grenze Gotisch</option><option value="New Rocker">New Rocker</option><option value="Metamorphous">Metamorphous</option><option value="Cinzel Decorative">Cinzel Decorative</option><option value="Texturina">Texturina</option></select></label>
+      </div>
+      <div class="admin-swatches">
+        <label>Name colour<input type="color" data-path="signature.nameColor"></label>
+        <label>Band background<input type="color" data-path="signature.bg"></label>
+        <label>Band text colour<input type="color" data-path="signature.textColor"></label>
+      </div>
     </div>
 
     <div class="admin-group" data-group="contact">
       <h2>Contact</h2>
+      <p class="admin-hint">The block on the homepage</p>
       <label>Small label<input data-path="contact.small"></label>
-      <label>Homepage button text (links to the contact page)<input data-path="contact.ctaLabel"></label>
       <label>Heading (one line per row)<textarea data-path="contact.headingLines" data-list="lines"></textarea></label>
+      <label>Button text (links to the contact page)<input data-path="contact.ctaLabel"></label>
+      <p class="admin-hint" style="margin-top:14px">The contact page</p>
+      <div class="admin-row2">
+        <label>Heading<input data-path="contact.pageHeading"></label>
+        <label>Sub heading<input data-path="contact.subheading"></label>
+      </div>
+      <label>Paragraph above the form<textarea data-path="contact.body"></textarea></label>
       <div class="admin-row2">
         <label>Availability line<input data-path="contact.available"></label>
-        <label>Email display text<input data-path="contact.emailText"></label>
+        <label>WhatsApp box label<input data-path="contact.whatsappLabel"></label>
       </div>
-      <label>Email link (mailto:...)<input data-path="contact.emailHref"></label>
+      <div class="admin-row2">
+        <label>Email display text<input data-path="contact.emailText"></label>
+        <label>Email link (mailto:...)<input data-path="contact.emailHref"></label>
+      </div>
+      <label>Back button text<input data-path="contact.backLabel"></label>
+      <p class="admin-hint">Its colours are in the Theme tab (contact section background and text).</p>
+    </div>
+
+    <div class="admin-group" data-group="effects">
+      <h2>Effects</h2>
+      <label class="admin-check"><input type="checkbox" data-path="effects.particles"> Soft particles that bloom where the cursor moves or lands</label>
     </div>
 
     <div class="admin-group" data-group="footer">
@@ -192,41 +225,33 @@
   <!-- ===== THEME TAB ===== -->
   <section class="admin-panel" id="panel-theme" hidden>
     <div class="admin-group">
-      <h2>Colors <span class="admin-hint">(the default / light theme — dark mode keeps its own high-contrast palette)</span></h2>
-      <div class="admin-swatches">
-        <label>Background<input type="color" data-theme="paper"></label>
-        <label>Text / ink<input type="color" data-theme="ink"></label>
-        <label>Secondary text<input type="color" data-theme="muted"></label>
-        <label>Lines / borders<input type="color" data-theme="line"></label>
-        <label>Red accent (buttons, contact section)<input type="color" data-theme="contactBg"></label>
-        <label>Soft tint 1 (peach)<input type="color" data-theme="tint1"></label>
-        <label>Soft tint 2 (butter)<input type="color" data-theme="tint2"></label>
-      </div>
+      <h2>Which look does the site use?</h2>
+      <label>Mode<select data-tpath="mode"><option value="light">Light</option><option value="dark">Dark</option></select></label>
+      <p class="admin-note">Visitors can't switch it — you decide here. Edit both palettes below; only the chosen one shows on the site.</p>
     </div>
+    <div class="admin-group"><h2>Light palette</h2><div class="admin-swatches"><label>Background<input type="color" data-tpath="light.paper"></label><label>Text<input type="color" data-tpath="light.ink"></label><label>Soft text<input type="color" data-tpath="light.muted"></label><label>Lines<input type="color" data-tpath="light.line"></label><label>Accent (buttons, highlights, particles)<input type="color" data-tpath="light.accent"></label><label>Contact section background<input type="color" data-tpath="light.contactBg"></label><label>Contact section text<input type="color" data-tpath="light.contactText"></label><label>Soft tint 1<input type="color" data-tpath="light.tint1"></label><label>Soft tint 2<input type="color" data-tpath="light.tint2"></label></div></div>
+    <div class="admin-group"><h2>Dark palette</h2><div class="admin-swatches"><label>Background<input type="color" data-tpath="dark.paper"></label><label>Text<input type="color" data-tpath="dark.ink"></label><label>Soft text<input type="color" data-tpath="dark.muted"></label><label>Lines<input type="color" data-tpath="dark.line"></label><label>Accent (buttons, highlights, particles)<input type="color" data-tpath="dark.accent"></label><label>Contact section background<input type="color" data-tpath="dark.contactBg"></label><label>Contact section text<input type="color" data-tpath="dark.contactText"></label><label>Soft tint 1<input type="color" data-tpath="dark.tint1"></label><label>Soft tint 2<input type="color" data-tpath="dark.tint2"></label></div></div>
     <div class="admin-group">
-      <h2>Heading size <span class="admin-hint">(scales all section headlines — not the floating work cards)</span></h2>
-      <label class="admin-slider">
-        <input type="range" min="0.8" max="1.3" step="0.02" data-theme="scale" id="scaleSlider">
-        <span id="scaleValue">1.00×</span>
-      </label>
+      <h2>Heading size <span class="admin-hint">(scales the big headlines)</span></h2>
+      <label class="admin-slider"><input type="range" min="0.7" max="1.3" step="0.02" data-tpath="scale" id="scaleSlider"><span id="scaleValue">1.00×</span></label>
     </div>
     <div class="admin-actions">
-      <button class="modal-nav" id="saveTheme" type="button">Save changes</button>
+      <button class="modal-nav" id="saveTheme" type="button">Save draft</button>
       <button class="modal-nav" id="resetTheme" type="button">Reset to defaults</button>
     </div>
     <p class="admin-status" id="themeStatus" aria-live="polite"></p>
   </section>
 
   <!-- ===== PROJECTS TAB ===== -->
-  <section class="admin-panel" id="panel-projects" hidden>
-    <p class="admin-note">Each project is a floating card, a frame in the moving gallery, and its own full page. The first five also float around the lens. Click <b>Edit</b> on a project to change its pictures, text, colors, or to lock it with a password.</p>
-    <div class="admin-list" id="adminList" aria-label="Projects"></div>
-    <button class="admin-add" id="addProject" type="button">+ Add a project</button>
+  <section class="admin-panel" id="panel-sections" hidden>
+    <p class="admin-note">Each section is a floating card on the lens, a frame in the moving gallery, and a page of its own. The first five also float; all appear in the gallery. Drag them into order with ↑ ↓. Click <b>Edit</b> to change a section's pictures, layout, colours or lock.</p>
+    <div class="admin-list" id="adminList" aria-label="Sections"></div>
+    <button class="admin-add" id="addCategory" type="button">+ Add a section</button>
     <div class="admin-actions">
-      <button class="modal-nav" id="saveProjects" type="button">Save draft</button>
-      <button class="modal-nav" id="resetProjects" type="button">Reset to starter projects</button>
+      <button class="modal-nav" id="saveSections" type="button">Save draft</button>
+      <button class="modal-nav" id="resetSections" type="button">Reset to starter sections</button>
     </div>
-    <p class="admin-status" id="projectsStatus" aria-live="polite"></p>
+    <p class="admin-status" id="sectionsStatus" aria-live="polite"></p>
   </section>
 
   <!-- ===== PUBLISH TAB ===== -->

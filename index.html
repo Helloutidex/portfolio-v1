@@ -4,15 +4,17 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Designing What's Next — Portfolio</title>
 <link rel="stylesheet" href="style.css">
+<script>try{if(localStorage.getItem("ferricool-mode")==="dark")document.documentElement.classList.add("predark")}catch(e){}</script>
 </head>
 <body>
-<nav class="nav">
-  <a class="logo" href="#top" id="navLogo">ADEDEJI SUNDAY / DESIGN</a>
-  <div class="navlinks">
-    <a href="#about">About</a><a href="#work">Work</a><a href="contact.html">Contact</a>
-    <button class="theme" id="theme" aria-label="Switch theme"><span></span><b>Black</b></button>
+<header class="sitebar" id="sitebar">
+  <a class="sb-logo" href="#top" id="navLogo">ADEDEJI SUNDAY / DESIGN</a>
+  <div class="sb-right">
+    <nav class="sb-links" id="navLinks" aria-label="Main"></nav>
+    <a class="sb-cta" id="navCta" href="contact.html">Let's talk</a>
   </div>
-</nav>
+  <button class="sb-burger" id="sbBurger" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span></button>
+</header>
 
 <section class="hero" id="top">
   <div class="intro">
@@ -98,15 +100,16 @@
     <div class="modal-head">
       <span id="mmeta"></span>
       <div class="modal-actions">
+        <button class="modal-nav" id="backProject" type="button" hidden>← Back</button>
         <button class="modal-nav" id="prevProject">← Prev</button>
         <button class="modal-nav" id="nextProject">Next →</button>
         <button class="close" id="close" aria-label="Close">×</button>
       </div>
     </div>
     <div class="modal-body" id="modalBody">
-      <div class="case-title-track" id="caseTitleTrack"></div>
+      <h1 class="ptitle" id="caseTitle"></h1>
       <p class="case-tagline reveal" id="caseTagline"></p>
-      <div class="pblocks" id="caseSections"></div>
+      <div id="caseSections"></div>
       <div id="caseMore"></div>
       <div class="case-next reveal" id="caseNext"></div>
     </div>
@@ -118,19 +121,21 @@
   <div class="lightbox-body" id="lbBody"></div>
 </div>
 
-<div class="pwdialog" id="pwDialog" aria-hidden="true">
+<div class="pwpage" id="pwDialog" aria-hidden="true">
+  <button class="pw-back" type="button" id="pwCancel">← Back</button>
   <form class="pwbox" id="pwForm" autocomplete="off">
-    <span class="pw-eyebrow">Private project</span>
-    <h3 id="pwTitle">Project</h3>
+    <span class="pw-eyebrow">Private work</span>
+    <h3 id="pwTitle">Private</h3>
     <p id="pwNote"></p>
     <input type="password" id="pwInput" placeholder="Password" autocomplete="off">
     <p id="pwError" role="status"></p>
-    <div class="pwbox-actions"><button class="pwbtn" type="submit">View project</button><button class="pwbtn ghost" type="button" id="pwCancel">Cancel</button></div>
+    <div class="pwbox-actions"><button class="pwbtn" type="submit">View</button></div>
   </form>
 </div>
 
 <a class="floating-badge" id="floatingBadge" href="contact.html" aria-label="Go to contact page">
-  <svg viewBox="0 0 120 120" class="floating-badge-ring" aria-hidden="true">
+  <img class="floating-badge-img" id="floatingBadgeImg" alt="" hidden>
+  <svg id="floatingBadgeSvg" viewBox="0 0 120 120" class="floating-badge-ring" aria-hidden="true">
     <defs><path id="badgeCirclePath" d="M60,60 m-50,0 a50,50 0 1,1 100,0 a50,50 0 1,1 -100,0"/></defs>
     <text><textPath id="badgeCircleText" href="#badgeCirclePath" startOffset="0%"></textPath></text>
   </svg>
