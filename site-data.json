@@ -1,7 +1,19 @@
 {
   "content": {
     "nav": {
-      "logo": "ADEDEJI SAMUEL / DESIGN"
+      "logo": "ADEDEJI SAMUEL / DESIGN",
+      "links": [
+        {
+          "label": "About",
+          "href": "#about"
+        },
+        {
+          "label": "Work",
+          "href": "#work"
+        }
+      ],
+      "ctaLabel": "Let's talk",
+      "ctaHref": "contact.html"
     },
     "hero": {
       "eyebrow": "Independent designer · Lagos, Nigeria",
@@ -126,13 +138,24 @@
     "badge": {
       "initials": "AS",
       "ringText": "Adedeji Sunday Samuel",
+      "ringImage": "",
+      "size": 96,
       "href": "contact.html"
     },
     "signature": {
-      "name": "Adedeji Sunday Samuel"
+      "name": "Adedeji Sunday Samuel",
+      "font": "Grenze Gotisch",
+      "nameColor": "#E8223E",
+      "bg": "#141211",
+      "textColor": "#faf6ee"
     },
     "contact": {
       "ctaLabel": "Let's talk ↗",
+      "pageHeading": "Let's talk.",
+      "subheading": "Tell me about your project.",
+      "body": "Share a little about what you have in mind — the goal, the timeline, anything that helps. I read every message and reply personally.",
+      "whatsappLabel": "WhatsApp number (optional)",
+      "backLabel": "← Back home",
       "small": "Start a project",
       "headingLines": [
         "LET'S MAKE",
@@ -146,142 +169,227 @@
     "footer": {
       "left": "© 2026 Helloutidex",
       "right": "Designed with intention / Lagos"
+    },
+    "effects": {
+      "particles": true
     }
   },
   "theme": {
-    "paper": "#ffffff",
-    "ink": "#141211",
-    "muted": "#747474",
-    "line": "#e2ddd2",
-    "contactBg": "#e8223e",
-    "tint1": "#ffffff",
-    "tint2": "#ffffff",
-    "scale": 1
+    "mode": "light",
+    "scale": 1,
+    "light": {
+      "paper": "#ffffff",
+      "ink": "#141211",
+      "muted": "#747474",
+      "line": "#e2ddd2",
+      "accent": "#e8223e",
+      "contactBg": "#e8223e",
+      "contactText": "#ffffff",
+      "tint1": "#ffffff",
+      "tint2": "#ffffff"
+    },
+    "dark": {
+      "paper": "#141211",
+      "ink": "#faf6ee",
+      "muted": "#9a948b",
+      "line": "#2c2926",
+      "accent": "#ff4d63",
+      "contactBg": "#E8223E",
+      "contactText": "#ffffff",
+      "tint1": "#2d211d",
+      "tint2": "#2b2618"
+    }
   },
-  "projects": [
+  "categories": [
     {
-      "id": "caseStudy",
-      "title": "Swyftsend",
-      "image": "assets/uploads/mvybox7f-1.jpg",
-      "tagline": "Selected identity and digital case studies.",
-      "bg": "#ffffff",
-      "tight": true,
-      "locked": true,
-      "lockNote": "Enter your password",
-      "enc": {
-        "salt": "Gf7ehhunGmvnu7mWPfMdlA==",
-        "iv": "lwPOEtusrKTCznKM",
-        "data": "S8YtdUuKk3u48kNGukHoRoHiegPGBP00Jt59LiS65ciSYLA8tZPyfvymp+su87kQD8zOYcGQ1QdkjjO7OEO1bhGrvrpmS4PGHA7PAfJIuoMvxnZf6tjdLOOQwIgL9Bb4HYZfIG4vvestCYpg2/M+OYMm5REkLEmO+zwFs2J1KOyu0nAPwUi/Gn8z/jpfqjOK1joHuySLUtG9101Kdfsdp8VmoyKMXg3gh/ni0hwwmDdmKWDyDASOvamqCG4B49IiFuGoN+uPwF9ZtlCwgp/oyhv+Cca+XirMhXcqQZQZg/+ao3aYf35SJ92sdLiYI5USOGcR/pgxmVJQkf5vJxDa+EUDpv7kJXn89bT3wDMyNohdilU9JxDfvnEXK+KxK9OcALo1/gbvJGrk0d8mdQWUWmxOGlYSSzxIXvYkmW0yGd05JQvqSpgXOClEJAEbCcn19q6S/kktv3TxrWvhFZvw11dSVdDjPQzIT0mbqkgwHjmyBMWCIZAyk5K8vvhQjxUvEjkxXiFQGWFb63yZPdjKK4cVB2T/I5Dc7iUGPpM8W1sXU2zg9ChcYWgUC3GVnGdl1jK5p3bliW1U5YGYGYdYFlSSY1gqgbcNbNuckV9duDvSfYb+vLMCVY3dH+PphihTFi2GYQFZU/XGab9o2WrcyTlJLsTe2dglsQtkU91wxTTkLrs8mnCqPEKBG1Ns3ZSC7y8ngyP63jAIy2MPdJnJoaIklXVfWFNe3qlqd1NV7VeXRerl1J8zQimr1wq5govMPLTqqZApZTuTDghuv6dr9v8nC+mX94AEkOVfQt+UocH+tWdd9VlSuR1HE6wc9BV6j9+3GJLP481b/KGbX3rPK9lI+ujmhDSJxG45Y2V0VlR7amfUk2hTyvrsTTsr0K1HwC6kvDjk31qjrU6ATr3x7OJqrUK9a+OlmVYnc2If1tD5uTBmEGUra0k3E7noO3/6KTvZRih58gACvHv5nqHYLadvZry6Mn0a5vFSDGo6K6ZwhLXz0UwXkFqgcNbpYeoVSg3n5Q0ts3uU5tcl8nWC9iN3Tu3NegWM1DLwVC6ON2TKc0eYcfdAq49TBHrCWRt0xy8ZayRcUi8hIZjdeeMNMmLBx/jvtwKe7prgWvPjJWaBsAWm50JYRVFLZEzENSsUuiKVMqBYbVUyBOE60RIRgpFKBPynvtj7oe9o5QgfNlf8"
-      }
-    },
-    {
-      "id": "food",
-      "title": "Project 2",
-      "image": "https://images.unsplash.com/photo-1504674900247-0877df9cc836",
-      "tagline": "A growing archive of marks, symbols and identity explorations.",
+      "id": "cat-case",
+      "title": "Case study",
+      "layout": "cases",
+      "image": "",
+      "intro": "",
       "bg": "",
       "tight": true,
-      "blocks": [
+      "tile": false,
+      "items": [
         {
-          "type": "text",
-          "heading": "About this project",
-          "body": "Tell the story in a few lines — what it was, who it was for, what you made. Delete this block if you want the images to speak for themselves."
+          "id": "caseStudy",
+          "title": "Swyftsend",
+          "cover": "assets/uploads/mvybox7f-1.jpg",
+          "tagline": "Selected identity and digital case studies.",
+          "bg": "#ffffff",
+          "tight": true,
+          "locked": true,
+          "lockNote": "Enter your password",
+          "enc": {
+            "salt": "gyXU8jUVFxtcwxPj9VlEmg==",
+            "iv": "sbNvkYz8fe/oMhhx",
+            "data": "LnQ6bvsgAx1uXemazZU4/i1FFVOb1sUe3xDJWf7IGYneQJL3b2szpxQ+ZzhSlgO1yLJR8jV5W2PDjdM3E7/BvVfSiuk7kuQJ+8TZgJTPJhs0FL5hI2/y0qo2hJkrKRaHeYw0C+EhoRyByD/ph38eCDfeErG2xXLF4rAfDiXl4GJOkXIQcwAx2Ri3OgM7PLUU5XHmJrX6ssf4LSFUn1tK1lhfbbQiCP6AEs8T3rgPMaKzLtQsW3SQB2T1s9qxaLVPBC8bT5Iic1As0xCpYzerXLpBSw7maau2vdqdgbFICTOUkeSkT+EBkJhvpP8ntmnlGpznai7/bMMojzMnrIDkgKCo1eCyjpv14dkRV/8YnPvwnA2r+Kk1HtcvixTOxNDmMOSOYPLLHNWCIr/bs4twPY/nrPm1KvYZb44Tq+a+pjvyyMVpLpWAXO1MjUp6fMgClTtZqLxB/RcJ3KGuGHMuOKb6b1Z6b7gJXSmQCIhzZNVnUXplrSVrL5HboSRZLAlPyNmNTWYZT7fhw66FdkRT04om168gIMVfy8+x+Ef+/SYWE2TzSYUQBdcmGFFFsyjFBiQgL4uPGrRQfTDimxpiVLLcnr8b+NIH6/pJtciy91f2sempUw9gyoKCDbmsRPVYdiLxtsQGx4qZbs8susXEOhwwFtnY3lckBibQfXiFjBQ00Kp/3tlYy2taN+n0KXK8PIG6M1NWXbtK78mMrdCnYJCGo4bbvE00/TxinU5gUSb+hkzPAGz3KMTSS6L1rVCfP7YYT7BI2zZJrtDeRVgqx1qFGCP+CuNUbjAVRS5i0DuIsw64F+dqZPJPJe5ojNqgNiaMHDx12eDPRSpyzgnkGfPsh5rXqh+RxfahEE5VP55FPGdcMkHlN1Jkvf/59oL4LI8IUXBYXE36sYFJCtus8uGzD5yEiV8SH4Qfddscnfb/eQg7viv6QPqUWTkAfrbGfhCYuttbIc1BFwqyyPnrdEGt2I32kmSsOSB7BSEdTxofC8C+C5R1PuYwgz57JfsjoT/omq7OkR/w1cS6qHHA4KkfuNlK4onCW+d3Dy3WX0NSP8JjR7lUupQHWTRammXtlJR4pP+3LkjFnE+a35rXH08f7msAZgS1so7vyo7bJbRq0iqezODOH0FUpbXRg3yvUDL+aQURcrJh/rWXmPuOUjn2navjJM25A4ogRJTbZ+Cv"
+          }
         },
         {
-          "type": "image",
-          "src": "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1920&q=82"
+          "id": "food",
+          "title": "Project 2",
+          "cover": "https://images.unsplash.com/photo-1504674900247-0877df9cc836",
+          "tagline": "A growing archive of marks, symbols and identity explorations.",
+          "bg": "",
+          "tight": true,
+          "blocks": [
+            {
+              "type": "text",
+              "heading": "About this project",
+              "body": "Tell the story in a few lines — what it was, who it was for, what you made. Delete this block if you want the images to speak for themselves."
+            },
+            {
+              "type": "image",
+              "src": "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1920&q=82"
+            },
+            {
+              "type": "image",
+              "src": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1920&q=82"
+            },
+            {
+              "type": "image",
+              "src": "https://images.unsplash.com/photo-1523726491678-bf852e717f6a?auto=format&fit=crop&w=1920&q=82"
+            }
+          ]
         },
         {
-          "type": "image",
-          "src": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1920&q=82"
+          "id": "editorial",
+          "title": "Project 3",
+          "cover": "https://images.unsplash.com/photo-1483985988355-763728e1935b",
+          "tagline": "Selected presentations, decks and visual storytelling systems.",
+          "bg": "",
+          "tight": true,
+          "blocks": [
+            {
+              "type": "text",
+              "heading": "About this project",
+              "body": "Tell the story in a few lines — what it was, who it was for, what you made. Delete this block if you want the images to speak for themselves."
+            },
+            {
+              "type": "image",
+              "src": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1920&q=82"
+            },
+            {
+              "type": "image",
+              "src": "https://images.unsplash.com/photo-1523726491678-bf852e717f6a?auto=format&fit=crop&w=1920&q=82"
+            },
+            {
+              "type": "image",
+              "src": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1920&q=82"
+            }
+          ]
         },
         {
-          "type": "image",
-          "src": "https://images.unsplash.com/photo-1523726491678-bf852e717f6a?auto=format&fit=crop&w=1920&q=82"
+          "id": "generative",
+          "title": "Project 4",
+          "cover": "https://images.unsplash.com/photo-1518770660439-4636190af475",
+          "tagline": "Responsive websites, interfaces and digital experiences.",
+          "bg": "",
+          "tight": true,
+          "blocks": [
+            {
+              "type": "text",
+              "heading": "About this project",
+              "body": "Tell the story in a few lines — what it was, who it was for, what you made. Delete this block if you want the images to speak for themselves."
+            },
+            {
+              "type": "image",
+              "src": "https://images.unsplash.com/photo-1523726491678-bf852e717f6a?auto=format&fit=crop&w=1920&q=82"
+            },
+            {
+              "type": "image",
+              "src": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1920&q=82"
+            },
+            {
+              "type": "image",
+              "src": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1920&q=82"
+            }
+          ]
+        },
+        {
+          "id": "studio",
+          "title": "Project 5",
+          "cover": "https://images.unsplash.com/photo-1523726491678-bf852e717f6a",
+          "tagline": "Generative visuals, experiments and emerging creative systems.",
+          "bg": "",
+          "tight": true,
+          "blocks": [
+            {
+              "type": "text",
+              "heading": "About this project",
+              "body": "Tell the story in a few lines — what it was, who it was for, what you made. Delete this block if you want the images to speak for themselves."
+            },
+            {
+              "type": "image",
+              "src": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1920&q=82"
+            },
+            {
+              "type": "image",
+              "src": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1920&q=82"
+            },
+            {
+              "type": "image",
+              "src": "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1920&q=82"
+            }
+          ]
         }
       ]
     },
     {
-      "id": "editorial",
-      "title": "Project 3",
+      "id": "cat-editorial",
+      "title": "Editorial",
+      "layout": "natural",
       "image": "https://images.unsplash.com/photo-1483985988355-763728e1935b",
-      "tagline": "Selected presentations, decks and visual storytelling systems.",
+      "intro": "Pages, spreads and documents — shown at the size they were made.",
       "bg": "",
-      "tight": true,
-      "blocks": [
-        {
-          "type": "text",
-          "heading": "About this project",
-          "body": "Tell the story in a few lines — what it was, who it was for, what you made. Delete this block if you want the images to speak for themselves."
-        },
+      "tight": false,
+      "tile": false,
+      "items": []
+    },
+    {
+      "id": "cat-campaign",
+      "title": "Campaign ads",
+      "layout": "grid2",
+      "image": "https://images.unsplash.com/photo-1504674900247-0877df9cc836",
+      "intro": "Social media and campaign creatives.",
+      "bg": "",
+      "tight": false,
+      "tile": false,
+      "items": [
         {
           "type": "image",
-          "src": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1920&q=82"
-        },
-        {
-          "type": "image",
-          "src": "https://images.unsplash.com/photo-1523726491678-bf852e717f6a?auto=format&fit=crop&w=1920&q=82"
-        },
-        {
-          "type": "image",
-          "src": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1920&q=82"
+          "src": "assets/uploads/mw3sn5ib-0.png"
         }
       ]
     },
     {
-      "id": "generative",
-      "title": "Project 4",
+      "id": "cat-logo",
+      "title": "Logo folio",
+      "layout": "grid3",
       "image": "https://images.unsplash.com/photo-1518770660439-4636190af475",
-      "tagline": "Responsive websites, interfaces and digital experiences.",
+      "intro": "A selection of marks and identities.",
       "bg": "",
-      "tight": true,
-      "blocks": [
-        {
-          "type": "text",
-          "heading": "About this project",
-          "body": "Tell the story in a few lines — what it was, who it was for, what you made. Delete this block if you want the images to speak for themselves."
-        },
-        {
-          "type": "image",
-          "src": "https://images.unsplash.com/photo-1523726491678-bf852e717f6a?auto=format&fit=crop&w=1920&q=82"
-        },
-        {
-          "type": "image",
-          "src": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1920&q=82"
-        },
-        {
-          "type": "image",
-          "src": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1920&q=82"
-        }
-      ]
+      "tight": false,
+      "tile": true,
+      "items": []
     },
     {
-      "id": "studio",
-      "title": "Project 5",
+      "id": "cat-events",
+      "title": "Events branding",
+      "layout": "stack",
       "image": "https://images.unsplash.com/photo-1523726491678-bf852e717f6a",
-      "tagline": "Generative visuals, experiments and emerging creative systems.",
+      "intro": "Identity, signage and collateral for events.",
       "bg": "",
       "tight": true,
-      "blocks": [
-        {
-          "type": "text",
-          "heading": "About this project",
-          "body": "Tell the story in a few lines — what it was, who it was for, what you made. Delete this block if you want the images to speak for themselves."
-        },
+      "tile": false,
+      "items": [
         {
           "type": "image",
-          "src": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1920&q=82"
-        },
-        {
-          "type": "image",
-          "src": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1920&q=82"
-        },
-        {
-          "type": "image",
-          "src": "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1920&q=82"
+          "src": "assets/uploads/mw3sn94h-1.png"
         }
       ]
     }
   ],
-  "updatedAt": "2026-11-01T21:27:45.410Z"
+  "updatedAt": "2026-11-05T17:02:43.605Z"
 }
