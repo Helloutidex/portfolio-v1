@@ -12,7 +12,10 @@
       "lensLabel": "Tap to reveal",
       "opticNote": "Tap the lens · reveal the work",
       "note": "The work is hidden in the lens.",
-      "zoomInstruction": "Tap to explore"
+      "zoomInstruction": "Tap to explore",
+      "lensImage": "assets/uploads/mvybotwj-0.png",
+      "ctaLabel": "View my work ↗",
+      "ctaHref": "#work"
     },
     "about": {
       "label": "About me",
@@ -20,6 +23,7 @@
       "downloadCV": "Download CV ↓",
       "portraitImage": "assets/portrait.jpg",
       "portraitCaption": "Portrait · tap for colour",
+      "cvFile": "assets/uploads/mvya39g7-0.pdf",
       "headingPre": "I design for the space between an ",
       "headingEm": "idea",
       "headingPost": " and what it can become.",
@@ -47,7 +51,7 @@
         },
         {
           "name": "Ferricool Studios",
-          "logo": "assets/uploads/mvuvj6jb-0.png"
+          "logo": "assets/uploads/mvyccpny-0.svg"
         },
         {
           "name": "Shop Soma",
@@ -55,7 +59,7 @@
         },
         {
           "name": "Independent Collaborations",
-          "logo": "assets/uploads/mvuv9d3s-1.png"
+          "logo": "assets/uploads/mvyccrmy-1.png"
         }
       ]
     },
@@ -119,6 +123,11 @@
         }
       ]
     },
+    "badge": {
+      "initials": "AS",
+      "ringText": "Adedeji Sunday Samuel",
+      "href": "contact.html"
+    },
     "signature": {
       "name": "Adedeji Sunday Samuel"
     },
@@ -140,54 +149,139 @@
     }
   },
   "theme": {
-    "paper": "#e6e0d8",
+    "paper": "#ffffff",
     "ink": "#141211",
     "muted": "#747474",
     "line": "#e2ddd2",
-    "contactBg": "#141211",
+    "contactBg": "#e8223e",
+    "tint1": "#ffffff",
+    "tint2": "#ffffff",
     "scale": 1
   },
   "projects": [
     {
       "id": "caseStudy",
-      "num": "01",
-      "category": "Brand Identity",
-      "title": "Case Study",
-      "image": "https://images.unsplash.com/photo-1518005020951-eccb494ad742",
-      "desc": "Selected identity and digital case studies."
+      "title": "Swyftsend",
+      "image": "assets/uploads/mvybox7f-1.jpg",
+      "tagline": "Selected identity and digital case studies.",
+      "bg": "#ffffff",
+      "tight": true,
+      "locked": true,
+      "lockNote": "Enter your password",
+      "enc": {
+        "salt": "Gf7ehhunGmvnu7mWPfMdlA==",
+        "iv": "lwPOEtusrKTCznKM",
+        "data": "S8YtdUuKk3u48kNGukHoRoHiegPGBP00Jt59LiS65ciSYLA8tZPyfvymp+su87kQD8zOYcGQ1QdkjjO7OEO1bhGrvrpmS4PGHA7PAfJIuoMvxnZf6tjdLOOQwIgL9Bb4HYZfIG4vvestCYpg2/M+OYMm5REkLEmO+zwFs2J1KOyu0nAPwUi/Gn8z/jpfqjOK1joHuySLUtG9101Kdfsdp8VmoyKMXg3gh/ni0hwwmDdmKWDyDASOvamqCG4B49IiFuGoN+uPwF9ZtlCwgp/oyhv+Cca+XirMhXcqQZQZg/+ao3aYf35SJ92sdLiYI5USOGcR/pgxmVJQkf5vJxDa+EUDpv7kJXn89bT3wDMyNohdilU9JxDfvnEXK+KxK9OcALo1/gbvJGrk0d8mdQWUWmxOGlYSSzxIXvYkmW0yGd05JQvqSpgXOClEJAEbCcn19q6S/kktv3TxrWvhFZvw11dSVdDjPQzIT0mbqkgwHjmyBMWCIZAyk5K8vvhQjxUvEjkxXiFQGWFb63yZPdjKK4cVB2T/I5Dc7iUGPpM8W1sXU2zg9ChcYWgUC3GVnGdl1jK5p3bliW1U5YGYGYdYFlSSY1gqgbcNbNuckV9duDvSfYb+vLMCVY3dH+PphihTFi2GYQFZU/XGab9o2WrcyTlJLsTe2dglsQtkU91wxTTkLrs8mnCqPEKBG1Ns3ZSC7y8ngyP63jAIy2MPdJnJoaIklXVfWFNe3qlqd1NV7VeXRerl1J8zQimr1wq5govMPLTqqZApZTuTDghuv6dr9v8nC+mX94AEkOVfQt+UocH+tWdd9VlSuR1HE6wc9BV6j9+3GJLP481b/KGbX3rPK9lI+ujmhDSJxG45Y2V0VlR7amfUk2hTyvrsTTsr0K1HwC6kvDjk31qjrU6ATr3x7OJqrUK9a+OlmVYnc2If1tD5uTBmEGUra0k3E7noO3/6KTvZRih58gACvHv5nqHYLadvZry6Mn0a5vFSDGo6K6ZwhLXz0UwXkFqgcNbpYeoVSg3n5Q0ts3uU5tcl8nWC9iN3Tu3NegWM1DLwVC6ON2TKc0eYcfdAq49TBHrCWRt0xy8ZayRcUi8hIZjdeeMNMmLBx/jvtwKe7prgWvPjJWaBsAWm50JYRVFLZEzENSsUuiKVMqBYbVUyBOE60RIRgpFKBPynvtj7oe9o5QgfNlf8"
+      }
     },
     {
       "id": "food",
-      "num": "02",
-      "category": "Brand marks",
-      "title": "Logo Archive",
+      "title": "Project 2",
       "image": "https://images.unsplash.com/photo-1504674900247-0877df9cc836",
-      "desc": "A growing archive of marks, symbols and identity explorations."
+      "tagline": "A growing archive of marks, symbols and identity explorations.",
+      "bg": "",
+      "tight": true,
+      "blocks": [
+        {
+          "type": "text",
+          "heading": "About this project",
+          "body": "Tell the story in a few lines — what it was, who it was for, what you made. Delete this block if you want the images to speak for themselves."
+        },
+        {
+          "type": "image",
+          "src": "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1920&q=82"
+        },
+        {
+          "type": "image",
+          "src": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1920&q=82"
+        },
+        {
+          "type": "image",
+          "src": "https://images.unsplash.com/photo-1523726491678-bf852e717f6a?auto=format&fit=crop&w=1920&q=82"
+        }
+      ]
     },
     {
       "id": "editorial",
-      "num": "03",
-      "category": "Editorial",
-      "title": "Presentation",
+      "title": "Project 3",
       "image": "https://images.unsplash.com/photo-1483985988355-763728e1935b",
-      "desc": "Selected presentations, decks and visual storytelling systems."
+      "tagline": "Selected presentations, decks and visual storytelling systems.",
+      "bg": "",
+      "tight": true,
+      "blocks": [
+        {
+          "type": "text",
+          "heading": "About this project",
+          "body": "Tell the story in a few lines — what it was, who it was for, what you made. Delete this block if you want the images to speak for themselves."
+        },
+        {
+          "type": "image",
+          "src": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1920&q=82"
+        },
+        {
+          "type": "image",
+          "src": "https://images.unsplash.com/photo-1523726491678-bf852e717f6a?auto=format&fit=crop&w=1920&q=82"
+        },
+        {
+          "type": "image",
+          "src": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1920&q=82"
+        }
+      ]
     },
     {
       "id": "generative",
-      "num": "04",
-      "category": "Digital / Web",
-      "title": "Web Design",
+      "title": "Project 4",
       "image": "https://images.unsplash.com/photo-1518770660439-4636190af475",
-      "desc": "Responsive websites, interfaces and digital experiences."
+      "tagline": "Responsive websites, interfaces and digital experiences.",
+      "bg": "",
+      "tight": true,
+      "blocks": [
+        {
+          "type": "text",
+          "heading": "About this project",
+          "body": "Tell the story in a few lines — what it was, who it was for, what you made. Delete this block if you want the images to speak for themselves."
+        },
+        {
+          "type": "image",
+          "src": "https://images.unsplash.com/photo-1523726491678-bf852e717f6a?auto=format&fit=crop&w=1920&q=82"
+        },
+        {
+          "type": "image",
+          "src": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1920&q=82"
+        },
+        {
+          "type": "image",
+          "src": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1920&q=82"
+        }
+      ]
     },
     {
       "id": "studio",
-      "num": "05",
-      "category": "AI / Generative",
-      "title": "AI / Generative",
+      "title": "Project 5",
       "image": "https://images.unsplash.com/photo-1523726491678-bf852e717f6a",
-      "desc": "Generative visuals, experiments and emerging creative systems."
+      "tagline": "Generative visuals, experiments and emerging creative systems.",
+      "bg": "",
+      "tight": true,
+      "blocks": [
+        {
+          "type": "text",
+          "heading": "About this project",
+          "body": "Tell the story in a few lines — what it was, who it was for, what you made. Delete this block if you want the images to speak for themselves."
+        },
+        {
+          "type": "image",
+          "src": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1920&q=82"
+        },
+        {
+          "type": "image",
+          "src": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1920&q=82"
+        },
+        {
+          "type": "image",
+          "src": "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1920&q=82"
+        }
+      ]
     }
   ],
-  "updatedAt": "2026-10-30T11:13:35.548Z"
+  "updatedAt": "2026-11-01T21:27:45.410Z"
 }
