@@ -6,8 +6,8 @@
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,500;1,500&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=UnifrakturCook:wght@700&display=swap">
-<link rel="stylesheet" href="style.css?v=20261109j">
-<link rel="stylesheet" href="admin.css?v=20261109j">
+<link rel="stylesheet" href="style.css?v=20261109p">
+<link rel="stylesheet" href="admin.css?v=20261109p">
 </head>
 <body class="admin-body">
 <section class="lock-screen" id="lockScreen">
@@ -79,6 +79,11 @@
       <div class="admin-row2">
         <label>Hero button text (leave empty to remove the button)<input data-path="hero.ctaLabel"></label>
         <label>Hero button goes to<input data-path="hero.ctaHref" placeholder="#work, contact.html, or any link"></label>
+      </div>
+      <div class="admin-row3">
+        <label>"Hire me" button text (empty = no button)<input data-path="hero.hireLabel"></label>
+        <label>WhatsApp number (it opens a chat with you)<input data-path="hero.whatsapp" placeholder="2348065925091 or 08065925091"></label>
+        <label>Message it starts with<input data-path="hero.hireMessage"></label>
       </div>
       <label>Picture inside the lens (empty = Project 1's cover)<div class="admin-image-field" data-image-path="hero.lensImage"></div></label>
       <label>Text under the lens<input data-path="hero.lensLabel"></label>
@@ -257,18 +262,17 @@
     </div>
 
     <div class="admin-group" data-group="poster">
-      <h2>Opening poster <span class="admin-hint">(the animated first screen — about 3 seconds, then the portfolio)</span></h2>
+      <h2>Opening poster <span class="admin-hint">(drawn as fine line art, filled in, then it folds into a paper plane that flies off and a wave reveals the portfolio — about 10 seconds)</span></h2>
       <label>Headline (one line per row)<textarea data-path="poster.headLines" data-list="lines" id="posterHead"></textarea></label>
-      <div class="admin-row3">
+      <div class="admin-row2">
         <label>Button text (opens the contact page)<input data-path="poster.btn"></label>
-        <label>Monogram top-right<input data-path="poster.mark" maxlength="4"></label>
-        <label>Seconds before it opens the site<input type="number" min="1.5" max="8" step="0.1" data-path="poster.hold"></label>
+        <label>Seconds before the plane takes off (3.8–15)<input type="number" min="3.8" max="15" step="0.1" data-path="poster.hold"></label>
       </div>
       <label>Red tag text<input data-path="poster.tag"></label>
-      <label>Signature text (written in a handwriting font)<input data-path="poster.sign"></label>
+      <label>Signature — leave as "Adedeji Samuel" to use the drawn signature, or type another name (handwriting font)<input data-path="poster.sign"></label>
       <label>Or your own signature (transparent PNG / SVG, white)<div class="admin-image-field" data-image-path="poster.signImage"></div></label>
-      <label>Portrait (shown in black &amp; white with a fine line texture)<div class="admin-image-field" data-image-path="poster.image"></div></label>
-      <p class="admin-hint" style="margin-top:12px">Links shown top-left next to Home / About / Works (only ones with a link appear)</p>
+      <label>Portrait — use a cut-out PNG with a transparent background (shown in black &amp; white with a fine line texture)<div class="admin-image-field" data-image-path="poster.image"></div></label>
+      <p class="admin-hint" style="margin-top:12px">Links shown at the top (only ones with a link appear)</p>
       <div id="posterSocialsEditor"></div>
       <button class="admin-add-small" type="button" id="addPosterSocial">+ Add a link</button>
     </div>
@@ -280,6 +284,7 @@
         <label>Minutes without any activity before it pops up<input type="number" min="1" max="60" data-path="games.idleMinutes"></label>
         <label>Heading on the game window<input data-path="games.title"></label>
       </div>
+      <label>Header button text (empty = no "Play a game" button)<input data-path="games.button" placeholder="Play a game"></label>
       <label class="admin-check"><input type="checkbox" data-path="games.offline"> Also show it straight away if the visitor goes offline</label>
       <p class="admin-hint" style="margin-top:12px">Which games to include</p>
       <div class="admin-row2">
@@ -375,5 +380,5 @@
 </main>
 </div>
 
-<script src="admin.js?v=20261109j" defer></script>
+<script src="admin.js?v=20261109p" defer></script>
 </body></html>

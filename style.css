@@ -1190,3 +1190,215 @@ a.res-card:hover .res-go{transform:translate(3px,-3px);color:var(--accent)}
 /* the spinning badge steps aside when the footer comes into view, so nothing sits on top of it */
 .floating-badge{transition:opacity .35s ease,transform .35s ease}
 body.foot-in .floating-badge{opacity:0;transform:scale(.85);pointer-events:none}
+
+/* =====================================================================
+   v14 — hire me, play button, resources pictures, captions, lighter images
+   ===================================================================== */
+.hero-ctas{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin-top:28px}
+.hero-ctas .hero-cta{margin-top:0}
+.hero-hire{display:inline-flex;align-items:center;gap:9px;padding:14px 22px;border-radius:999px;border:1.5px solid color-mix(in srgb,var(--ink) 22%,transparent);color:var(--ink);font:700 15px Manrope,Arial,sans-serif;letter-spacing:-.01em;transition:background .25s ease,border-color .25s ease,color .25s ease,transform .3s cubic-bezier(.16,1,.3,1)}
+.hero-hire svg{width:20px;height:20px;color:#25D366}
+.hero-hire:hover{background:#25D366;border-color:#25D366;color:#0b2e17;transform:translateY(-3px)}
+.hero-hire:hover svg{color:#0b2e17}
+.sb-play{display:inline-flex;align-items:center;gap:8px;border:1px solid color-mix(in srgb,var(--ink) 18%,transparent);background:none;color:var(--ink);border-radius:999px;padding:9px 14px;font:600 12px Manrope,Arial,sans-serif;cursor:pointer;transition:border-color .25s ease,color .25s ease}
+.sb-play svg{width:20px;height:20px}
+.sb-play:hover{border-color:var(--accent);color:var(--accent)}
+@media(max-width:800px){.hero-ctas{margin-top:18px;gap:10px}.hero-hire{padding:12px 18px;font-size:14px}.sb-play{align-self:stretch;justify-content:center;padding:13px;font-size:14px}}
+/* resources: books show their cover like a real book on the card; channels / programmes fill the card */
+.res-card.has-cover{padding-right:calc(clamp(18px,2vw,28px) + 42%)}
+.res-card .res-cover{position:absolute;inset:auto;right:clamp(16px,1.8vw,26px);top:50%;width:auto;height:calc(100% - 48px);max-width:40%;object-fit:contain;transform:translateY(-50%) rotate(2deg);border-radius:3px;
+  box-shadow:-10px 18px 30px -12px rgba(0,0,0,.55),inset 4px 0 6px rgba(0,0,0,.2);transition:transform .6s cubic-bezier(.16,1,.3,1)}
+a.res-card:hover .res-cover,.res-card:hover .res-cover{transform:translateY(-50%) rotate(-1deg) scale(1.04)}
+.res-card.has-img img{object-position:center top}
+/* captions: always one column, a longer line, with a heading */
+.pcap span,.pcap.is-long span{columns:auto!important;max-width:min(100%,1040px)!important}
+.pimg figcaption.pcap,.pvideo figcaption.pcap,.ppdf .pcap{max-width:none}
+.pcap strong{font-size:clamp(20px,1.9vw,28px);margin-bottom:12px}
+.pcap span{font-size:clamp(15px,1.15vw,18px);line-height:1.75}
+.res-card.has-img:after{background:linear-gradient(180deg,rgba(0,0,0,.35) 0%,rgba(0,0,0,.45) 45%,rgba(0,0,0,.88) 100%)}
+.res-card.has-cover .res-body strong{font-size:calc(var(--scale)*clamp(18px,1.55vw,26px));overflow-wrap:anywhere}
+
+/* =====================================================================
+   v15 — opening poster as line art: draw → fill → hold → gentle fade
+   ===================================================================== */
+.poster-intro.is-measure,.poster-intro.is-measure *{transform:none!important;animation:none!important;transition:none!important}
+/* exit: a calm fade into the landing page (no flying away) */
+.poster-intro{transition:opacity .9s ease,filter .9s ease}
+.poster-intro.is-out{transform:none;opacity:0;filter:blur(4px)}
+/* outlines layer */
+.pz-strokes{position:absolute;inset:0;width:100%;height:100%;z-index:6;pointer-events:none;transition:opacity 1.1s ease}
+.pz-strokes rect{fill:none;stroke:color-mix(in srgb,var(--ink,#f2f2f2) 80%,transparent);stroke-width:1.4;vector-effect:non-scaling-stroke}
+.pz-strokes rect.is-red{stroke:var(--accent,#E8223E)}
+.poster-intro.is-draw .pz-strokes rect{animation:pzDash 1.3s cubic-bezier(.45,0,.2,1) forwards}
+@keyframes pzDash{to{stroke-dashoffset:0}}
+.poster-intro.is-fill .pz-strokes{opacity:0;transition-delay:.6s}
+/* shapes wait as outlines, then fill in */
+.pz-panel,.pz-red,.pz-bar,.pz-btn,.pz-tag{transform:none;opacity:0;transition:opacity .8s ease}
+.pz-tag{transform:rotate(8deg)}
+.poster-intro.is-fill .pz-panel{opacity:1;transition-delay:0s}
+.poster-intro.is-fill .pz-red{opacity:1;transition-delay:.12s}
+.poster-intro.is-fill .pz-bar{opacity:1;transition-delay:.2s}
+.poster-intro.is-fill .pz-btn{opacity:1;transition-delay:.45s}
+.poster-intro.is-fill .pz-tag{opacity:1;transition-delay:.7s}
+/* headline: drawn as outlined letters left to right, then filled */
+.pz-copy h1 span{opacity:1;transform:none;color:transparent;-webkit-text-stroke:1px color-mix(in srgb,var(--ink,#fff) 85%,transparent);clip-path:inset(0 100% 0 0);transition:color .9s ease,-webkit-text-stroke-color .9s ease}
+.poster-intro.is-draw .pz-copy h1 span{animation:pzReveal 1.2s cubic-bezier(.45,0,.2,1) forwards}
+.poster-intro.is-draw .pz-copy h1 span:nth-child(2){animation-delay:.25s}.poster-intro.is-draw .pz-copy h1 span:nth-child(3){animation-delay:.5s}.poster-intro.is-draw .pz-copy h1 span:nth-child(4){animation-delay:.75s}
+@keyframes pzReveal{to{clip-path:inset(0 -2% 0 0)}}
+.poster-intro.is-fill .pz-copy h1 span{color:var(--ink,#fff);-webkit-text-stroke-color:transparent}
+/* portrait: first a line drawing of the photo, then the photo itself */
+.pz-photo{opacity:1;transform:none}
+.pz-photo img{opacity:0;transition:opacity 1.1s ease}
+.pz-photo .pz-line{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 18%;filter:url(#pzEdge) invert(1);mix-blend-mode:multiply;opacity:0;transition:opacity 1s ease}
+html.predark .pz-photo .pz-line,.dark .pz-photo .pz-line{filter:url(#pzEdge);mix-blend-mode:screen}
+.pz-photo:after{opacity:0;transition:opacity 1s ease}
+.poster-intro.is-draw .pz-line{opacity:.95;transition-delay:.15s}
+.poster-intro.is-fill .pz-photo #pzImg{opacity:1}
+.poster-intro.is-fill .pz-photo:after{opacity:1}
+.poster-intro.is-fill .pz-line{opacity:0;transition-delay:.5s}
+/* the rest */
+.poster-intro.is-draw .pz-dots{animation:pzFade 1.2s ease forwards}
+.poster-intro.is-draw .pz-nav,.poster-intro.is-draw .pz-mark{animation:pzFade .8s .4s ease forwards}
+.poster-intro.is-fill .pz-sign{animation:pzWrite 1.4s .35s cubic-bezier(.45,0,.2,1) forwards}
+.poster-intro.is-draw .pz-skip{animation:pzFade .6s 1s ease forwards}
+@media(max-width:800px){.pz-tag{transform:rotate(-4deg)}}
+/* ending: fold into a plane → fly up → wave reveal */
+.pz-fly{position:absolute;left:50%;top:50%;width:84px;height:84px;margin:-42px 0 0 -42px;z-index:8;opacity:0;transform:scale(.2) rotate(-30deg);filter:drop-shadow(0 14px 22px rgba(232,34,62,.4));pointer-events:none}
+.pz-fly svg{width:100%;height:100%;display:block}
+.poster-intro.is-fold>*:not(.pz-fly):not(.pz-wave){animation:none!important;transition:transform .7s cubic-bezier(.6,0,.4,1),opacity .5s ease .2s!important;transform:scale(.02) rotate(25deg)!important;opacity:0!important}
+.poster-intro.is-fold .pz-fly{animation:pzForm .55s .35s cubic-bezier(.34,1.56,.64,1) forwards}
+.poster-intro.is-fly .pz-fly{animation:pzFly 1s cubic-bezier(.55,0,.35,1) forwards}
+@keyframes pzForm{to{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes pzFly{0%{opacity:1;transform:scale(1) rotate(0)}20%{transform:translate(-30px,24px) scale(1.05) rotate(-6deg)}100%{opacity:1;transform:translate(60vw,-75vh) scale(.45) rotate(-18deg)}}
+.pz-wave{position:absolute;left:0;right:0;top:0;height:calc(100% + 26vh);z-index:7;display:none;pointer-events:none}
+.pz-wave-fill{height:calc(100% - 26vh);background:var(--paper,#0c0c0d)}
+.pz-wave svg{display:block;width:100%;height:26vh}
+.pz-wave path{fill:var(--paper,#0c0c0d)}
+.poster-intro.is-wave{background:transparent;pointer-events:none}
+.poster-intro.is-wave .pz-wave{display:block;animation:pzWave 1.05s cubic-bezier(.7,0,.25,1) forwards}
+.poster-intro.is-wave .pz-fly{opacity:0}
+@keyframes pzWave{0%{transform:translateY(0)}100%{transform:translateY(-100%)}}
+.poster-intro.is-out{opacity:1;filter:none}
+/* editorial book: never shows raw full-width pages — it waits as a neat, screen-fitted frame until the book is ready */
+.pbook-stage{max-width:min(100%,1200px)}
+.pbook-stage:not(.is-ready) .pbook{height:min(70vh,760px);aspect-ratio:auto;overflow:hidden;display:flex;justify-content:center}
+.pbook-stage:not(.is-ready) .pbook-page{display:none}
+.pbook-stage:not(.is-ready) .pbook-page:first-child{display:block;height:100%;width:auto;aspect-ratio:var(--cover-ratio,.71)}
+.pbook-stage:not(.is-ready) .pbook-page:first-child img{object-fit:contain}
+.pbook-stage:not(.is-ready) .pbook-hint{visibility:hidden}
+/* all-pages view: a sensible reading width on big screens */
+.pspreads{max-width:min(1200px,100%)}
+.pspread.cover{width:min(50%,520px)}
+.pspread:has(.pimg:only-child):not(.cover){width:min(50%,520px)}
+/* ---- Book shelf: several editorials as tidy covers ---- */
+.pshelf{display:grid;grid-template-columns:repeat(auto-fill,minmax(clamp(150px,16vw,230px),1fr));gap:clamp(22px,3vw,44px) clamp(16px,2.4vw,34px);padding:0 var(--edge);margin-top:clamp(26px,4vw,44px);max-width:1500px}
+.pshelf-item{display:flex;flex-direction:column;gap:6px;background:none;border:0;padding:0;text-align:left;color:inherit;font:inherit;cursor:pointer;animation:shelfIn .7s cubic-bezier(.16,1,.3,1) both;animation-delay:calc(var(--i) * .07s)}
+@keyframes shelfIn{from{opacity:0;transform:translateY(22px)}}
+.pshelf-cover{position:relative;display:block;aspect-ratio:.72;border-radius:3px 8px 8px 3px;overflow:hidden;background:var(--soft);box-shadow:0 22px 40px -22px rgba(0,0,0,.6),0 2px 0 rgba(0,0,0,.2);transform-origin:left center;transition:transform .55s cubic-bezier(.16,1,.3,1),box-shadow .55s ease;margin-bottom:10px}
+.pshelf-cover img{width:100%;height:100%;object-fit:cover;display:block}
+.pshelf-spine{position:absolute;left:0;top:0;bottom:0;width:9%;background:linear-gradient(90deg,rgba(0,0,0,.35),rgba(255,255,255,.12) 45%,rgba(0,0,0,.08))}
+.pshelf-lock{position:absolute;right:8px;top:8px;font-size:14px;background:rgba(0,0,0,.55);border-radius:999px;padding:4px 7px}
+.pshelf-item:hover .pshelf-cover{transform:perspective(900px) rotateY(-14deg) translateY(-4px);box-shadow:16px 26px 40px -20px rgba(0,0,0,.6)}
+.pshelf-item strong{font:700 clamp(16px,1.3vw,20px)/1.2 Manrope,Arial,sans-serif;letter-spacing:-.02em}
+.pshelf-item em{font-style:normal;font-size:14px;color:var(--muted);line-height:1.4}
+.pshelf-item i{font:600 11px Manrope,Arial,sans-serif;font-style:normal;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-top:2px}
+@media(max-width:560px){.pshelf{grid-template-columns:repeat(2,minmax(0,1fr));gap:24px 14px}}
+/* the open book always fits the screen nicely, never edge to edge on big monitors */
+.pbook-stage{max-width:min(100%,1200px)}
+
+/* =====================================================================
+   v16 — poster portrait as in the design: cut-out, no side fades, fine sketch
+   ===================================================================== */
+.pz-photo{left:40%;width:auto;aspect-ratio:700/915;top:-3%;bottom:0;height:auto;z-index:2}
+.pz-photo img,.pz-photo:after{-webkit-mask-image:none!important;mask-image:none!important}
+.pz-photo:after{display:none}
+.pz-photo #pzImg{object-fit:contain;object-position:center bottom;filter:grayscale(1) contrast(1.3) brightness(1.04)}
+/* fine diagonal line texture across the person only (like the poster) */
+.pz-tex,.pz-hatch{position:absolute;inset:0;pointer-events:none;-webkit-mask:var(--cut) center bottom/contain no-repeat;mask:var(--cut) center bottom/contain no-repeat}
+.pz-tex{background:repeating-linear-gradient(-32deg,rgba(0,0,0,.5) 0 1.1px,transparent 1.1px 3.4px);mix-blend-mode:multiply;opacity:0;transition:opacity 1.2s ease}
+/* the drawing: fine pencil lines sweep in on one angle, light hatching crosses on another */
+.pz-photo .pz-line{inset:0;object-fit:contain;object-position:center bottom;filter:none;mix-blend-mode:normal;opacity:1;
+  -webkit-mask-image:linear-gradient(118deg,#000 45%,transparent 55%);mask-image:linear-gradient(118deg,#000 45%,transparent 55%);-webkit-mask-size:260% 100%;mask-size:260% 100%;-webkit-mask-position:100% 0;mask-position:100% 0}
+.pz-photo .pz-line.is-live{filter:url(#pzEdge)}
+body:not(.dark) .pz-photo .pz-line:not(.is-live),html:not(.predark) .poster-intro .pz-line:not(.is-live){filter:invert(1)}
+.dark .poster-intro .pz-line:not(.is-live),html.predark .poster-intro .pz-line:not(.is-live){filter:none}
+.pz-hatch{background:repeating-linear-gradient(58deg,color-mix(in srgb,var(--ink,#fff) 30%,transparent) 0 .6px,transparent .6px 7px);opacity:0;
+  -webkit-mask:var(--cut) center bottom/contain no-repeat,linear-gradient(-30deg,#000 45%,transparent 55%) 0 0/260% 100% no-repeat;-webkit-mask-composite:source-in;mask:var(--cut) center bottom/contain no-repeat,linear-gradient(-30deg,#000 45%,transparent 55%) 0 0/260% 100% no-repeat;mask-composite:intersect}
+.poster-intro.is-draw .pz-line{animation:pzSweep 2.6s .2s cubic-bezier(.45,0,.25,1) forwards}
+.poster-intro.is-draw .pz-hatch{opacity:.55;animation:pzHatch 2.4s .9s cubic-bezier(.45,0,.25,1) forwards}
+@keyframes pzSweep{to{-webkit-mask-position:0 0;mask-position:0 0}}
+@keyframes pzHatch{from{-webkit-mask-position:center bottom,100% 0;mask-position:center bottom,100% 0}to{-webkit-mask-position:center bottom,0 0;mask-position:center bottom,0 0}}
+/* fill: the photo appears over the drawing; the lines fade back */
+.pz-photo #pzImg{opacity:0;transition:opacity 1.4s ease}
+.poster-intro.is-fill .pz-photo #pzImg{opacity:1}
+.poster-intro.is-fill .pz-tex{opacity:1}
+.poster-intro.is-fill .pz-line{opacity:0;transition:opacity 1.2s ease .5s}
+.poster-intro.is-fill .pz-hatch{opacity:0;transition:opacity 1s ease .3s}
+/* headline outline: hairline */
+.pz-copy h1 span{-webkit-text-stroke-width:.6px}
+.pz-strokes rect{stroke-width:.8}
+@media(max-width:800px){.pz-photo{left:50%;transform:translateX(-50%)!important;top:9%;bottom:44%;width:auto;right:auto}.poster-intro .pz-photo{transform:translateX(-50%)}}
+/* sketch lines always contrast with the background (white on black, black on white) */
+.poster-intro .pz-photo .pz-line:not(.is-live){filter:none!important;mix-blend-mode:difference}
+@media(min-width:801px){.pz-photo{top:-13%;left:38%}}
+.poster-intro .pz-photo .pz-line:not(.is-live){mix-blend-mode:normal}
+.poster-intro.pz-light .pz-photo .pz-line:not(.is-live){filter:brightness(0)!important}
+.poster-intro.pz-light .pz-hatch{background:repeating-linear-gradient(58deg,rgba(0,0,0,.28) 0 .6px,transparent .6px 7px)}
+
+/* =====================================================================
+   v17 — drawn signature; poster: only the portrait is sketched, the rest animates in
+   ===================================================================== */
+.sig{display:block;width:100%;height:auto;fill:currentColor;overflow:visible}
+.sig .sig-name{clip-path:inset(-20% 100% -40% 0)}
+.sig .sig-swash{clip-path:inset(-20% 100% -40% 0)}
+@keyframes sigWrite{to{clip-path:inset(-20% -2% -40% 0)}}
+/* About me: the signature signs off the text */
+.about-sign{width:min(320px,70%);margin:30px 0 0 -6px;color:var(--ink)}
+.about-sign.is-in .sig-name{animation:sigWrite 2.2s cubic-bezier(.55,.1,.35,1) forwards}
+.about-sign.is-in .sig-swash{animation:sigWrite .9s 2s cubic-bezier(.4,0,.2,1) forwards}
+.about-sign .sig-swash{fill:var(--accent)}
+@media(prefers-reduced-motion:reduce){.sig .sig-name,.sig .sig-swash{clip-path:none!important}}
+
+/* poster signature */
+.pz-sign{font-size:inherit;width:clamp(260px,30vw,470px);left:25%;bottom:7%;color:#fff;clip-path:none!important;text-shadow:none;filter:drop-shadow(0 4px 14px rgba(0,0,0,.35))}
+.pz-sign.is-text{width:auto;font:400 clamp(52px,6.8vw,104px)/1 'Mrs Saint Delafield','Brush Script MT',cursive}
+.poster-intro.is-fill .pz-sign{animation:none}
+.poster-intro.is-fill .pz-sign .sig-name{animation:sigWrite 2s 1.7s cubic-bezier(.55,.1,.35,1) forwards}
+.poster-intro.is-fill .pz-sign .sig-swash{animation:sigWrite .8s 3.5s cubic-bezier(.4,0,.2,1) forwards}
+@media(max-width:800px){.pz-sign{width:min(78vw,340px);left:auto;right:5%;top:41%;bottom:auto}}
+
+/* poster: no outline drawing for text or shapes — only the portrait is sketched */
+.pz-strokes{display:none!important}
+.poster-intro .pz-copy h1 span{color:var(--ink,#fff)!important;-webkit-text-stroke:0!important;clip-path:none!important;opacity:0;transform:translateY(28px);animation:none!important;transition:none!important}
+.poster-intro .pz-panel{opacity:1;transform:scaleX(0);transform-origin:right;transition:none}
+.poster-intro .pz-red{opacity:1;transform:scaleY(0);transform-origin:bottom;transition:none}
+.poster-intro .pz-bar{opacity:1;transform:scaleX(0);transition:none}
+.poster-intro .pz-btn{opacity:0;transform:translateY(14px);transition:none}
+.poster-intro .pz-tag{opacity:0;transform:rotate(8deg) translateY(-40px);transition:none}
+.poster-intro .pz-dots{opacity:0}
+/* sketch first (0 → ~3s), then everything comes in, one after another */
+.poster-intro.is-fill .pz-panel{animation:pzScaleX .9s .1s cubic-bezier(.22,1,.36,1) forwards!important}
+.poster-intro.is-fill .pz-dots{animation:pzFade 1.2s .2s ease forwards!important}
+.poster-intro.is-fill .pz-red{animation:pzScaleY .8s .45s cubic-bezier(.22,1,.36,1) forwards!important}
+.poster-intro.is-fill .pz-bar{animation:pzScaleX .7s .6s cubic-bezier(.22,1,.36,1) forwards!important}
+.poster-intro.is-fill .pz-copy h1 span{animation:pzRise .9s cubic-bezier(.22,1,.36,1) forwards!important}
+.poster-intro.is-fill .pz-copy h1 span:nth-child(1){animation-delay:.75s!important}
+.poster-intro.is-fill .pz-copy h1 span:nth-child(2){animation-delay:.92s!important}
+.poster-intro.is-fill .pz-copy h1 span:nth-child(3){animation-delay:1.09s!important}
+.poster-intro.is-fill .pz-copy h1 span:nth-child(4){animation-delay:1.26s!important}
+.poster-intro.is-fill .pz-btn{animation:pzRise .7s 1.45s cubic-bezier(.22,1,.36,1) forwards!important}
+.poster-intro.is-fill .pz-tag{animation:pzDrop .9s 2.4s cubic-bezier(.34,1.56,.64,1) forwards!important}
+@media(max-width:800px){.poster-intro.is-fill .pz-tag{animation-name:pzDropM!important}.poster-intro .pz-tag{transform:rotate(-4deg) translateY(-30px)}}
+.sig{height:auto;max-width:100%}
+.pz-sign{line-height:0;bottom:12%}
+.about-sign{margin:26px 0 30px -6px;line-height:0}
+@media(max-width:800px){.pz-sign{bottom:auto}}
+/* signature reveal uses a moving mask (works on SVG paths everywhere) */
+.sig .sig-name,.sig .sig-swash{clip-path:none!important}
+.sig{-webkit-mask:linear-gradient(90deg,#000 48%,transparent 52%) 100% 0/220% 100% no-repeat;mask:linear-gradient(90deg,#000 48%,transparent 52%) 100% 0/220% 100% no-repeat}
+@keyframes sigMask{to{-webkit-mask-position:0 0;mask-position:0 0}}
+.about-sign.is-in .sig{animation:sigMask 2.6s cubic-bezier(.55,.1,.35,1) forwards}
+.about-sign .sig .sig-name,.about-sign .sig .sig-swash,.poster-intro .pz-sign .sig-name,.poster-intro .pz-sign .sig-swash{animation:none!important}
+.poster-intro.is-fill .pz-sign .sig{animation:sigMask 2.4s 1.7s cubic-bezier(.55,.1,.35,1) forwards}
+@media(prefers-reduced-motion:reduce){.sig{-webkit-mask:none;mask:none}}
+@media(max-width:800px){.pz-sign{top:35%;width:min(70vw,300px)}}

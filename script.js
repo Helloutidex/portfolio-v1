@@ -15,7 +15,20 @@
     } catch (e) { return null; }
   };
   const REMOTE = (await fetchJSON('site-data.json')) || {};
-  const draftOf = key => { try { return JSON.parse(localStorage.getItem(key)); } catch (e) { return null; } };
+  // speed: a few heavy PNG photos have identical-looking light JPG twins in assets/uploads — use those instead
+  const LIGHTER = { 'assets/uploads/mvybotwj-0.png': 'assets/uploads/mvybotwj-0.jpg', 'assets/uploads/mw3sn5ib-0.png': 'assets/uploads/mw3sn5ib-0.jpg', 'assets/uploads/mw3sn94h-1.png': 'assets/uploads/mw3sn94h-1.jpg' };
+  (function swap(o){ if (!o || typeof o !== 'object') return; for (const k of Object.keys(o)) { const v = o[k]; if (typeof v === 'string' && LIGHTER[v]) o[k] = LIGHTER[v]; else if (v && typeof v === 'object') swap(v); } })(REMOTE);
+  // unpublished admin drafts (kept in this browser's IndexedDB by admin.html) so "Preview site" shows them
+  const IDB = await new Promise(res => {
+    try {
+      const r = indexedDB.open('portfolio-admin', 1);
+      r.onupgradeneeded = () => r.result.createObjectStore('drafts');
+      r.onsuccess = () => { try { const out = {}, c = r.result.transaction('drafts', 'readonly').objectStore('drafts').openCursor();
+        c.onsuccess = () => { const cur = c.result; if (cur) { out[cur.key] = cur.value; cur.continue(); } else res(out); }; c.onerror = () => res({}); } catch (e) { res({}); } };
+      r.onerror = () => res({}); setTimeout(() => res({}), 800);
+    } catch (e) { res({}); }
+  });
+  const draftOf = key => { try { const v = JSON.parse(localStorage.getItem(key)); if (v) return v; } catch (e) {} return IDB[key] || null; };
 
   /* ============================================================
      SITE TEXT + THEME — the other half of the single-source setup
@@ -36,6 +49,7 @@
       note: 'The work is hidden in the lens.',
       zoomInstruction: 'Tap to explore',
       lensImage: '', ctaLabel: 'View my work ↗', ctaHref: '#work',
+      hireLabel: 'Hire me', whatsapp: '2348065925091', hireMessage: "Hi Samuel, I saw your portfolio and I'd like to hire you for a project.",
     },
     about: {
       label: 'About me', viewCV: 'View CV ↗', downloadCV: 'Download CV ↓',
@@ -78,13 +92,13 @@
       { title: 'Design', text: 'Craft the system and polish every detail.' },
     ]},
     resources: { label: 'Resources', heading: 'Books, channels and programs that shaped how I design.', items: [
-      { title: 'Incubator', by: 'Design programme', kind: 'Program', image: '', url: '' },
-      { title: 'Logo Design Love', by: 'David Airey', kind: 'Book', image: '', url: '' },
-      { title: 'Satori Graphics', by: 'YouTube channel', kind: 'YouTube', image: '', url: 'https://www.youtube.com/@SatoriGraphics' },
-      { title: 'The Brand Gap', by: 'Marty Neumeier', kind: 'Book', image: '', url: '' },
-      { title: 'The Advertising Concept Book', by: 'Pete Barry', kind: 'Book', image: '', url: '' },
-      { title: 'Designing Brand Identity', by: 'Alina Wheeler', kind: 'Book', image: '', url: '' },
-      { title: 'The Futur', by: 'YouTube channel', kind: 'YouTube', image: '', url: 'https://www.youtube.com/@thefutur' },
+      { title: 'Incubator', by: 'Design programme', kind: 'Program', image: 'assets/resources/incubator.jpg', url: '' },
+      { title: 'Logo Design Love', by: 'David Airey', kind: 'Book', image: 'assets/resources/logo-design-love.jpg', url: '' },
+      { title: 'Satori Graphics', by: 'YouTube channel', kind: 'YouTube', image: 'assets/resources/satori-graphics.jpg', url: 'https://www.youtube.com/@SatoriGraphics' },
+      { title: 'The Brand Gap', by: 'Marty Neumeier', kind: 'Book', image: 'assets/resources/the-brand-gap.jpg', url: '' },
+      { title: 'The Advertising Concept Book', by: 'Pete Barry', kind: 'Book', image: 'assets/resources/advertising-concept-book.jpg', url: '' },
+      { title: 'Designing Brand Identity', by: 'Alina Wheeler', kind: 'Book', image: 'assets/resources/designing-brand-identity.jpg', url: '' },
+      { title: 'The Futur', by: 'YouTube channel', kind: 'YouTube', image: 'assets/resources/the-futur.jpg', url: 'https://www.youtube.com/@thefutur' },
     ]},
     links: { label: 'Links', description: 'Find the work, the process, or start a conversation.', items: [
       { label: 'Work ↗', href: '#work' }, { label: 'About ↗', href: '#about' }, { label: 'Contact ↗', href: '#contact' },
@@ -94,9 +108,9 @@
     contact: { ctaLabel: "Let's talk ↗", pageHeading: "Let's talk.", subheading: 'Tell me about your project.', body: 'Share a little about what you have in mind — the goal, the timeline, anything that helps. I read every message and reply personally.', whatsappLabel: 'WhatsApp number (optional)', backLabel: '← Back home', small: 'Start a project', headingLines: ["LET'S MAKE","SOMETHING","WORTH SEEING."], available: 'Available for selected projects', emailText: 'samuel.s.adedeji@gmail.com ↗', emailHref: 'mailto:samuel.s.adedeji@gmail.com' },
     footer: { left: '© 2026 Adedeji Samuel', right: 'Designed with intention / Lagos', brand: 'Helloutidex', name: 'SAMUEL ADEDEJI' },
     effects: { particles: true, intro: true, introStyle: 'poster' },
-    poster: { head: "Every project is a\nconversation, this is\nwhere yours begins.", btn: 'Book a Call', tag: "What are you waiting for, let's build bold brands.", sign: 'Samuel Adedeji', signImage: '', image: 'assets/portrait.jpg', mark: 'SA', hold: 2.9,
+    poster: { head: "Every project is a\nconversation, this is\nwhere yours begins.", btn: 'Book a Call', tag: "What are you waiting for, let's build bold brands.", sign: 'Adedeji Samuel', signImage: '', image: 'assets/portrait-cutout.webp', mark: 'SA', hold: 8.4,
       socials: [{ label: 'Instagram', url: '' }, { label: 'LinkedIn', url: '' }, { label: 'Linktree', url: '' }] },
-    games: { enabled: true, idleMinutes: 5, offline: true, title: 'Taking a break? Play a quick game.', odd: true, memory: true, sudoku: true, words: true },
+    games: { enabled: true, idleMinutes: 2, button: 'Play a game', offline: true, title: 'Taking a break? Play a quick game.', odd: true, memory: true, sudoku: true, words: true },
   };
 
   const cloneDefaultContent = () => JSON.parse(JSON.stringify(DEFAULT_CONTENT));
@@ -156,6 +170,14 @@
     set('heroNote', c.hero.note); set('heroZoomInstruction', c.hero.zoomInstruction);
     const cta = $('#heroCta');
     if (cta) { cta.textContent = c.hero.ctaLabel || ''; cta.href = c.hero.ctaHref || '#work'; cta.hidden = !c.hero.ctaLabel; }
+    // Hire me → opens WhatsApp straight to the chat, with a ready-made first message
+    const hire = $('#heroHire');
+    if (hire) {
+      const num = String(c.hero.whatsapp || '').replace(/\D/g, '').replace(/^0(?=\d{10}$)/, '234');
+      hire.hidden = !(c.hero.hireLabel && num);
+      hire.href = `https://wa.me/${num}${c.hero.hireMessage ? '?text=' + encodeURIComponent(c.hero.hireMessage) : ''}`;
+      set('heroHireLabel', c.hero.hireLabel || 'Hire me');
+    }
     set('aboutLabel', c.about.label); set('viewCV', c.about.viewCV); set('downloadCV', c.about.downloadCV);
     const cvBox = $('.cv-cta'); if (cvBox) cvBox.hidden = !c.about.cvFile;
     const portraitImg = $('#portraitImg'); if (portraitImg && c.about.portraitImage) portraitImg.src = c.about.portraitImage;
@@ -221,7 +243,11 @@
     set('processLabel', pr2.label || ''); set('processHeading', pr2.heading || '');
     const ps2 = $('#processSteps'); if (ps2) ps2.innerHTML = steps.map((s, i) => `<li class="pstep" style="--i:${i}"><span class="pstep-dot" aria-hidden="true"></span><h3>${esc(s.title)}</h3>${s.text ? `<p>${esc(s.text)}</p>` : ''}</li>`).join('');
     // resources
-    const rs = c.resources || {}, ritems = (rs.items || []).filter(r => r.title || r.image);
+    // built-in pictures for the starter resources (from the Resources page of the PDF portfolio), used when no cover is uploaded
+    const RES_PICS = { 'incubator': 'incubator', 'logo design love': 'logo-design-love', 'satori graphics': 'satori-graphics', 'the brand gap': 'the-brand-gap',
+      'the advertising concept book': 'advertising-concept-book', 'designing brand identity': 'designing-brand-identity', 'the futur': 'the-futur' };
+    const rs = c.resources || {}, ritems = (rs.items || []).filter(r => r.title || r.image).map(r => {
+      const k = RES_PICS[String(r.title || '').trim().toLowerCase()]; return (!r.image && k) ? { ...r, image: `assets/resources/${k}.jpg` } : r; });
     const resEl = $('#resources'); if (resEl) resEl.hidden = !ritems.length;
     set('resourcesLabel', rs.label || ''); set('resourcesHeading', rs.heading || '');
     const kindIcon = k => /you ?tube|video|channel/i.test(k || '') ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7.5v9l7.5-4.5z" fill="currentColor"/></svg>'
@@ -231,8 +257,9 @@
     if (rg) rg.innerHTML = ritems.map((r, i) => {
       const wide = /you ?tube|video|channel|program/i.test(r.kind || ''), tag = r.url ? 'a' : 'div';
       const attrs = r.url ? ` href="${esc(r.url)}" target="_blank" rel="noopener"` : '';
-      return `<${tag} class="res-card${wide ? ' wide' : ''}${r.image ? ' has-img' : ''}" style="--i:${i}"${attrs}>
-        ${r.image ? `<img src="${esc(r.image)}" alt="" loading="lazy" decoding="async">` : ''}
+      const isBook = /book/i.test(r.kind || '') && !wide;
+      return `<${tag} class="res-card${wide ? ' wide' : ''}${r.image ? (isBook ? ' has-cover' : ' has-img') : ''}" style="--i:${i}"${attrs}>
+        ${r.image ? `<img${isBook ? ' class="res-cover"' : ''} src="${esc(r.image)}" alt="${esc(r.title || '')}" loading="lazy" decoding="async">` : ''}
         <span class="res-kind">${kindIcon(r.kind)}${esc(r.kind || '')}</span>
         <span class="res-body"><strong>${esc(r.title || '')}</strong>${r.by ? `<em>${esc(r.by)}</em>` : ''}</span>
         ${r.url ? '<span class="res-go" aria-hidden="true">↗</span>' : ''}
@@ -271,8 +298,8 @@
     localStorage.setItem('ferricool-intro', ef.intro === false ? 'off' : 'on');
     localStorage.setItem('ferricool-intro-style', ef.intro === false ? 'off' : (ef.introStyle || 'poster'));
     localStorage.setItem('ferricool-intro-name', (C.signature && C.signature.name) || '');
-    const img = po.image && !String(po.image).startsWith('data:') ? po.image : 'assets/portrait.jpg', simg = po.signImage && !String(po.signImage).startsWith('data:') ? po.signImage : '';
-    localStorage.setItem('ferricool-poster', JSON.stringify({ head: po.head, btn: po.btn, tag: po.tag, sign: po.sign, signImg: simg, img, mark: po.mark, hold: Math.round((Number(po.hold) || 2.9) * 1000), socials: (po.socials || []).filter(x => x && x.label && x.url) }));
+    const img = po.image && !String(po.image).startsWith('data:') ? po.image : 'assets/portrait-cutout.webp', simg = po.signImage && !String(po.signImage).startsWith('data:') ? po.signImage : '';
+    localStorage.setItem('ferricool-poster', JSON.stringify({ head: po.head, btn: po.btn, tag: po.tag, sign: po.sign, signImg: simg, img, mark: po.mark, hold: Math.round(Math.max(3.8, Number(po.hold) || 8.4) * 1000), socials: (po.socials || []).filter(x => x && x.label && x.url) }));
   } catch (e) {}
 
   /* ---------- colours: one light palette and one dark palette; admin picks which one the site uses ---------- */
@@ -357,6 +384,12 @@
     let t = null;
     const busy = () => (window.PortfolioGames && PortfolioGames.isOpen()) || document.querySelector('.modal.open, .lightbox.open, .pwpage.open');
     const show = offline => load().then(() => { if (!busy()) PortfolioGames.open({ games: list, title: g.title, offline, onClose: arm }); }).catch(() => {});
+    // "Play a game" button in the header: opens the games any time
+    const pb = $('#navPlay');
+    if (pb) {
+      pb.hidden = g.button === ''; const pl = $('#navPlayLabel'); if (pl && g.button) pl.textContent = g.button;
+      pb.addEventListener('click', () => { $('#sitebar')?.classList.remove('open'); load().then(() => { if (!PortfolioGames.isOpen()) PortfolioGames.open({ games: list, title: g.title, onClose: arm }); }).catch(() => {}); });
+    }
     const arm = () => { clearTimeout(t); t = setTimeout(() => { if (document.visibilityState === 'visible') show(false); else arm(); }, wait); };
     ['pointerdown', 'pointermove', 'keydown', 'scroll', 'touchstart', 'wheel'].forEach(ev => window.addEventListener(ev, () => { if (!(window.PortfolioGames && PortfolioGames.isOpen())) arm(); }, { passive: true }));
     if (g.offline !== false) window.addEventListener('offline', () => show(true));
@@ -385,6 +418,11 @@
     const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } }), { threshold: .2 });
     els.forEach(e => io.observe(e));
   })();
+
+  // the signature under About me writes itself when it scrolls into view
+  (function(){ const el = $('#aboutSign'); if (!el) return;
+    if (!('IntersectionObserver' in window)) { el.classList.add('is-in'); return; }
+    const io = new IntersectionObserver(es => { if (es[0].isIntersecting) { el.classList.add('is-in'); io.disconnect(); } }, { threshold: .6 }); io.observe(el); })();
 
   // testimonials: cards rise in one after another when scrolled to, and tilt toward the cursor on hover (computers only)
   (function testimonialFx(){
@@ -438,7 +476,7 @@
     return JSON.parse(new TextDecoder().decode(plain));
   }
 
-  const LAYOUTS = ['cases', 'book', 'natural', 'grid2', 'grid3', 'stack'];
+  const LAYOUTS = ['cases', 'books', 'book', 'natural', 'grid2', 'grid3', 'stack'];
   const PHOTOS = [
     'https://images.unsplash.com/photo-1518005020951-eccb494ad742',
     'https://images.unsplash.com/photo-1504674900247-0877df9cc836',
@@ -475,7 +513,7 @@
       const out = { id: c.id || ('cat-' + (i + 1)), title: c.title || ('Section ' + (i + 1)), layout, image: c.image || '', intro: c.intro || '', bg: c.bg || '', tight: c.tight !== false, tile: !!c.tile };
       let items = c.items;
       if (!Array.isArray(items)) items = (c.locked && c.enc) ? undefined : [];
-      if (items) out.items = layout === 'cases' ? items.map(migrateCase) : items;
+      if (items) out.items = (layout === 'cases' || layout === 'books') ? items.map(migrateCase) : items;
       return Object.assign(out, lockFields(c));
     });
   }
@@ -573,7 +611,7 @@
     const caseCover = s => s.cover || firstImage(s.blocks);
     // a section's own first picture beats a leftover stock placeholder photo as its card / gallery cover
     const isStock = u => /images\.unsplash\.com/.test(u || '');
-    const ownCover = c => c.layout === 'cases' ? ((c.items || []).map(caseCover).find(Boolean) || '') : firstImage(c.items);
+    const ownCover = c => (c.layout === 'cases' || c.layout === 'books') ? ((c.items || []).map(caseCover).find(Boolean) || '') : firstImage(c.items);
     const catCover = c => (c.image && !isStock(c.image)) ? c.image : (ownCover(c) || c.image || '');
     const flag = c => c.locked ? '🔒 Locked' : 'Open ↗';
     // empty sections (nothing uploaded yet) show their title card, not a leftover stock photo
@@ -720,7 +758,7 @@
       });
     }
     function applyDecrypted(node, field, data){
-      if (field === 'items') node.items = (Array.isArray(data.items) ? data.items : []).map((x, i) => node.layout === 'cases' ? migrateCase(x, i) : x);
+      if (field === 'items') node.items = (Array.isArray(data.items) ? data.items : []).map((x, i) => (node.layout === 'cases' || node.layout === 'books') ? migrateCase(x, i) : x);
       else { node.blocks = Array.isArray(data.blocks) ? data.blocks : []; if (Array.isArray(data.details)) node.details = data.details; }
       node._unlocked = true;
     }
@@ -778,8 +816,8 @@
     }
     function blocksHTML(blocks){
       return (blocks || []).map(b => {
-        // caption under a picture / video / PDF: optional heading + readable text (long ones flow into 2 columns on computers)
-        const capText = String(b.caption || '').trim(), capHead = String(b.captionTitle || '').trim();
+        // caption under a picture / video / PDF: heading ("About this piece" if a long caption has none) + one wide column of text
+        const capText = String(b.caption || '').trim(), capHead = String(b.captionTitle || '').trim() || (capText.length > 160 ? 'About this piece' : '');
         const cap = (capText || capHead) ? `<figcaption class="pcap${capText.length > 380 ? ' is-long' : ''}">${capHead ? `<strong>${esc(capHead)}</strong>` : ''}${capText ? `<span>${esc(capText)}</span>` : ''}</figcaption>` : '';
         if (b.type === 'image') { currentImages.push(b.src); return `<figure class="pimg" data-lb="${currentImages.length - 1}"><img src="${esc(b.src)}" alt="" loading="lazy" decoding="async">${cap}</figure>`; }
         if (b.type === 'pdf') return `<div class="ppdf"><iframe data-pdf="${esc(b.src)}" title="PDF document"></iframe><a class="ppdf-open" data-pdf-link="${esc(b.src)}" href="${b.src.startsWith('data:') ? '#' : esc(b.src)}" target="_blank" rel="noopener">Open PDF ↗</a>${cap}</div>`;
@@ -835,17 +873,18 @@
     async function startBook(pages){
       destroyBook();
       const stage = $('#bookStage'), el = $('#bookEl'); if (!stage || !el) return;
-      try { if (!(window.St && St.PageFlip)) await loadScript('assets/vendor/page-flip.browser.js?v=1'); } catch (e) { stage.hidden = true; $('#bookSpreads').hidden = false; return; }
+      try { if (!(window.St && St.PageFlip)) await Promise.race([loadScript('assets/vendor/page-flip.browser.js?v=1'), new Promise((_, r) => setTimeout(() => r(new Error('slow')), 8000))]); } catch (e) { showSpreadsInstead(); return; }
       // page shape comes from the cover picture
       const ratio = await new Promise(res => { const im = new Image(); im.onload = () => res(im.naturalWidth / im.naturalHeight || .71); im.onerror = () => res(.71); im.src = pages[0].src; });
       const fit = () => {   // biggest book that fits the screen: two pages wide on computers, one on phones
-        const two = window.innerWidth > 800, maxW = Math.min(stage.parentElement.clientWidth, 1500), maxH = Math.max(320, window.innerHeight - (two ? 230 : 210));
+        const two = window.innerWidth > 800, maxW = Math.min(stage.parentElement.clientWidth, 1200), maxH = Math.max(320, Math.min(860, window.innerHeight - (two ? 170 : 210)));
         let pw = two ? maxW / 2 : maxW, ph = pw / ratio; if (ph > maxH) { ph = maxH; pw = ph * ratio; }
         stage.style.setProperty('--book-w', Math.floor(two ? pw * 2 : pw) + 'px'); stage.style.setProperty('--book-h', Math.floor(ph) + 'px');
         return { pw: Math.floor(pw), ph: Math.floor(ph) };
       };
       const { pw, ph } = fit();
       const twoUp = window.innerWidth > 800;
+      try {
       book = new St.PageFlip(el, { width: pw, height: ph, size: 'stretch', minWidth: twoUp ? 160 : Math.ceil(pw * .8), maxWidth: 2000, minHeight: 220, maxHeight: 2600,
         showCover: true, usePortrait: true, mobileScrollSupport: false, flippingTime: 900, maxShadowOpacity: .45, drawShadow: true, startZIndex: 2, autoSize: true });
       book.loadFromHTML(el.querySelectorAll('.pbook-page'));
@@ -859,7 +898,13 @@
       book.on('changeState', e => { if (e.data === 'flipping' && lastState !== 'flipping') pageSound(); lastState = e.data; });
       book.on('flip', label); label();
       bookResize = () => fit(); window.addEventListener('resize', bookResize);
+      stage.classList.add('is-ready');
+      // bring the whole book into view (controls + pages), so it fits the screen without scrolling
+      setTimeout(() => { const bar = stage.previousElementSibling; if (bar && modalBody) modalBody.scrollTo({ top: Math.max(0, bar.offsetTop - 70), behavior: 'smooth' }); }, 350);
+      } catch (err) { console.error(err); book = null; showSpreadsInstead(); }
     }
+    // if the book can't start (old browser, slow file), show the neat cover + spreads view instead of raw pages
+    function showSpreadsInstead(){ const st = $('#bookStage'), sp = $('#bookSpreads'); if (st) st.hidden = true; if (sp) sp.hidden = false; $$('[data-book="prev"],[data-book="next"],#bookCount,[data-book="sound"],.pbook-sep,[data-book="view"]').forEach(x => x.hidden = true); }
     caseSections.addEventListener('click', e => {
       const b = e.target.closest('[data-book]'); if (!b) return;
       const act = b.dataset.book;
@@ -883,6 +928,15 @@
             <span class="pcase-img"><img src="${esc(imgW(caseCover(s), 1400))}" alt="" loading="lazy"></span>
             <span class="pcase-meta"><span>${pad2(si + 1)}${s.locked ? ' · 🔒 Locked' : ''}</span><strong>${esc(s.title)}</strong>${s.tagline ? `<em>${esc(s.tagline)}</em>` : ''}<i>View case study ↗</i></span>
           </button>`).join('') : '<p class="pempty">Case studies are coming soon.</p>';
+      } else if (cat.layout === 'books') {
+        // a shelf of editorials: tidy covers; tap one to open it as its own flip book
+        caseSections.className = 'pshelf';
+        caseSections.innerHTML = items.length ? items.map((s, si) => `
+          <button class="pshelf-item" type="button" data-si="${si}" style="--i:${si}">
+            <span class="pshelf-cover"><img src="${esc(caseCover(s))}" alt="" loading="lazy" decoding="async"><span class="pshelf-spine" aria-hidden="true"></span>${s.locked ? '<span class="pshelf-lock">🔒</span>' : ''}</span>
+            <strong>${esc(s.title)}</strong>${s.tagline ? `<em>${esc(s.tagline)}</em>` : ''}
+            <i>${(s.blocks || []).filter(b => b.type === 'image').length || ''}${(s.blocks || []).length ? ' pages · ' : ''}Open ↗</i>
+          </button>`).join('') : '<p class="pempty">Work is coming soon.</p>';
       } else if (cat.layout === 'book') {
         caseSections.className = 'pbook-wrap';
         const pages = items.filter(b => b.type === 'image' && b.src), others = items.filter(b => !(b.type === 'image' && b.src));
@@ -905,8 +959,15 @@
       mmeta.textContent = `${cat.title} / ${cs.title}`; caseTitle.textContent = cs.title;
       if (cs.tagline) { caseTagline.textContent = cs.tagline; caseTagline.hidden = false; } else caseTagline.hidden = true;
       renderDetails(cs.details);
+      if (cat.layout === 'books') {
+        const pages = (cs.blocks || []).filter(b => b.type === 'image' && b.src), others = (cs.blocks || []).filter(b => !(b.type === 'image' && b.src));
+        caseSections.className = 'pbook-wrap';
+        caseSections.innerHTML = pages.length ? bookHTML(pages) + (others.length ? `<div class="pblocks gaps">${blocksHTML(others)}</div>` : '') : '<p class="pempty">Pages are coming soon.</p>';
+        if (pages.length) setTimeout(() => startBook(pages), 30);
+      } else {
       caseSections.className = cs.tight !== false ? 'pblocks' : 'pblocks gaps';
       caseSections.innerHTML = blocksHTML(cs.blocks);
+      }
       // every case study ends with a thank-you (admin → Content → Work / gallery)
       const w = C.work || {};
       const thanks = w.thanks ? `<div class="case-thanks reveal"><span class="case-thanks-dot" aria-hidden="true"></span><h2>${esc(w.thanks)}</h2>${(w.thanksNote || w.thanksCta) ? `<p>${esc(w.thanksNote || '')}${w.thanksCta ? ` <a href="contact.html">${esc(w.thanksCta)}</a>` : ''}</p>` : ''}</div>` : '';
@@ -947,7 +1008,7 @@
     backBtn.addEventListener('click', () => { if (view && view.t === 'case') { renderCategory(view.ci); clickSound(); } });
     caseNext.addEventListener('click', e => { if (e.target.closest('#caseNextBtn')) moveView(1); });
     caseSections.addEventListener('click', e => {
-      const c = e.target.closest('.pcase'); if (c && view) { openCase(view.ci, Number(c.dataset.si)); return; }
+      const c = e.target.closest('.pcase, .pshelf-item'); if (c && view) { openCase(view.ci, Number(c.dataset.si)); return; }
       const f = e.target.closest('.pimg'); if (f) openLightbox(Number(f.dataset.lb));
     });
     caseMore.addEventListener('click', async e => {

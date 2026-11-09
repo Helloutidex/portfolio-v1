@@ -133,6 +133,7 @@ try {
       note: 'The work is hidden in the lens.',
       zoomInstruction: 'Tap to explore',
       lensImage: '', ctaLabel: 'View my work ↗', ctaHref: '#work',
+      hireLabel: 'Hire me', whatsapp: '2348065925091', hireMessage: "Hi Samuel, I saw your portfolio and I'd like to hire you for a project.",
     },
     about: {
       label: 'About me', viewCV: 'View CV ↗', downloadCV: 'Download CV ↓',
@@ -175,13 +176,13 @@ try {
       { title: 'Design', text: 'Craft the system and polish every detail.' },
     ]},
     resources: { label: 'Resources', heading: 'Books, channels and programs that shaped how I design.', items: [
-      { title: 'Incubator', by: 'Design programme', kind: 'Program', image: '', url: '' },
-      { title: 'Logo Design Love', by: 'David Airey', kind: 'Book', image: '', url: '' },
-      { title: 'Satori Graphics', by: 'YouTube channel', kind: 'YouTube', image: '', url: 'https://www.youtube.com/@SatoriGraphics' },
-      { title: 'The Brand Gap', by: 'Marty Neumeier', kind: 'Book', image: '', url: '' },
-      { title: 'The Advertising Concept Book', by: 'Pete Barry', kind: 'Book', image: '', url: '' },
-      { title: 'Designing Brand Identity', by: 'Alina Wheeler', kind: 'Book', image: '', url: '' },
-      { title: 'The Futur', by: 'YouTube channel', kind: 'YouTube', image: '', url: 'https://www.youtube.com/@thefutur' },
+      { title: 'Incubator', by: 'Design programme', kind: 'Program', image: 'assets/resources/incubator.jpg', url: '' },
+      { title: 'Logo Design Love', by: 'David Airey', kind: 'Book', image: 'assets/resources/logo-design-love.jpg', url: '' },
+      { title: 'Satori Graphics', by: 'YouTube channel', kind: 'YouTube', image: 'assets/resources/satori-graphics.jpg', url: 'https://www.youtube.com/@SatoriGraphics' },
+      { title: 'The Brand Gap', by: 'Marty Neumeier', kind: 'Book', image: 'assets/resources/the-brand-gap.jpg', url: '' },
+      { title: 'The Advertising Concept Book', by: 'Pete Barry', kind: 'Book', image: 'assets/resources/advertising-concept-book.jpg', url: '' },
+      { title: 'Designing Brand Identity', by: 'Alina Wheeler', kind: 'Book', image: 'assets/resources/designing-brand-identity.jpg', url: '' },
+      { title: 'The Futur', by: 'YouTube channel', kind: 'YouTube', image: 'assets/resources/the-futur.jpg', url: 'https://www.youtube.com/@thefutur' },
     ]},
     links: { label: 'Links', description: 'Find the work, the process, or start a conversation.', items: [
       { label: 'Work ↗', href: '#work' }, { label: 'About ↗', href: '#about' }, { label: 'Contact ↗', href: '#contact' },
@@ -191,9 +192,9 @@ try {
     contact: { ctaLabel: "Let's talk ↗", pageHeading: "Let's talk.", subheading: 'Tell me about your project.', body: 'Share a little about what you have in mind — the goal, the timeline, anything that helps. I read every message and reply personally.', whatsappLabel: 'WhatsApp number (optional)', backLabel: '← Back home', small: 'Start a project', headingLines: ["LET'S MAKE","SOMETHING","WORTH SEEING."], available: 'Available for selected projects', emailText: 'samuel.s.adedeji@gmail.com ↗', emailHref: 'mailto:samuel.s.adedeji@gmail.com' },
     footer: { left: '© 2026 Adedeji Samuel', right: 'Designed with intention / Lagos', brand: 'Helloutidex', name: 'SAMUEL ADEDEJI' },
     effects: { particles: true, intro: true, introStyle: 'poster' },
-    poster: { head: "Every project is a\nconversation, this is\nwhere yours begins.", btn: 'Book a Call', tag: "What are you waiting for, let's build bold brands.", sign: 'Samuel Adedeji', signImage: '', image: 'assets/portrait.jpg', mark: 'SA', hold: 2.9,
+    poster: { head: "Every project is a\nconversation, this is\nwhere yours begins.", btn: 'Book a Call', tag: "What are you waiting for, let's build bold brands.", sign: 'Adedeji Samuel', signImage: '', image: 'assets/portrait-cutout.webp', mark: 'SA', hold: 8.4,
       socials: [{ label: 'Instagram', url: '' }, { label: 'LinkedIn', url: '' }, { label: 'Linktree', url: '' }] },
-    games: { enabled: true, idleMinutes: 5, offline: true, title: 'Taking a break? Play a quick game.', odd: true, memory: true, sudoku: true, words: true },
+    games: { enabled: true, idleMinutes: 2, button: 'Play a game', offline: true, title: 'Taking a break? Play a quick game.', odd: true, memory: true, sudoku: true, words: true },
   };
 
   function cloneDefaultContent(){ return JSON.parse(JSON.stringify(DEFAULT_CONTENT)); }
@@ -517,7 +518,7 @@ try {
     return JSON.parse(new TextDecoder().decode(plain));
   }
 
-  const LAYOUTS = ['cases', 'book', 'natural', 'grid2', 'grid3', 'stack'];
+  const LAYOUTS = ['cases', 'books', 'book', 'natural', 'grid2', 'grid3', 'stack'];
   const PHOTOS = [
     'https://images.unsplash.com/photo-1518005020951-eccb494ad742',
     'https://images.unsplash.com/photo-1504674900247-0877df9cc836',
@@ -554,7 +555,7 @@ try {
       const out = { id: c.id || ('cat-' + (i + 1)), title: c.title || ('Section ' + (i + 1)), layout, image: c.image || '', intro: c.intro || '', bg: c.bg || '', tight: c.tight !== false, tile: !!c.tile };
       let items = c.items;
       if (!Array.isArray(items)) items = (c.locked && c.enc) ? undefined : [];
-      if (items) out.items = layout === 'cases' ? items.map(migrateCase) : items;
+      if (items) out.items = (layout === 'cases' || layout === 'books') ? items.map(migrateCase) : items;
       return Object.assign(out, lockFields(c));
     });
   }
@@ -577,7 +578,7 @@ try {
   const listEl = $('#adminList');
   const pad2 = n => String(n).padStart(2, '0');
   const isData = s => String(s || '').startsWith('data:');
-  const LAYOUT_LABELS = { cases: 'Case studies — a vertical list, each opens its own page', book: 'Book — cover on its own, then pages side by side that flip like a real book (editorial / PDFs)', natural: 'Natural size — pictures and PDFs as uploaded', grid2: 'Grid, 2 columns (1 on phones) — good for social ads', grid3: 'Grid, 3 columns (2 on phones) — good for logos', stack: 'Stack — one under another' };
+  const LAYOUT_LABELS = { cases: 'Case studies — a vertical list, each opens its own page', books: 'Book shelf — several editorials / magazines; each opens as its own flip book', book: 'Book — cover on its own, then pages side by side that flip like a real book (editorial / PDFs)', natural: 'Natural size — pictures and PDFs as uploaded', grid2: 'Grid, 2 columns (1 on phones) — good for social ads', grid3: 'Grid, 3 columns (2 on phones) — good for logos', stack: 'Stack — one under another' };
 
   // PDF → page pictures (for Book sections). pdf.js is fetched from cdnjs only when first needed.
   let pdfjsReady = null;
@@ -669,7 +670,7 @@ try {
       </div>` : ''}</article>`;
   }
   function categoryHTML(c, i){
-    const open = openCat === i, needs = c.locked && c.enc && !Array.isArray(c.items), cases = c.layout === 'cases';
+    const open = openCat === i, needs = c.locked && c.enc && !Array.isArray(c.items), cases = c.layout === 'cases' || c.layout === 'books';
     const body = !open ? '' : `<div class="admin-project-body">
         <div class="admin-row2"><label>Name (also on its floating card)<input data-cf="title" value="${esc(c.title || '')}"></label>
           <label>How its page is laid out<select data-cf="layout">${LAYOUTS.map(l => `<option value="${l}" ${c.layout === l ? 'selected' : ''}>${esc(LAYOUT_LABELS[l])}</option>`).join('')}</select></label></div>
@@ -680,7 +681,7 @@ try {
           ${c.layout === 'grid2' || c.layout === 'grid3' ? `<label class="admin-check"><input type="checkbox" data-cf="tile" ${c.tile ? 'checked' : ''}> Show each picture on a soft tile (good for logos)</label>` : ''}</div>
         ${lockBox(c, 'this whole section')}
         ${needs ? unlockBox() : cases
-          ? `<p class="admin-hint">Case studies — each opens its own page. Click Edit on one to change it.</p>${(c.items || []).map(caseHTML).join('')}<button type="button" class="admin-add-small" data-add-case>+ Add a case study</button>`
+          ? `<p class="admin-hint">${c.layout === 'books' ? 'Editorials — each one opens as its own flip book. In each: the FIRST picture is its cover, the rest are its pages (upload a PDF and every page is added for you).' : 'Case studies — each opens its own page. Click Edit on one to change it.'}</p>${(c.items || []).map(caseHTML).join('')}<button type="button" class="admin-add-small" data-add-case>${c.layout === 'books' ? '+ Add an editorial' : '+ Add a case study'}</button>`
           : blocksEditor(c.items, true, c.layout === 'book' ? 'Book: the FIRST picture is the cover (shown on its own), then the pages follow in pairs, left and right. Upload a PDF and every page becomes a picture automatically, or upload page pictures (all the same size). Reorder with ↑ ↓.' : 'Pictures should be 1920 px wide, any height (PDFs are fine too). Pick many at once; they are added in file-name order.')}
       </div>`;
     return `<article class="admin-project${open ? ' is-open' : ''}" data-ci="${i}">${rowHead(i + 1, c.image || (cases ? ((c.items || []).map(s => s.cover || firstImg(s.blocks)).find(Boolean) || '') : firstImg(c.items)), c.title, c.locked, `<button type="button" data-cat-toggle>${open ? 'Close' : 'Edit'}</button>`)}${body}</article>`;
@@ -698,7 +699,7 @@ try {
     const bi = blockEl ? [...blockEl.parentElement.children].filter(x => x.classList.contains('admin-block')).indexOf(blockEl) : -1;
     return { ci, cat, si, cs, owner, arr, bi, catEl, caseEl, field: cs ? 'blocks' : 'items' };
   }
-  const caseBlocksOnly = c => c.cat.layout === 'cases' && !c.cs;   // (a "cases" section has no direct files)
+  const caseBlocksOnly = c => (c.cat.layout === 'cases' || c.cat.layout === 'books') && !c.cs;   // (a "cases" section has no direct files)
 
   listEl.addEventListener('input', e => {
     const c = ctx(e.target); if (!c) return; const t = e.target;
@@ -716,8 +717,16 @@ try {
     if (t.dataset.sf) { c.cs[t.dataset.sf] = t.type === 'checkbox' ? t.checked : t.value; if (t.dataset.sf === 'title') c.caseEl.querySelector('[data-title-label]').textContent = (t.value || 'Untitled') + (c.cs.locked ? ' 🔒' : ''); return; }
     if (t.dataset.cf === 'layout') {
       const old = c.cat.layout, neu = t.value, had = (c.cat.items || []).length;
-      const incompatible = had && ((neu === 'cases') !== (old === 'cases'));
-      if (incompatible && !confirm('Switching to or from "case studies" clears what is in this section. Continue?')) { t.value = old; return; }
+      const grp = l => l === 'cases' || l === 'books';
+      // one book → a shelf: the pages you already have become the first editorial (nothing is lost)
+      if (old === 'book' && neu === 'books') {
+        const pages = c.cat.items || [];
+        c.cat.items = pages.length ? [{ id: 'ed-' + Date.now(), title: (c.cat.title || 'Editorial') + ' 1', cover: (pages.find(b => b.type === 'image') || {}).src || '', tagline: '', bg: '', tight: true, blocks: pages }] : [];
+        c.cat.layout = neu; renderCategories(); return;
+      }
+      if (old === 'books' && neu === 'book' && (c.cat.items || []).length === 1) { c.cat.items = c.cat.items[0].blocks || []; c.cat.layout = neu; renderCategories(); return; }
+      const incompatible = had && grp(neu) !== grp(old);
+      if (incompatible && !confirm('Switching to or from a list of case studies / editorials clears what is in this section. Continue?')) { t.value = old; return; }
       if (incompatible) c.cat.items = [];
       c.cat.layout = neu; renderCategories(); return;
     }
@@ -744,7 +753,7 @@ try {
       const files = Array.from(t.files).sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
       setStatus('sectionsStatus', `Adding ${files.length} file${files.length > 1 ? 's' : ''}…`);
       const target = c.cs ? (c.cs.blocks = c.cs.blocks || []) : (c.cat.items = c.cat.items || []);
-      const asBook = !c.cs && c.cat.layout === 'book';
+      const asBook = (!c.cs && c.cat.layout === 'book') || (c.cs && c.cat.layout === 'books');
       for (const f of files) {
         if (f.type === 'application/pdf' && asBook) {   // a PDF in a Book section becomes its pages, in order
           try { for (const src of await pdfToPages(f, (i, n) => setStatus('sectionsStatus', `Turning "${f.name}" into pages… ${i} of ${n}`))) target.push({ type: 'image', src }); }
@@ -794,7 +803,7 @@ try {
     }
     if (t.closest('[data-add-case]')) {
       c.cat.items = c.cat.items || [];
-      c.cat.items.push({ id: 'case-' + Date.now(), title: 'Case study ' + (c.cat.items.length + 1), cover: '', tagline: '', bg: '', tight: true, details: STD_DETAILS.map(label => ({ label, value: '' })), blocks: [] });
+      c.cat.items.push({ id: 'case-' + Date.now(), title: (c.cat.layout === 'books' ? 'Editorial ' : 'Case study ') + (c.cat.items.length + 1), cover: '', tagline: '', bg: '', tight: true, details: STD_DETAILS.map(label => ({ label, value: '' })), blocks: [] });
       openCase = c.cat.items.length - 1; renderCategories(); return;
     }
     if (t.closest('[data-unlock-btn]')) {
@@ -802,7 +811,7 @@ try {
       if (!(window.crypto && crypto.subtle)) { st.textContent = 'This browser cannot unlock here (needs https).'; return; }
       try {
         const d = await decryptJSON(c.owner.enc, pw);
-        if (c.cs) { c.cs.blocks = d.blocks || []; if (Array.isArray(d.details)) c.cs.details = d.details; } else c.cat.items = (d.items || []).map((x, i) => c.cat.layout === 'cases' ? migrateCase(x, i) : x);
+        if (c.cs) { c.cs.blocks = d.blocks || []; if (Array.isArray(d.details)) c.cs.details = d.details; } else c.cat.items = (d.items || []).map((x, i) => (c.cat.layout === 'cases' || c.cat.layout === 'books') ? migrateCase(x, i) : x);
         c.owner.password = pw; delete c.owner.enc; renderCategories();
       } catch (err) { st.textContent = 'Wrong password'; }
     }
@@ -890,7 +899,7 @@ try {
       const lockedNodes = [];
       for (const c of categories) {
         if (c.locked && Array.isArray(c.items)) lockedNodes.push(c);
-        if (c.layout === 'cases') for (const s of (c.items || [])) if (s.locked && Array.isArray(s.blocks)) lockedNodes.push(s);
+        if (c.layout === 'cases' || c.layout === 'books') for (const s of (c.items || [])) if (s.locked && Array.isArray(s.blocks)) lockedNodes.push(s);
       }
       for (const n of lockedNodes) if (String(n.password || '').length < 4) throw new Error(`"${n.title}" is locked but has no password yet — type one of at least 4 characters.`);
       if (lockedNodes.length && !(window.crypto && crypto.subtle)) throw new Error('This browser cannot lock work here (it needs https). Use the live admin page.');
@@ -911,7 +920,7 @@ try {
       const published = { ...clean, categories: [] };
       for (const c of clean.categories) {
         const { password, ...rest } = c; let items = rest.items;
-        if (Array.isArray(items) && c.layout === 'cases') { const out = []; for (const s of items) out.push(await pubCase(s)); items = out; }
+        if (Array.isArray(items) && (c.layout === 'cases' || c.layout === 'books')) { const out = []; for (const s of items) out.push(await pubCase(s)); items = out; }
         if (c.locked && Array.isArray(c.items)) { const { items: _drop, ...pub } = rest; published.categories.push({ ...pub, locked: true, enc: await encryptJSON({ items }, password) }); }
         else if (c.locked && c.enc) { const { items: _drop, ...pub } = rest; published.categories.push({ ...pub, locked: true }); }
         else { const { enc, locked, lockNote, ...pub } = rest; published.categories.push({ ...pub, items }); }

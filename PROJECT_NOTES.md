@@ -159,3 +159,30 @@ size, 2-col, 3-col, stack. Images are 1920px wide. Sections and cases can be pas
   draft is loaded (with "discard and load the live site"); Publish keeps uploaded file paths in the draft
   and retries saving site-data.json up to 4 times. RULE: Claude no longer ships site-data.json in zips —
   content changes go through admin (or code defaults). CSS/JS tag ?v=20261109j.
+- 2026-11-09 (v14): "Hire me" button next to "View my work" opens WhatsApp chat with 2348065925091 and a
+  ready message (Content → Hero); "Play a game" button in the header (Content → Break-time games, empty
+  text hides it); games pop up after 2 idle minutes by default; Resources use pictures cropped from the
+  PDF portfolio's Resources page (assets/resources/, books shown as covers; used automatically when a
+  starter resource has no uploaded cover); captions are one wide column with a heading ("About this
+  piece" when a long caption has none); lighter images: 6 editorial JPGs re-encoded in place
+  (6.9 MB → 3.6 MB, same names, q82), heavy PNGs swapped for their JPG twins at load (LIGHTER map in
+  script.js). CSS/JS tag ?v=20261109k.
+- 2026-11-09 (v15): opening poster is now line art (outlines + headline + portrait as a line drawing)
+  that fills in to the exact poster, holds ~4.6s (admin), then everything folds into the red paper plane,
+  it flies up and a wave sweeps up to reveal the site (~7s total; any tap starts the ending). Editorial:
+  the book never shows raw full-width pages (fitted frame while loading, falls back to the spreads view),
+  max 1200px wide, fits the screen height and scrolls into view. New layout "Book shelf" (layout 'books'):
+  several editorials shown as covers; each opens as its own flip book (admin: switching Book → Book shelf
+  turns the current pages into "Editorial 1"; a PDF uploaded inside an editorial becomes its pages).
+  Site preview now also reads admin drafts from IndexedDB. CSS/JS tag ?v=20261109n.
+- 2026-11-09 (v16): opening poster matches the design: portrait is a cut-out (assets/portrait-cutout.webp,
+  background removed) with no side fades and the fine diagonal line texture only on the person; Home /
+  About / Works and the "SA. PORTFOLIO." mark removed (social links still show if set in admin); the
+  drawing is a fine pencil line version (assets/portrait-sketch.webp) that sweeps in on one angle while
+  light hatching crosses on another, then the photo fills in; ~10s total (plane takes off at 8.4s,
+  admin). An uploaded custom portrait gets its sketch drawn live by an SVG edge filter. CSS/JS ?v=20261109o.
+- 2026-11-09 (v17): custom "Adedeji Samuel" signature (vector paths from Herr Von Muellerhoff + a tapered
+  swash; standalone file assets/signature.svg) used on the opening poster and under the About text (red
+  swash, writes itself on scroll). Poster sequence: only the portrait is sketched (0–3s); then panel, red
+  shapes, headline lines, button, signature and tag animate in one after another. Outline-drawing of text
+  and shapes removed. CSS/JS ?v=20261109p.
