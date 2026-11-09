@@ -209,9 +209,9 @@
   /* ---------- colours: one light palette and one dark palette; admin picks which one the site uses ---------- */
   const THEME_STORAGE_KEY = 'ferricool-portfolio-theme';
   const DEFAULT_THEME = {
-    mode: 'light', scale: 1,
+    mode: 'dark', scale: 1,
     light: { paper: '#ffffff', ink: '#141211', muted: '#6b6b6b', line: '#ececec', accent: '#E8223E', contactBg: '#E8223E', contactText: '#ffffff', tint1: '#ffffff', tint2: '#ffffff' },
-    dark:  { paper: '#141211', ink: '#faf6ee', muted: '#9a948b', line: '#2c2926', accent: '#ff4d63', contactBg: '#E8223E', contactText: '#ffffff', tint1: '#2d211d', tint2: '#2b2618' },
+    dark:  { paper: '#0c0c0d', ink: '#f2f2f2', muted: '#a6a6a6', line: '#242426', accent: '#E8223E', contactBg: '#E8223E', contactText: '#ffffff', tint1: '#0c0c0d', tint2: '#0c0c0d' },
   };
   function migrateTheme(saved){
     const d = JSON.parse(JSON.stringify(DEFAULT_THEME));
@@ -468,7 +468,8 @@
     // empty sections (nothing uploaded yet) show their title card, not a leftover stock photo
     const isEmpty = c => !c.locked && Array.isArray(c.items) && !c.items.length;
     // a section with no pictures yet gets a clean title card instead of a grey box
-    const titleCard = t => 'data:image/svg+xml;utf8,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600"><rect width="800" height="600" fill="#f2f2f2"/><circle cx="400" cy="240" r="7" fill="#E8223E"/><text x="400" y="330" text-anchor="middle" font-family="Manrope,Arial,sans-serif" font-weight="700" font-size="56" letter-spacing="-2" fill="#141211">${esc(t || '')}</text><text x="400" y="384" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" letter-spacing="3" fill="#8a8a8a">COMING SOON</text></svg>`);
+    const darkUI = document.body.classList.contains('dark');
+    const titleCard = t => 'data:image/svg+xml;utf8,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600"><rect width="800" height="600" fill="${darkUI ? '#18181a' : '#f2f2f2'}"/><circle cx="400" cy="240" r="7" fill="#E8223E"/><text x="400" y="330" text-anchor="middle" font-family="Manrope,Arial,sans-serif" font-weight="700" font-size="56" letter-spacing="-2" fill="${darkUI ? '#f2f2f2' : '#141211'}">${esc(t || '')}</text><text x="400" y="384" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" letter-spacing="3" fill="#8a8a8a">COMING SOON</text></svg>`);
     const coverOf = c => (isEmpty(c) ? '' : catCover(c)) || titleCard(c.title);
 
     /* ---------- floating cards: the first five sections (drag them around; click to open) ---------- */

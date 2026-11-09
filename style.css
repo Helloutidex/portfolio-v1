@@ -463,8 +463,8 @@ button{font:inherit}
    v4 — header, palettes, mobile lens, sections, contact page, password page
    ===================================================================== */
 :root{--accent:#E8223E;--contact-text:#ffffff}
-html.predark{background:#141211}
-html.predark body{--paper:#141211;--ink:#faf6ee;--muted:#9a948b;--line:#2c2926}
+html.predark{background:#0c0c0d}
+html.predark body{--paper:#0c0c0d;--ink:#f2f2f2;--muted:#a6a6a6;--line:#242426}
 .hero:before{display:none}
 
 /* ---- header ---- */
@@ -834,4 +834,27 @@ body{transition:opacity .35s ease}
   .modal-head{justify-content:flex-end;padding:12px var(--edge)}
   .modal-actions{flex-wrap:nowrap;gap:6px}
   .modal-head .modal-nav{padding:7px 10px;white-space:nowrap}
+}
+
+/* ---- black site (dark look): collaborator logos stay true grayscale but turned light so they read on black;
+   hover shows each logo in its own colours on a white chip ---- */
+.dark .social-proof{background:var(--paper)}
+.dark .logo-mark{padding:8px 14px;border-radius:12px;height:54px;transition:background .3s ease}
+.dark .logo-mark img{filter:grayscale(1) invert(1) opacity(.62)}
+.dark .logo-mark:hover{background:#fff}
+.dark .logo-mark:hover img{filter:none}
+.dark .logo-mark svg{color:#8a8a8a}
+.dark .proof{border-block:1px solid rgba(255,255,255,.04)}
+.dark .testimonial-card{background:linear-gradient(160deg,#151517 0%,#0f0f10 100%);border-color:rgba(255,255,255,.07)}
+.dark .testimonial-card:hover{box-shadow:0 30px 70px -30px rgba(0,0,0,.8);border-color:rgba(232,34,62,.45)}
+.dark .testimonial-card:after{background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),rgba(232,34,62,.16),transparent 60%)}
+.dark .skill{background:#18181a}
+.dark .gallery-frame,.dark .card{box-shadow:0 22px 50px -18px rgba(0,0,0,.9)}
+.dark .pgrid:not(.tile) .pimg{background:#151517}
+@media(max-width:800px){.dark .logo-mark{height:40px;padding:6px 10px}}
+/* keep the About headline from wrapping into a narrow column on laptop screens */
+@media(min-width:801px){
+  .about .portrait,.about .portrait-frame{width:clamp(165px,12.5vw,215px)}
+  .about .portrait-frame{height:calc(clamp(165px,12.5vw,215px) * 1.28)}
+  .about-grid>div:first-child{padding-right:clamp(190px,14.5vw,250px)}
 }

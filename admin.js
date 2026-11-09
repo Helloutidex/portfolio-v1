@@ -362,9 +362,9 @@ try {
   ============================================================ */
   const THEME_STORAGE_KEY = 'ferricool-portfolio-theme';
   const DEFAULT_THEME = {
-    mode: 'light', scale: 1,
+    mode: 'dark', scale: 1,
     light: { paper: '#ffffff', ink: '#141211', muted: '#6b6b6b', line: '#ececec', accent: '#E8223E', contactBg: '#E8223E', contactText: '#ffffff', tint1: '#ffffff', tint2: '#ffffff' },
-    dark:  { paper: '#141211', ink: '#faf6ee', muted: '#9a948b', line: '#2c2926', accent: '#ff4d63', contactBg: '#E8223E', contactText: '#ffffff', tint1: '#2d211d', tint2: '#2b2618' },
+    dark:  { paper: '#0c0c0d', ink: '#f2f2f2', muted: '#a6a6a6', line: '#242426', accent: '#E8223E', contactBg: '#E8223E', contactText: '#ffffff', tint1: '#0c0c0d', tint2: '#0c0c0d' },
   };
   function migrateTheme(saved){
     const d = JSON.parse(JSON.stringify(DEFAULT_THEME));

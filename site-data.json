@@ -146,7 +146,7 @@
       "name": "Adedeji Sunday Samuel",
       "font": "Grenze Gotisch",
       "nameColor": "#E8223E",
-      "bg": "#141211",
+      "bg": "#0c0c0d",
       "textColor": "#faf6ee"
     },
     "contact": {
@@ -175,7 +175,7 @@
     }
   },
   "theme": {
-    "mode": "light",
+    "mode": "dark",
     "scale": 1,
     "light": {
       "paper": "#ffffff",
@@ -189,15 +189,15 @@
       "tint2": "#ffffff"
     },
     "dark": {
-      "paper": "#000000",
-      "ink": "#faf6ee",
-      "muted": "#9a948b",
-      "line": "#2c2926",
+      "paper": "#0c0c0d",
+      "ink": "#f2f2f2",
+      "muted": "#a6a6a6",
+      "line": "#242426",
       "accent": "#e8223e",
       "contactBg": "#e8223e",
       "contactText": "#ffffff",
-      "tint1": "#000000",
-      "tint2": "#000000"
+      "tint1": "#0c0c0d",
+      "tint2": "#0c0c0d"
     }
   },
   "categories": [

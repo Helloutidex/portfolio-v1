@@ -116,3 +116,8 @@ size, 2-col, 3-col, stack. Images are 1920px wide. Sections and cases can be pas
   with red quote mark, initials avatar, rise-in on scroll and hover tilt/glow; phone project header one row.
   CSS/JS version tag now ?v=20261109d. NOTE: GitHub Pages had not deployed v6 at 7:44 PM even though the
   push succeeded — check the repo's Actions tab ("pages build and deployment") after each push.
+- 2026-11-09 (v8): whole site switched to the black of the social proof band. Theme mode = dark,
+  dark palette paper #0c0c0d / text #f2f2f2 / soft text #a6a6a6 / lines #242426 / red #E8223E (light
+  palette kept, switch back in admin → Theme → Mode). Signature band bg set to #0c0c0d. On black, the
+  collaborator logos show as light grayscale and get their own colours on a white chip on hover.
+  CSS/JS tag ?v=20261109e.
