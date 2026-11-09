@@ -57,10 +57,6 @@
       { value: '120+', label: 'Completed Projects.' },
       { value: '5yrs+', label: 'Design Experience.' },
     ]},
-    collaborators: { label: 'Collaborators', items: [
-      { name: 'Northwind Studio', logo: '' }, { name: 'Kora Labs', logo: '' }, { name: 'Lumen & Co', logo: '' },
-      { name: 'Atlas Creative', logo: '' }, { name: 'Orbit Media', logo: '' }, { name: 'Verde Foods', logo: '' },
-    ]},
     logofolio: { label: 'Logofolio', heading: 'Marks & identities I have designed.', tiles: 'light', items: [] },
     work: { label: 'Gallery / automatic', description: 'Selected work, continuously moving. Tap any frame to explore.', noteRight: 'Tap any frame to explore', thanks: 'Thank you for viewing.', thanksNote: 'Have a project in mind?', thanksCta: "Let's talk ↗" },
     testimonials: { label: 'Praise', description: 'What collaborators say about working together.', items: [
@@ -96,7 +92,7 @@
     badge: { initials: 'AS', ringText: 'ADEDEJI SAMUEL', ringImage: '', size: 96, href: 'contact.html' },
     signature: { name: 'ADEDEJI SAMUEL', font: 'UnifrakturCook', nameColor: '#E8223E', bg: '#141211', textColor: '#faf6ee' },
     contact: { ctaLabel: "Let's talk ↗", pageHeading: "Let's talk.", subheading: 'Tell me about your project.', body: 'Share a little about what you have in mind — the goal, the timeline, anything that helps. I read every message and reply personally.', whatsappLabel: 'WhatsApp number (optional)', backLabel: '← Back home', small: 'Start a project', headingLines: ["LET'S MAKE","SOMETHING","WORTH SEEING."], available: 'Available for selected projects', emailText: 'samuel.s.adedeji@gmail.com ↗', emailHref: 'mailto:samuel.s.adedeji@gmail.com' },
-    footer: { left: '© 2026 Adedeji Samuel', right: 'Designed with intention / Lagos', brand: 'Helloutidex', name: 'SAMUEL ADEDEJI', version: 'v2.0 (2026)' },
+    footer: { left: '© 2026 Adedeji Samuel', right: 'Designed with intention / Lagos', brand: 'Helloutidex', name: 'SAMUEL ADEDEJI' },
     effects: { particles: true, intro: true, introStyle: 'poster' },
     poster: { head: "Every project is a\nconversation, this is\nwhere yours begins.", btn: 'Book a Call', tag: "What are you waiting for, let's build bold brands.", sign: 'Samuel Adedeji', signImage: '', image: 'assets/portrait.jpg', mark: 'SA', hold: 2.9,
       socials: [{ label: 'Instagram', url: '' }, { label: 'LinkedIn', url: '' }, { label: 'Linktree', url: '' }] },
@@ -124,17 +120,6 @@
   function placeholderLogo(name){
     const initials = String(name || '?').split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join('') || '?';
     return `<svg viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(name)} logo placeholder"><rect x="1" y="1" width="118" height="38" rx="8" fill="none" stroke="currentColor" stroke-width="1.4"/><text x="60" y="25" text-anchor="middle" font-family="'DM Mono',monospace" font-size="15" letter-spacing="1" fill="currentColor">${esc(initials)}</text></svg>`;
-  }
-  // A neutral stand-in "logo" (simple mark + name) for the collaborators strip until a real logo is uploaded.
-  function placeholderBrand(name){
-    const n = String(name || 'Brand'), h = [...n].reduce((a, ch) => (a * 31 + ch.charCodeAt(0)) >>> 0, 7), k = h % 4;
-    const mark = [
-      '<circle cx="18" cy="20" r="11" fill="currentColor"/><circle cx="18" cy="20" r="4.5" fill="var(--paper,#fff)"/>',
-      '<rect x="8" y="10" width="20" height="20" rx="4" transform="rotate(45 18 20)" fill="currentColor"/>',
-      '<path d="M7 30 L18 9 L29 30 Z" fill="currentColor"/>',
-      '<circle cx="13" cy="20" r="8" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="23" cy="20" r="8" fill="none" stroke="currentColor" stroke-width="3"/>'][k];
-    const w = 44 + n.length * 10.5;
-    return `<svg viewBox="0 0 ${w} 40" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(n)} (placeholder logo)">${mark}<text x="40" y="26.5" font-family="Manrope,Arial,sans-serif" font-weight="800" font-size="17" letter-spacing="-.5" fill="currentColor">${esc(n)}</text></svg>`;
   }
   // Old English / blackletter faces you can pick for the signature line (loaded only when chosen).
   const SIGNATURE_FONTS = ['UnifrakturCook', 'UnifrakturMaguntia', 'Pirata One', 'Grenze Gotisch', 'New Rocker', 'Metamorphous', 'Cinzel Decorative', 'Texturina'];
@@ -187,15 +172,6 @@
       if (repeats % 2 !== 0) repeats++;
       logoTrack.innerHTML = oneSet.repeat(repeats);
     }
-    // second scrolling strip: collaborators (moves the other way); hidden when it has no entries
-    const co = c.collaborators || { items: [] }, coItems = (co.items || []).filter(it => it.name || it.logo);
-    const coEl = $('#collabStrip'), coTrack = $('#collabTrack');
-    if (coEl && coTrack) {
-      coEl.hidden = !coItems.length; set('collabLabel', co.label || ''); set('collabCount', coItems.length ? '01 — ' + String(coItems.length).padStart(2, '0') : '');
-      const one = coItems.map(it => `<div class="logo-mark" title="${esc(it.name)}">${it.logo ? `<img src="${esc(it.logo)}" alt="${esc(it.name)} logo" loading="lazy">` : placeholderBrand(it.name)}</div>`).join('');
-      let rep = Math.max(2, Math.ceil((window.innerWidth * 2.2) / Math.max(1, coItems.length * 200))); if (rep % 2) rep++;
-      coTrack.innerHTML = one.repeat(rep);
-    }
     // social proof: the numbers band
     const pr = c.proof || {};
     set('proofLabel', pr.label || '');
@@ -238,7 +214,7 @@
     set('contactCtaBtn', c.contact.ctaLabel || "Let's talk ↗");
     const formEl = $('#contactForm'); if (formEl) formEl.action = 'https://formsubmit.co/' + String(c.contact.emailHref || '').replace(/^mailto:/, '').split('?')[0];
     set('footerLeft', c.footer.left); set('footerRight', c.footer.right);
-    set('footBrand', c.footer.brand || ''); set('footName', c.footer.name || ''); set('footVersion', c.footer.version || '');
+    set('footBrand', c.footer.brand || ''); set('footName', c.footer.name || '');
     // my process
     const pr2 = c.process || {}, steps = (pr2.steps || []).filter(s => s.title);
     const procEl = $('#process'); if (procEl) procEl.hidden = !steps.length;
@@ -359,6 +335,9 @@
     };
     $$('.logo-track img').forEach(img => img.complete && img.naturalWidth ? tone(img) : img.addEventListener('load', () => tone(img), { once: true }));
   })();
+
+  const foot = $('.site-foot');
+  if (foot && 'IntersectionObserver' in window) new IntersectionObserver(es => document.body.classList.toggle('foot-in', es[0].isIntersecting), { threshold: .05 }).observe(foot);
 
   // speed: marquees, the moving gallery, the lens rings and the signature only animate while on screen
   if ('IntersectionObserver' in window) {

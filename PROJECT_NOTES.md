@@ -153,3 +153,9 @@ size, 2-col, 3-col, stack. Images are 1920px wide. Sections and cases can be pas
   (books / YouTube / programmes, optional covers + links); new footer: brand · colour line · TM · globe ·
   crosshair · name … version (Content → Footer), transparent so it works in light and dark.
   CSS/JS tag ?v=20261109i.
+- 2026-11-09 (v13): removed the Collaborators strip; footer right side (version) removed; spinning badge
+  hides while the footer is on screen. Uploads-vanishing fix: admin drafts now auto-save to IndexedDB
+  (no 5 MB limit) a second after every change and survive reloads; a banner shows when an unpublished
+  draft is loaded (with "discard and load the live site"); Publish keeps uploaded file paths in the draft
+  and retries saving site-data.json up to 4 times. RULE: Claude no longer ships site-data.json in zips —
+  content changes go through admin (or code defaults). CSS/JS tag ?v=20261109j.

@@ -18,7 +18,20 @@ try {
   // hasn't caught up with yet (the minute right after Publish) does it use its own copy instead.
   const BASE = (LASTPUB && REMOTE.updatedAt && LASTPUB.updatedAt > REMOTE.updatedAt
     && (Date.now() - Date.parse(LASTPUB.updatedAt)) < 15 * 60 * 1000) ? LASTPUB : (REMOTE.updatedAt ? REMOTE : (LASTPUB || REMOTE));
-  const draftOf = key => { try { return JSON.parse(localStorage.getItem(key)); } catch (e) { return null; } };
+  // Drafts live in this browser's IndexedDB (room for big uploads — localStorage only holds ~5 MB, which is why
+  // large pictures used to vanish on reload). Older drafts in localStorage are still read.
+  const idb = (() => {
+    let dbp = null;
+    const open = () => dbp || (dbp = new Promise((res, rej) => { try { const r = indexedDB.open('portfolio-admin', 1); r.onupgradeneeded = () => r.result.createObjectStore('drafts'); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); } catch (e) { rej(e); } }));
+    const tx = (mode, fn) => open().then(db => new Promise((res, rej) => { const t = db.transaction('drafts', mode), st = t.objectStore('drafts'), out = fn(st); t.oncomplete = () => res(out && out.result); t.onerror = () => rej(t.error); }));
+    return {
+      all: () => open().then(db => new Promise(res => { const out = {}, t = db.transaction('drafts', 'readonly'), c = t.objectStore('drafts').openCursor(); c.onsuccess = () => { const cur = c.result; if (cur) { out[cur.key] = cur.value; cur.continue(); } else res(out); }; c.onerror = () => res(out); })).catch(() => ({})),
+      set: (k, v) => tx('readwrite', st => st.put(JSON.parse(JSON.stringify(v)), k)),
+      del: k => tx('readwrite', st => st.delete(k)).catch(() => {}),
+    };
+  })();
+  const IDB_DRAFTS = await idb.all();
+  const draftOf = key => { try { const v = JSON.parse(localStorage.getItem(key)); if (v) return v; } catch (e) {} return IDB_DRAFTS[key] || null; };
   const $$ = s => [...document.querySelectorAll(s)];
   function esc(s){ return String(s==null?'':s).replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
   function getPath(obj, path){ return path.split('.').reduce((o,k)=> (o==null?undefined:o[k]), obj); }
@@ -141,10 +154,6 @@ try {
       { value: '120+', label: 'Completed Projects.' },
       { value: '5yrs+', label: 'Design Experience.' },
     ]},
-    collaborators: { label: 'Collaborators', items: [
-      { name: 'Northwind Studio', logo: '' }, { name: 'Kora Labs', logo: '' }, { name: 'Lumen & Co', logo: '' },
-      { name: 'Atlas Creative', logo: '' }, { name: 'Orbit Media', logo: '' }, { name: 'Verde Foods', logo: '' },
-    ]},
     logofolio: { label: 'Logofolio', heading: 'Marks & identities I have designed.', tiles: 'light', items: [] },
     work: { label: 'Gallery / automatic', description: 'Selected work, continuously moving. Tap any frame to explore.', noteRight: 'Tap any frame to explore', thanks: 'Thank you for viewing.', thanksNote: 'Have a project in mind?', thanksCta: "Let's talk ↗" },
     testimonials: { label: 'Praise', description: 'What collaborators say about working together.', items: [
@@ -180,7 +189,7 @@ try {
     badge: { initials: 'AS', ringText: 'ADEDEJI SAMUEL', ringImage: '', size: 96, href: 'contact.html' },
     signature: { name: 'ADEDEJI SAMUEL', font: 'UnifrakturCook', nameColor: '#E8223E', bg: '#141211', textColor: '#faf6ee' },
     contact: { ctaLabel: "Let's talk ↗", pageHeading: "Let's talk.", subheading: 'Tell me about your project.', body: 'Share a little about what you have in mind — the goal, the timeline, anything that helps. I read every message and reply personally.', whatsappLabel: 'WhatsApp number (optional)', backLabel: '← Back home', small: 'Start a project', headingLines: ["LET'S MAKE","SOMETHING","WORTH SEEING."], available: 'Available for selected projects', emailText: 'samuel.s.adedeji@gmail.com ↗', emailHref: 'mailto:samuel.s.adedeji@gmail.com' },
-    footer: { left: '© 2026 Adedeji Samuel', right: 'Designed with intention / Lagos', brand: 'Helloutidex', name: 'SAMUEL ADEDEJI', version: 'v2.0 (2026)' },
+    footer: { left: '© 2026 Adedeji Samuel', right: 'Designed with intention / Lagos', brand: 'Helloutidex', name: 'SAMUEL ADEDEJI' },
     effects: { particles: true, intro: true, introStyle: 'poster' },
     poster: { head: "Every project is a\nconversation, this is\nwhere yours begins.", btn: 'Book a Call', tag: "What are you waiting for, let's build bold brands.", sign: 'Samuel Adedeji', signImage: '', image: 'assets/portrait.jpg', mark: 'SA', hold: 2.9,
       socials: [{ label: 'Instagram', url: '' }, { label: 'LinkedIn', url: '' }, { label: 'Linktree', url: '' }] },
@@ -259,8 +268,8 @@ try {
         <label>Label<input data-stat-field="label" value="${esc(st.label)}" placeholder="Satisfied Clients."></label><span></span>`, 'data-stat-remove')).join('');
   }
 
-  // one tidy tile editor for every logo list: the clients strip, the collaborators strip and the logofolio
-  const LOGO_LISTS = { social: '#collabEditor', collaborators: '#collaboratorsEditor', logofolio: '#logofolioEditor' };
+  // one tidy tile editor for every logo list: the clients strip and the logofolio
+  const LOGO_LISTS = { social: '#collabEditor', logofolio: '#logofolioEditor' };
   function renderLogoList(key){
     const box = $(LOGO_LISTS[key]); if (!box) return;
     content[key] = content[key] || { items: [] }; content[key].items = content[key].items || [];
@@ -408,14 +417,41 @@ try {
   $('#addStat').addEventListener('click', () => { content.proof.stats.push({ value: '', label: '' }); renderStats(); });
   $('#addTestimonial').addEventListener('click', () => { content.testimonials.items.push({ quote: '', name: '', role: '' }); renderTestimonials(); });
 
-  function saveDraft(key, value, statusId){
-    try { localStorage.setItem(key, JSON.stringify(value)); setStatus(statusId, 'Saved as a draft in this browser only. Use the Publish tab to put it live on every device.'); }
-    catch (e) { setStatus(statusId, 'This is too big to keep as a draft in the browser (big uploads). That is fine — go to the Publish tab, it does not need the draft.'); }
+  async function saveDraft(key, value, statusId, quiet){
+    try { await idb.set(key, value); try { localStorage.removeItem(key); } catch (e) {}
+      if (!quiet) setStatus(statusId, 'Saved as a draft in this browser (it survives a reload). Use the Publish tab to put it live on every device.'); }
+    catch (e) {
+      try { localStorage.setItem(key, JSON.stringify(value)); if (!quiet) setStatus(statusId, 'Saved as a draft in this browser.'); }
+      catch (e2) { if (!quiet) setStatus(statusId, 'Could not keep a draft in this browser — Publish now so nothing is lost.'); }
+    }
   }
+  // every change is kept automatically a moment later, so a reload or a closed tab never loses uploads
+  let autoT = null;
+  function autosave(){
+    clearTimeout(autoT);
+    autoT = setTimeout(() => {
+      saveDraft(CONTENT_STORAGE_KEY, content, null, true); saveDraft(THEME_STORAGE_KEY, theme, null, true); saveDraft(CATEGORIES_KEY, categories, null, true);
+      const b = $('#autosaveNote'); if (b) b.textContent = 'All changes kept in this browser · ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }, 1200);
+  }
+  // if an unpublished draft was loaded, say so — with a one-click way back to what is live
+  setTimeout(() => { if ([CONTENT_STORAGE_KEY, THEME_STORAGE_KEY, CATEGORIES_KEY].some(k => draftOf(k))) {
+    const note = $('#autosaveNote');
+    if (note) {
+      note.innerHTML = 'You are editing your <b>unpublished draft</b> (kept in this browser). Publish it, or <button type="button" class="admin-upload-btn" id="discardDraft">discard it and load the live site</button>';
+      $('#discardDraft').addEventListener('click', async () => {
+        if (!confirm('Throw away the unpublished draft in this browser and load what is live?')) return;
+        for (const k of [CONTENT_STORAGE_KEY, THEME_STORAGE_KEY, CATEGORIES_KEY, LEGACY_PROJECTS_KEY]) { try { localStorage.removeItem(k); } catch (e) {} await idb.del(k); }
+        location.reload();
+      });
+    }
+  } }, 0);
+  ['input', 'change', 'click'].forEach(ev => document.addEventListener(ev, e => { if (e.target.closest && e.target.closest('.admin-panel') && !e.target.closest('#panel-publish')) autosave(); }, true));
+
   $('#saveContent').addEventListener('click', () => saveDraft(CONTENT_STORAGE_KEY, content, 'contentStatus'));
   $('#resetContent').addEventListener('click', () => {
     if (!confirm('Reset all text to the defaults? This clears your local edits.')) return;
-    localStorage.removeItem(CONTENT_STORAGE_KEY); content = cloneDefaultContent(); fillContentForm(); setStatus('contentStatus', 'Reset to defaults.');
+    localStorage.removeItem(CONTENT_STORAGE_KEY); idb.del(CONTENT_STORAGE_KEY); content = cloneDefaultContent(); fillContentForm(); setStatus('contentStatus', 'Reset to defaults.');
   });
 
   /* ============================================================
@@ -452,7 +488,7 @@ try {
   $('#saveTheme').addEventListener('click', () => saveDraft(THEME_STORAGE_KEY, theme, 'themeStatus'));
   $('#resetTheme').addEventListener('click', () => {
     if (!confirm('Reset colours, mode and heading size to the defaults?')) return;
-    localStorage.removeItem(THEME_STORAGE_KEY); theme = migrateTheme(null); fillThemeForm(); setStatus('themeStatus', 'Reset to defaults.');
+    localStorage.removeItem(THEME_STORAGE_KEY); idb.del(THEME_STORAGE_KEY); theme = migrateTheme(null); fillThemeForm(); setStatus('themeStatus', 'Reset to defaults.');
   });
 
   /* ============================================================
@@ -779,7 +815,7 @@ try {
   $('#saveSections').addEventListener('click', () => saveDraft(CATEGORIES_KEY, categories, 'sectionsStatus'));
   $('#resetSections').addEventListener('click', () => {
     if (!confirm('Reset to the five starter sections? This clears your local draft.')) return;
-    localStorage.removeItem(CATEGORIES_KEY); categories = makeDefaultCategories(); openCat = -1; openCase = -1; renderCategories(); setStatus('sectionsStatus', 'Reset to the starter sections.');
+    localStorage.removeItem(CATEGORIES_KEY); idb.del(CATEGORIES_KEY); categories = makeDefaultCategories(); openCat = -1; openCase = -1; renderCategories(); setStatus('sectionsStatus', 'Reset to the starter sections.');
   });
 
   /* ============================================================
@@ -850,7 +886,7 @@ try {
     if (!gh.token) { setStatus('publishStatus', 'Paste your GitHub token first — the steps are just below.'); return; }
     btn.disabled = true;
     try {
-      setStatus('publishStatus', 'Preparing…');
+      setStatus('publishStatus', 'Preparing… keep this page open until it says "Published".');
       const lockedNodes = [];
       for (const c of categories) {
         if (c.locked && Array.isArray(c.items)) lockedNodes.push(c);
@@ -862,6 +898,9 @@ try {
       const progress = { n: 0, total: [...collectDataUrls(payload)].filter(u => !uploadCache.has(u)).length };
       const clean = await swapDataUrls(payload, progress);
       clean.updatedAt = new Date().toISOString();
+      // the files are on GitHub now: keep their new paths in the editor + draft, so a retry never re-uploads or loses them
+      content = JSON.parse(JSON.stringify(clean.content)); theme = JSON.parse(JSON.stringify(clean.theme)); categories = JSON.parse(JSON.stringify(clean.categories));
+      await saveDraft(CONTENT_STORAGE_KEY, content, null, true); await saveDraft(THEME_STORAGE_KEY, theme, null, true); await saveDraft(CATEGORIES_KEY, categories, null, true);
       // What goes online: locked sections / case studies are encrypted with their password; the password itself is never sent.
       const pubCase = async s => {
         const { password, ...rest } = s;
@@ -878,11 +917,19 @@ try {
         else { const { enc, locked, lockNote, ...pub } = rest; published.categories.push({ ...pub, items }); }
       }
       setStatus('publishStatus', 'Saving your changes to GitHub…');
-      const existing = await ghApi('GET', 'site-data.json');
-      const sha = existing.status === 200 && existing.data ? existing.data.sha : undefined;
-      await ghApi('PUT', 'site-data.json', { message: 'Publish site changes from admin', content: b64(JSON.stringify(published, null, 2)), branch: gh.branch, ...(sha ? { sha } : {}) });
-      localStorage.setItem(LAST_PUB_KEY, JSON.stringify(clean));
-      [CONTENT_STORAGE_KEY, THEME_STORAGE_KEY, CATEGORIES_KEY, LEGACY_PROJECTS_KEY].forEach(k => localStorage.removeItem(k));
+      // save the page data; if GitHub is busy or the file just changed (e.g. a git push), fetch it again and retry
+      let saved = false, lastErr = null;
+      for (let attempt = 1; attempt <= 4 && !saved; attempt++) {
+        try {
+          const existing = await ghApi('GET', 'site-data.json');
+          const sha = existing.status === 200 && existing.data ? existing.data.sha : undefined;
+          await ghApi('PUT', 'site-data.json', { message: 'Publish site changes from admin', content: b64(JSON.stringify(published, null, 2)), branch: gh.branch, ...(sha ? { sha } : {}) });
+          saved = true;
+        } catch (e) { lastErr = e; setStatus('publishStatus', `Saving the page data… retrying (${attempt})`); await new Promise(r => setTimeout(r, 1500 * attempt)); }
+      }
+      if (!saved) throw new Error('your files were uploaded, but the page data could not be saved (' + (lastErr && lastErr.message || lastErr) + '). Nothing is lost — press Publish again.');
+      try { localStorage.setItem(LAST_PUB_KEY, JSON.stringify(clean)); } catch (e) {}
+      [CONTENT_STORAGE_KEY, THEME_STORAGE_KEY, CATEGORIES_KEY, LEGACY_PROJECTS_KEY].forEach(k => { try { localStorage.removeItem(k); } catch (e) {} idb.del(k); });
       setStatus('publishStatus', `Published at ${new Date().toLocaleTimeString()}. GitHub is rebuilding the site — it should be live on every device in about a minute (some phones can take up to 10).`);
     } catch (err) {
       setStatus('publishStatus', 'Could not publish: ' + (err && err.message ? err.message : err));

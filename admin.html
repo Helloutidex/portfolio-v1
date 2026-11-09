@@ -6,8 +6,8 @@
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,500;1,500&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=UnifrakturCook:wght@700&display=swap">
-<link rel="stylesheet" href="style.css?v=20261109i">
-<link rel="stylesheet" href="admin.css?v=20261109i">
+<link rel="stylesheet" href="style.css?v=20261109j">
+<link rel="stylesheet" href="admin.css?v=20261109j">
 </head>
 <body class="admin-body">
 <section class="lock-screen" id="lockScreen">
@@ -44,6 +44,7 @@
       to GitHub.</p>
   </header>
 
+  <p class="admin-autosave" id="autosaveNote" aria-live="polite">Changes are kept in this browser automatically until you publish.</p>
   <div class="admin-tabs" role="tablist">
     <button class="admin-tab active" data-tab="content" type="button">Content</button>
     <button class="admin-tab" data-tab="theme" type="button">Theme</button>
@@ -123,12 +124,6 @@
         <label>Count text<input data-path="social.count"></label>
       </div>
       <div id="collabEditor"></div>
-    </div>
-
-    <div class="admin-group" data-group="collaborators">
-      <h2>Collaborators strip <span class="admin-hint">(second scrolling row, moving the other way — hides itself if empty; transparent PNG/SVG logos work best)</span></h2>
-      <label>Label<input data-path="collaborators.label"></label>
-      <div id="collaboratorsEditor"></div>
     </div>
 
     <div class="admin-group" data-group="logofolio">
@@ -298,11 +293,10 @@
     </div>
 
     <div class="admin-group" data-group="footer">
-      <h2>Footer <span class="admin-hint">(brand · colour line · TM · globe · crosshair · name … version)</span></h2>
-      <div class="admin-row3">
+      <h2>Footer <span class="admin-hint">(brand · colour line · TM · globe · crosshair · name)</span></h2>
+      <div class="admin-row2">
         <label>Brand<input data-path="footer.brand" placeholder="Helloutidex"></label>
         <label>Name<input data-path="footer.name" placeholder="SAMUEL ADEDEJI"></label>
-        <label>Right side (version)<input data-path="footer.version" placeholder="v2.0 (2026)"></label>
       </div>
     </div>
 
@@ -381,5 +375,5 @@
 </main>
 </div>
 
-<script src="admin.js?v=20261109i" defer></script>
+<script src="admin.js?v=20261109j" defer></script>
 </body></html>
