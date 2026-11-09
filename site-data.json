@@ -136,18 +136,18 @@
       "noteRight": "Tap any frame to explore"
     },
     "testimonials": {
-      "label": "Praise",
+      "label": "What people are saying about Sam",
       "description": "What collaborators say about working together.",
       "items": [
         {
           "quote": "Sam translated a vague brief into a brand system that felt inevitable — like it always should have looked that way.",
           "name": "Client name",
-          "role": "Urban Food Fest"
+          "role": "Lagbaja"
         },
         {
           "quote": "Fast, sharp, and genuinely collaborative. The kind of designer who makes the whole project easier.",
           "name": "Client name",
-          "role": "Shop Soma"
+          "role": "Tamedu"
         }
       ]
     },
@@ -157,17 +157,17 @@
       "rows": [
         {
           "tag": "01 / Now",
-          "role": "Independent designer",
+          "role": "Experience designer",
           "meta": "Identity · Digital · AI"
         },
         {
           "tag": "02 / Practice",
-          "role": "Brand & visual systems",
+          "role": "Creative designer",
           "meta": "Strategy · Art direction"
         },
         {
           "tag": "03 / Community",
-          "role": "Design volunteering & mentoring",
+          "role": "Brand lead",
           "meta": "People · Events"
         }
       ]
@@ -260,39 +260,79 @@
       "id": "cat-case",
       "title": "Case study",
       "layout": "cases",
-      "image": "",
-      "intro": "",
+      "image": "https://images.unsplash.com/photo-1518005020951-eccb494ad742",
+      "intro": "Selected projects, told from the brief to the result.",
       "bg": "",
       "tight": true,
       "tile": false,
       "items": [
         {
-          "id": "caseStudy",
-          "title": "Swyftsend",
-          "cover": "assets/uploads/mvybox7f-1.jpg",
-          "tagline": "Selected identity and digital case studies.",
-          "bg": "#ffffff",
+          "id": "case-1",
+          "title": "helloutidex",
+          "cover": "https://images.unsplash.com/photo-1518005020951-eccb494ad742",
+          "tagline": "Something will be here",
+          "bg": "",
           "tight": true,
-          "locked": true,
-          "lockNote": "Enter your password",
-          "enc": {
-            "salt": "2wb/hwXtNmv8YDeOJnl3Gg==",
-            "iv": "UkTQmOOZraTTYTfm",
-            "data": "ZSp7lhOpNHcf+2V18ylZN79xeMwrAuk+f2xN92IFDT/AG15iupfiU1MooCgOFq7koWMW+5s9rFuYziRukR+BRH3G3/AOy0qtIM8aLkz1iQfGNYOiF2i13QkUh2dGIukbBxuycWWKSXvbj5hqMIJHwaJdNSGqxGCxLeoLzXdHZfe3rVGvNp9l7iI6rQPQQT+MA12aD+A4BJvV96KXFo9rhN9iQ/pVtd5P05CUl/9ZzIkSSgAz2Q7vMcLFRSXzha1oUR9ch+mF6RhX8EJv9emGORIGcyRD70Q5AnkZO2GOXTluJBWwvxGUpspMEXkLMAB950i49G27Y8UNllhaRgnngUn55eI8ywrSiom2jRfPSCqK+kkcFHW1ve7hVoZrl0414S2f5Ft6U9u0zUmIhDfw02XoBOYdoskZg9uFb6kMHS5qwvbMXypU0IUaGiUvy2mSmZcWb0zyGHIjqV/JsQW/+Nu/SpWSUjlPwll0RuFZ3kcHqbatcVYTvHKL5htWTWjCAR0Wvwb6IHhcrFdVJ3W7LZZL3bqpdhDk5/owxORopEajn9cYMujU40OTFCDIQ30zz/a7s0Pn8sbqCqHsfOt59A7KUl/j1pizwY2DceAUOz8CCPlHxzujdm17Z1aY1RTp4Vwt9DYNNxA/E4P8oH+9CkNnFo23RoF9UF9B/8L4dk2ZpS020jfDYWnKR8WrqV9d132r5l6acZ/ujGt+d+uD8n5dxKy3c+wKhNWVS2VlfN0evu5MH308G9JQjyBexpHXDcncfCLKXziagBvTh4LXb+qjkw6bItfuSTdqG0rMbrvxzNPtgNZthwSoKNG5L13qzmaO+a3nLjsgnK+garIX0QJeoSYkXLGEc1xo3XHkBGS1W+K0CduljPt/7Sz3K6GYNuFnkZJWe1GCp+tw+bL/6zuVYosndeg+a3b7BGwPtQ91cYhrfYIM4EuLUil6BlYlIOCiIiMTF3wuqaWc7YdVJjYJf9XYmljB+u5SkDOL8jH9iZYBTgsR1rZ+aOIkRKlLQXPWROEcqP9xv9qCdcfC/Lw/+Uzgg16aOJpwdJqwwvAJHj1B6C0ACVcoV4Bq93r3fmQyE8VB59htGWKHAO/OJ1YnEQCKYXgxiyRC0MnHURHvBtOnnrk0Tx+az0v3HhVmmof8N5jPfx2r243m18DglG4cQkwfLJhBcGIs25Cqfs93+l9oToCd/LXrLax9SA=="
-          }
+          "blocks": [
+            {
+              "type": "text",
+              "heading": "Overview",
+              "body": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.\nLorem ipsum dolor sit amet, cons ectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.\nLorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.\nLorem ipsum dolor sit amet, cons ectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.\n\nLorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.\nLorem ipsum dolor sit amet, cons ectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.\nLorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.\nLorem ipsum dolor sit amet, cons ectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.\n\nLorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.\nLorem ipsum dolor sit amet, cons ectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.",
+              "tags": []
+            },
+            {
+              "type": "image",
+              "src": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1920&q=82",
+              "caption": "Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, cons ectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, cons ectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.  Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, cons ectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, cons ectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.  Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, cons ectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat."
+            },
+            {
+              "type": "image",
+              "src": "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1920&q=82"
+            },
+            {
+              "type": "image",
+              "src": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1920&q=82"
+            }
+          ],
+          "details": [
+            {
+              "label": "Client",
+              "value": "utidex"
+            },
+            {
+              "label": "Industry",
+              "value": "Finance"
+            },
+            {
+              "label": "Country",
+              "value": "NGN"
+            },
+            {
+              "label": "Year",
+              "value": "2000"
+            },
+            {
+              "label": "Director",
+              "value": "helloutidex"
+            },
+            {
+              "label": "Project Scope",
+              "value": "Creative director"
+            }
+          ]
         },
         {
-          "id": "food",
-          "title": "Project 2",
+          "id": "case-2",
+          "title": "Case study 2",
           "cover": "https://images.unsplash.com/photo-1504674900247-0877df9cc836",
-          "tagline": "A growing archive of marks, symbols and identity explorations.",
+          "tagline": "A short line about this case study.",
           "bg": "",
           "tight": true,
           "blocks": [
             {
               "type": "text",
-              "heading": "About this project",
-              "body": "Tell the story in a few lines — what it was, who it was for, what you made. Delete this block if you want the images to speak for themselves."
+              "heading": "About this case study",
+              "body": "Tell the story in a few lines — the brief, the thinking, the result. Delete this block if you want the pictures to speak for themselves."
             },
             {
               "type": "image",
@@ -309,17 +349,17 @@
           ]
         },
         {
-          "id": "editorial",
-          "title": "Project 3",
+          "id": "case-3",
+          "title": "Case study 3",
           "cover": "https://images.unsplash.com/photo-1483985988355-763728e1935b",
-          "tagline": "Selected presentations, decks and visual storytelling systems.",
+          "tagline": "A short line about this case study.",
           "bg": "",
           "tight": true,
           "blocks": [
             {
               "type": "text",
-              "heading": "About this project",
-              "body": "Tell the story in a few lines — what it was, who it was for, what you made. Delete this block if you want the images to speak for themselves."
+              "heading": "About this case study",
+              "body": "Tell the story in a few lines — the brief, the thinking, the result. Delete this block if you want the pictures to speak for themselves."
             },
             {
               "type": "image",
@@ -332,60 +372,6 @@
             {
               "type": "image",
               "src": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1920&q=82"
-            }
-          ]
-        },
-        {
-          "id": "generative",
-          "title": "Project 4",
-          "cover": "https://images.unsplash.com/photo-1518770660439-4636190af475",
-          "tagline": "Responsive websites, interfaces and digital experiences.",
-          "bg": "",
-          "tight": true,
-          "blocks": [
-            {
-              "type": "text",
-              "heading": "About this project",
-              "body": "Tell the story in a few lines — what it was, who it was for, what you made. Delete this block if you want the images to speak for themselves."
-            },
-            {
-              "type": "image",
-              "src": "https://images.unsplash.com/photo-1523726491678-bf852e717f6a?auto=format&fit=crop&w=1920&q=82"
-            },
-            {
-              "type": "image",
-              "src": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1920&q=82"
-            },
-            {
-              "type": "image",
-              "src": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1920&q=82"
-            }
-          ]
-        },
-        {
-          "id": "studio",
-          "title": "Project 5",
-          "cover": "https://images.unsplash.com/photo-1523726491678-bf852e717f6a",
-          "tagline": "Generative visuals, experiments and emerging creative systems.",
-          "bg": "",
-          "tight": true,
-          "blocks": [
-            {
-              "type": "text",
-              "heading": "About this project",
-              "body": "Tell the story in a few lines — what it was, who it was for, what you made. Delete this block if you want the images to speak for themselves."
-            },
-            {
-              "type": "image",
-              "src": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1920&q=82"
-            },
-            {
-              "type": "image",
-              "src": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1920&q=82"
-            },
-            {
-              "type": "image",
-              "src": "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1920&q=82"
             }
           ]
         }
@@ -400,7 +386,12 @@
       "bg": "",
       "tight": false,
       "tile": false,
-      "items": []
+      "items": [
+        {
+          "type": "image",
+          "src": "assets/uploads/mw9qbf39-0.jpg"
+        }
+      ]
     },
     {
       "id": "cat-campaign",
@@ -414,7 +405,27 @@
       "items": [
         {
           "type": "image",
-          "src": "assets/uploads/mw3sn5ib-0.png"
+          "src": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1200&q=82"
+        },
+        {
+          "type": "image",
+          "src": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1200&q=82"
+        },
+        {
+          "type": "image",
+          "src": "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1200&q=82"
+        },
+        {
+          "type": "image",
+          "src": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=1200&q=82"
+        },
+        {
+          "type": "image",
+          "src": "https://images.unsplash.com/photo-1523726491678-bf852e717f6a?auto=format&fit=crop&w=1200&q=82"
+        },
+        {
+          "type": "image",
+          "src": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1200&q=82"
         }
       ]
     },
@@ -427,7 +438,32 @@
       "bg": "",
       "tight": false,
       "tile": true,
-      "items": []
+      "items": [
+        {
+          "type": "image",
+          "src": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=900&q=82"
+        },
+        {
+          "type": "image",
+          "src": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=900&q=82"
+        },
+        {
+          "type": "image",
+          "src": "https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=900&q=82"
+        },
+        {
+          "type": "image",
+          "src": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=900&q=82"
+        },
+        {
+          "type": "image",
+          "src": "https://images.unsplash.com/photo-1523726491678-bf852e717f6a?auto=format&fit=crop&w=900&q=82"
+        },
+        {
+          "type": "image",
+          "src": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=900&q=82"
+        }
+      ]
     },
     {
       "id": "cat-events",
@@ -441,10 +477,18 @@
       "items": [
         {
           "type": "image",
-          "src": "assets/uploads/mw3sn94h-1.png"
+          "src": "https://images.unsplash.com/photo-1523726491678-bf852e717f6a?auto=format&fit=crop&w=1920&q=82"
+        },
+        {
+          "type": "image",
+          "src": "https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1920&q=82"
+        },
+        {
+          "type": "image",
+          "src": "https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&w=1920&q=82"
         }
       ]
     }
   ],
-  "updatedAt": "2026-11-09T20:23:07.256Z"
+  "updatedAt": "2026-11-09T20:44:11.208Z"
 }
