@@ -3,10 +3,11 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Portfolio Admin — Designing What's Next</title>
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,500;1,500&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=UnifrakturCook:wght@700&display=swap">
-<link rel="stylesheet" href="style.css?v=20261109e">
-<link rel="stylesheet" href="admin.css?v=20261109e">
+<link rel="stylesheet" href="style.css?v=20261109g">
+<link rel="stylesheet" href="admin.css?v=20261109g">
 </head>
 <body class="admin-body">
 <section class="lock-screen" id="lockScreen">
@@ -54,7 +55,9 @@
   <section class="admin-panel" id="panel-content">
     <div class="admin-group" data-group="nav">
       <h2>Header</h2>
-      <label>Logo text<input data-path="nav.logo"></label>
+      <label>Logo text (also used as the logo's description for screen readers)<input data-path="nav.logo"></label>
+      <label>Logo image — replaces the text. Use a transparent PNG or SVG: it shows white on the dark theme and in its own colours on the light theme. Remove it to go back to the text.<div class="admin-image-field" data-image-path="nav.logoImage"></div></label>
+      <label>Favicon — the small icon in the browser tab. A square PNG or SVG (at least 64 × 64). Empty = the built-in "AS" icon.<div class="admin-image-field" data-image-path="nav.favicon"></div></label>
       <div id="navLinksEditor"></div>
       <button class="admin-add-small" type="button" id="addNavLink">+ Add a link</button>
       <div class="admin-row2" style="margin-top:14px">
@@ -114,13 +117,18 @@
     </div>
 
     <div class="admin-group" data-group="social">
-      <h2>Collaborators strip <span class="admin-hint">(real logos — a placeholder mark shows until you add one)</span></h2>
+      <h2>Clients strip <span class="admin-hint">(first scrolling row of logos — shown in grayscale, own colours on hover)</span></h2>
       <div class="admin-row2">
-        <label>Label<input data-path="social.label"></label>
+        <label>Label<input data-path="social.label" placeholder="Clients I've worked with"></label>
         <label>Count text<input data-path="social.count"></label>
       </div>
       <div id="collabEditor"></div>
-      <button class="admin-add-small" type="button" id="addCollab">+ Add a collaborator</button>
+    </div>
+
+    <div class="admin-group" data-group="collaborators">
+      <h2>Collaborators strip <span class="admin-hint">(second scrolling row, moving the other way — hides itself if empty; transparent PNG/SVG logos work best)</span></h2>
+      <label>Label<input data-path="collaborators.label"></label>
+      <div id="collaboratorsEditor"></div>
     </div>
 
     <div class="admin-group" data-group="logofolio">
@@ -131,9 +139,6 @@
       </div>
       <label>Tile colour<select data-path="logofolio.tiles"><option value="light">Light tiles (for dark / colour logos)</option><option value="dark">Dark tiles (for white logos)</option></select></label>
       <div id="logofolioEditor"></div>
-      <div class="admin-block-add">
-        <label class="admin-add-small admin-upload-label">+ Upload logos (many at once)<input type="file" accept="image/*" multiple class="admin-upload-input" id="logofolioBulk"></label>
-      </div>
     </div>
 
     <div class="admin-group" data-group="testimonials">
@@ -247,8 +252,8 @@
   <section class="admin-panel" id="panel-theme" hidden>
     <div class="admin-group">
       <h2>Which look does the site use?</h2>
-      <label>Mode<select data-tpath="mode"><option value="light">Light</option><option value="dark">Dark</option></select></label>
-      <p class="admin-note">Visitors can't switch it — you decide here. Edit both palettes below; only the chosen one shows on the site.</p>
+      <label>Mode<select data-tpath="mode"><option value="system">System default — follows each visitor's phone / computer setting</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
+      <p class="admin-note"><b>System default</b> shows the light palette to visitors whose device is in light mode and the dark palette to those in dark mode (it switches live). Edit both palettes below.</p>
     </div>
     <div class="admin-group"><h2>Light palette</h2><div class="admin-swatches"><label>Background<input type="color" data-tpath="light.paper"></label><label>Text<input type="color" data-tpath="light.ink"></label><label>Soft text<input type="color" data-tpath="light.muted"></label><label>Lines<input type="color" data-tpath="light.line"></label><label>Accent (buttons, highlights, particles)<input type="color" data-tpath="light.accent"></label><label>Contact section background<input type="color" data-tpath="light.contactBg"></label><label>Contact section text<input type="color" data-tpath="light.contactText"></label><label>Soft tint 1<input type="color" data-tpath="light.tint1"></label><label>Soft tint 2<input type="color" data-tpath="light.tint2"></label></div></div>
     <div class="admin-group"><h2>Dark palette</h2><div class="admin-swatches"><label>Background<input type="color" data-tpath="dark.paper"></label><label>Text<input type="color" data-tpath="dark.ink"></label><label>Soft text<input type="color" data-tpath="dark.muted"></label><label>Lines<input type="color" data-tpath="dark.line"></label><label>Accent (buttons, highlights, particles)<input type="color" data-tpath="dark.accent"></label><label>Contact section background<input type="color" data-tpath="dark.contactBg"></label><label>Contact section text<input type="color" data-tpath="dark.contactText"></label><label>Soft tint 1<input type="color" data-tpath="dark.tint1"></label><label>Soft tint 2<input type="color" data-tpath="dark.tint2"></label></div></div>
@@ -311,5 +316,5 @@
 </main>
 </div>
 
-<script src="admin.js?v=20261109e" defer></script>
+<script src="admin.js?v=20261109g" defer></script>
 </body></html>

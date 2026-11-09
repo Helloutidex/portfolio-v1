@@ -26,7 +26,7 @@
   ============================================================ */
   const CONTENT_STORAGE_KEY = 'ferricool-portfolio-content';
   const DEFAULT_CONTENT = {
-    nav: { logo: 'ADEDEJI SAMUEL / DESIGN', links: [{ label: 'About', href: '#about' }, { label: 'Work', href: '#work' }], ctaLabel: "Let's talk", ctaHref: 'contact.html' },
+    nav: { logo: 'ADEDEJI SAMUEL / DESIGN', logoImage: '', favicon: '', links: [{ label: 'About', href: '#about' }, { label: 'Work', href: '#work' }], ctaLabel: "Let's talk", ctaHref: 'contact.html' },
     hero: {
       eyebrow: 'Independent designer · Lagos, Nigeria',
       titlePre: 'Designing ', titleEm: "what's", titlePost: ' next.',
@@ -56,6 +56,10 @@
       { value: '80+', label: 'Satisfied Clients.' },
       { value: '120+', label: 'Completed Projects.' },
       { value: '5yrs+', label: 'Design Experience.' },
+    ]},
+    collaborators: { label: 'Collaborators', items: [
+      { name: 'Northwind Studio', logo: '' }, { name: 'Kora Labs', logo: '' }, { name: 'Lumen & Co', logo: '' },
+      { name: 'Atlas Creative', logo: '' }, { name: 'Orbit Media', logo: '' }, { name: 'Verde Foods', logo: '' },
     ]},
     logofolio: { label: 'Logofolio', heading: 'Marks & identities I have designed.', tiles: 'light', items: [] },
     work: { label: 'Gallery / automatic', description: 'Selected work, continuously moving. Tap any frame to explore.', noteRight: 'Tap any frame to explore' },
@@ -103,6 +107,17 @@
     const initials = String(name || '?').split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join('') || '?';
     return `<svg viewBox="0 0 120 40" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(name)} logo placeholder"><rect x="1" y="1" width="118" height="38" rx="8" fill="none" stroke="currentColor" stroke-width="1.4"/><text x="60" y="25" text-anchor="middle" font-family="'DM Mono',monospace" font-size="15" letter-spacing="1" fill="currentColor">${esc(initials)}</text></svg>`;
   }
+  // A neutral stand-in "logo" (simple mark + name) for the collaborators strip until a real logo is uploaded.
+  function placeholderBrand(name){
+    const n = String(name || 'Brand'), h = [...n].reduce((a, ch) => (a * 31 + ch.charCodeAt(0)) >>> 0, 7), k = h % 4;
+    const mark = [
+      '<circle cx="18" cy="20" r="11" fill="currentColor"/><circle cx="18" cy="20" r="4.5" fill="var(--paper,#fff)"/>',
+      '<rect x="8" y="10" width="20" height="20" rx="4" transform="rotate(45 18 20)" fill="currentColor"/>',
+      '<path d="M7 30 L18 9 L29 30 Z" fill="currentColor"/>',
+      '<circle cx="13" cy="20" r="8" fill="none" stroke="currentColor" stroke-width="3"/><circle cx="23" cy="20" r="8" fill="none" stroke="currentColor" stroke-width="3"/>'][k];
+    const w = 44 + n.length * 10.5;
+    return `<svg viewBox="0 0 ${w} 40" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="${esc(n)} (placeholder logo)">${mark}<text x="40" y="26.5" font-family="Manrope,Arial,sans-serif" font-weight="800" font-size="17" letter-spacing="-.5" fill="currentColor">${esc(n)}</text></svg>`;
+  }
   // Old English / blackletter faces you can pick for the signature line (loaded only when chosen).
   const SIGNATURE_FONTS = ['UnifrakturCook', 'UnifrakturMaguntia', 'Pirata One', 'Grenze Gotisch', 'New Rocker', 'Metamorphous', 'Cinzel Decorative', 'Texturina'];
   const loadedFonts = new Set();
@@ -123,7 +138,16 @@
   }
   function applyContent(c){
     const set = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val; };
-    set('navLogo', c.nav.logo); renderNav(c);
+    // header logo: your uploaded PNG if there is one (white on the dark theme, own colours on light), otherwise the text
+    const navLogo = $('#navLogo');
+    if (navLogo) {
+      if (c.nav.logoImage) { navLogo.innerHTML = `<img class="sb-logo-img" src="${esc(c.nav.logoImage)}" alt="${esc(c.nav.logo || 'Logo')}">`; navLogo.classList.add('has-img'); }
+      else { navLogo.textContent = c.nav.logo; navLogo.classList.remove('has-img'); }
+    }
+    renderNav(c);
+    // favicon (the little icon in the browser tab): admin → Content → Header, falls back to assets/favicon.svg
+    const fav = document.getElementById('favicon');
+    if (fav && c.nav.favicon) { fav.href = c.nav.favicon; fav.removeAttribute('type'); }
     set('heroEyebrow', c.hero.eyebrow); set('heroTitlePre', c.hero.titlePre); set('heroTitleEm', c.hero.titleEm); set('heroTitlePost', c.hero.titlePost);
     set('heroParagraph', c.hero.paragraph); set('lensLabel', c.hero.lensLabel); set('opticNote', c.hero.opticNote);
     set('heroNote', c.hero.note); set('heroZoomInstruction', c.hero.zoomInstruction);
@@ -145,12 +169,25 @@
       if (repeats % 2 !== 0) repeats++;
       logoTrack.innerHTML = oneSet.repeat(repeats);
     }
-    // social proof: the numbers band (logos above come from "Client logos")
+    // second scrolling strip: collaborators (moves the other way); hidden when it has no entries
+    const co = c.collaborators || { items: [] }, coItems = (co.items || []).filter(it => it.name || it.logo);
+    const coEl = $('#collabStrip'), coTrack = $('#collabTrack');
+    if (coEl && coTrack) {
+      coEl.hidden = !coItems.length; set('collabLabel', co.label || ''); set('collabCount', coItems.length ? '01 — ' + String(coItems.length).padStart(2, '0') : '');
+      const one = coItems.map(it => `<div class="logo-mark" title="${esc(it.name)}">${it.logo ? `<img src="${esc(it.logo)}" alt="${esc(it.name)} logo" loading="lazy">` : placeholderBrand(it.name)}</div>`).join('');
+      let rep = Math.max(2, Math.ceil((window.innerWidth * 2.2) / Math.max(1, coItems.length * 200))); if (rep % 2) rep++;
+      coTrack.innerHTML = one.repeat(rep);
+    }
+    // social proof: the numbers band
     const pr = c.proof || {};
     set('proofLabel', pr.label || '');
     const ph = $('#proofHeading'); if (ph) { ph.textContent = pr.heading || ''; ph.hidden = !pr.heading; }
     const ps = $('#proofStats');
-    if (ps) ps.innerHTML = (pr.stats || []).filter(s => s.value || s.label).map(s => `<div class="stat"><strong data-count="${esc(s.value)}">${esc(s.value)}</strong><i aria-hidden="true"></i><span>${esc(s.label)}</span></div>`).join('');
+    // each digit is a little column 0–9 (twice) that rolls upward to its value, like a volume level going up
+    const odo = v => [...String(v || '')].map(ch => /\d/.test(ch)
+      ? `<span class="odo-d" style="--d:${ch}"><span class="odo-s">${[...Array(20)].map((_, k) => `<span>${k % 10}</span>`).join('')}</span></span>`
+      : `<span class="odo-c">${esc(ch)}</span>`).join('');
+    if (ps) ps.innerHTML = (pr.stats || []).filter(s => s.value || s.label).map(s => `<div class="stat"><strong class="odo" aria-label="${esc(s.value)}">${odo(s.value)}</strong><i aria-hidden="true"></i><span>${esc(s.label)}</span></div>`).join('');
     // logofolio: the logos you've designed, icons only
     const lf = c.logofolio || {}, lfItems = (lf.items || []).filter(it => it.logo);
     const lfEl = $('#logofolio'); if (lfEl) { lfEl.hidden = !lfItems.length; lfEl.classList.toggle('dark-tiles', lf.tiles === 'dark'); }
@@ -216,7 +253,7 @@
   function migrateTheme(saved){
     const d = JSON.parse(JSON.stringify(DEFAULT_THEME));
     if (!saved || typeof saved !== 'object') return d;
-    const out = { mode: saved.mode === 'dark' ? 'dark' : 'light', scale: saved.scale != null ? Number(saved.scale) : 1, light: { ...d.light }, dark: { ...d.dark } };
+    const out = { mode: ['dark', 'system'].includes(saved.mode) ? saved.mode : 'light', scale: saved.scale != null ? Number(saved.scale) : 1, light: { ...d.light }, dark: { ...d.dark } };
     if (saved.light || saved.dark) { Object.assign(out.light, saved.light || {}); Object.assign(out.dark, saved.dark || {}); }
     else {   // older single-palette shape
       ['paper', 'ink', 'muted', 'line', 'tint1', 'tint2'].forEach(k => { if (saved[k]) out.light[k] = saved[k]; });
@@ -224,19 +261,48 @@
     }
     return out;
   }
+  // Mode: 'light', 'dark' or 'system' (follows each visitor's phone / computer setting, and switches live if they change it)
+  const darkQuery = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
+  const resolveMode = t => t.mode === 'system' ? ((darkQuery && darkQuery.matches) ? 'dark' : 'light') : t.mode;
+  const varsOf = (pal, t) => {
+    const v = {}; ['paper', 'ink', 'muted', 'line', 'accent', 'tint1', 'tint2'].forEach(k => v['--' + k] = pal[k]);
+    return Object.assign(v, { '--surface': pal.paper, '--contact-bg': pal.contactBg, '--contact-text': pal.contactText, '--scale': String(t.scale) });
+  };
   function applyTheme(t){
-    const pal = t.mode === 'dark' ? t.dark : t.light, r = document.documentElement.style;
-    ['paper', 'ink', 'muted', 'line', 'accent', 'tint1', 'tint2'].forEach(k => r.setProperty('--' + k, pal[k]));
-    r.setProperty('--surface', pal.paper); r.setProperty('--contact-bg', pal.contactBg); r.setProperty('--contact-text', pal.contactText); r.setProperty('--scale', t.scale);
-    document.body.classList.toggle('dark', t.mode === 'dark');
+    const mode = resolveMode(t), pal = mode === 'dark' ? t.dark : t.light, r = document.documentElement.style;
+    const vars = varsOf(pal, t); Object.keys(vars).forEach(k => r.setProperty(k, vars[k]));
+    document.body.classList.toggle('dark', mode === 'dark');
     document.documentElement.classList.remove('predark');
-    // remember these colours so the next visit paints them before anything else (no flash of old colours)
-    const vars = {}; ['paper', 'ink', 'muted', 'line', 'accent', 'tint1', 'tint2'].forEach(k => vars['--' + k] = pal[k]);
-    Object.assign(vars, { '--surface': pal.paper, '--contact-bg': pal.contactBg, '--contact-text': pal.contactText, '--scale': String(t.scale) });
-    try { localStorage.setItem('ferricool-mode', t.mode); localStorage.setItem('ferricool-theme-vars', JSON.stringify(vars)); } catch (e) {}
+    // remember both palettes + the mode so the next visit paints the right colours before anything else (no flash)
+    try {
+      localStorage.setItem('ferricool-mode', mode);
+      localStorage.setItem('ferricool-theme-cache', JSON.stringify({ mode: t.mode, light: varsOf(t.light, t), dark: varsOf(t.dark, t) }));
+    } catch (e) {}
   }
-  applyTheme(migrateTheme(draftOf(THEME_STORAGE_KEY) || REMOTE.theme));
+  const THEME = migrateTheme(draftOf(THEME_STORAGE_KEY) || REMOTE.theme);
+  applyTheme(THEME);
+  if (THEME.mode === 'system' && darkQuery) {
+    const onChange = () => applyTheme(THEME);
+    darkQuery.addEventListener ? darkQuery.addEventListener('change', onChange) : darkQuery.addListener(onChange);
+  }
   requestAnimationFrame(() => document.documentElement.classList.remove('is-loading'));
+
+  // scrolling logo strips on the dark theme: each logo is checked once — dark logos are flipped light so they show on
+  // black, logos that are already light are only turned grey. Either way the logo keeps its own shapes and details.
+  (function toneLogos(){
+    const cache = new Map();
+    const tone = img => {
+      const src = img.currentSrc || img.src; if (!src) return;
+      if (cache.has(src)) { img.classList.add(cache.get(src)); return; }
+      try {
+        const c = document.createElement('canvas'); c.width = c.height = 32; const g = c.getContext('2d', { willReadFrequently: true });
+        g.drawImage(img, 0, 0, 32, 32); const d = g.getImageData(0, 0, 32, 32).data; let sum = 0, w = 0;
+        for (let i = 0; i < d.length; i += 4) { const a = d[i + 3] / 255; if (a < .1) continue; sum += a * (0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2]) / 255; w += a; }
+        const cls = (w && sum / w > .55) ? 'is-light-logo' : 'is-dark-logo'; cache.set(src, cls); img.classList.add(cls);
+      } catch (e) { img.classList.add('is-dark-logo'); }
+    };
+    $$('.logo-track img').forEach(img => img.complete && img.naturalWidth ? tone(img) : img.addEventListener('load', () => tone(img), { once: true }));
+  })();
 
   // speed: marquees, the moving gallery, the lens rings and the signature only animate while on screen
   if ('IntersectionObserver' in window) {
@@ -245,32 +311,16 @@
   }
 
   // numbers in the social proof band count up once when they scroll into view ("80+" counts 0 → 80, keeps the "+")
-  (function countUp(){
-    // social proof: when the band scrolls into view the label, numbers and red lines come in one after another,
-    // and each number counts up over about 3 seconds — slow start, quicker middle, gentle landing ("80+", "5yrs+").
-    const band = $('#proof'), els = $$('[data-count]');
-    if (!band || !els.length) return;
+  (function rollUp(){
+    // social proof: when the band scrolls into view the label and numbers come in one after another,
+    // then every digit rolls up from 0 to its value (one digit after the other), and the red line draws in.
+    const band = $('#proof'); if (!band) return;
     const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!('IntersectionObserver' in window) || reduce) { band.classList.add('is-in'); return; }
-    const parts = el => String(el.dataset.count).match(/^(\D*)(\d+)(.*)$/);
-    els.forEach(el => { const m = parts(el); if (m) el.textContent = m[1] + '0' + m[3]; });
-    const ease = p => p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;   // slow start, quick middle, gentle landing
-    const run = (el, delay) => {
-      const m = parts(el); if (!m) return;
-      const end = Number(m[2]), dur = 2800 + Math.min(800, end * 4);
-      setTimeout(() => {
-        const t0 = performance.now();
-        const step = now => {
-          const p = Math.min(1, (now - t0) / dur);
-          el.textContent = m[1] + (p >= 1 ? end : Math.floor(end * ease(p))) + m[3];
-          if (p < 1) requestAnimationFrame(step); else el.classList.add('is-done');
-        };
-        requestAnimationFrame(step);
-      }, delay);
-    };
+    $$('.odo', band).forEach((el, si) => $$('.odo-d', el).forEach((d, di) => d.style.setProperty('--delay', (0.55 + si * 0.28 + di * 0.16) + 's')));
+    if (!('IntersectionObserver' in window) || reduce) { band.classList.add('is-in', 'is-rolled'); return; }
     const io = new IntersectionObserver(es => es.forEach(e => {
       if (!e.isIntersecting) return;
-      band.classList.add('is-in'); els.forEach((el, i) => run(el, 350 + i * 260)); io.disconnect();
+      band.classList.add('is-in'); requestAnimationFrame(() => requestAnimationFrame(() => band.classList.add('is-rolled'))); io.disconnect();
     }), { threshold: .35 });
     io.observe(band);
   })();
@@ -556,7 +606,12 @@
 
     /* ---------- lens: tap to reveal, tap again to collapse ---------- */
     const lens = $('#lens'), lensImg = $('#lensImg'), zoomValue = $('#zoomValue'), hero = $('.hero');
-    lensImg.src = (C.hero && C.hero.lensImage) ? C.hero.lensImage : imgW(catCover(CATEGORIES[0] || {}), 900);
+    // the page already starts loading the lens picture itself (index.html) — only swap it if admin set a different one
+    const wantLens = (C.hero && C.hero.lensImage) ? C.hero.lensImage : imgW(catCover(CATEGORIES[0] || {}), 900);
+    if (lensImg.getAttribute('src') !== wantLens) lensImg.src = wantLens;
+    lensImg.decoding = 'async'; try { lensImg.fetchPriority = 'high'; } catch (e) {}
+    // remember it so the next visit starts downloading it before anything else
+    try { if (!String(lensImg.src).startsWith('data:')) localStorage.setItem('ferricool-lens', lensImg.getAttribute('src')); } catch (e) {}
     let zoom = 0, zoomAnim = null;
     function setZoom(next){
       const prev = zoom; zoom = Math.max(0, Math.min(5, next));
@@ -634,7 +689,8 @@
     // the "Client / Industry / Country / Year …" block at the top of a case study; empty rows are skipped
     function renderDetails(list){
       const rows = (list || []).filter(d => String(d.label || '').trim() && String(d.value || '').trim());
-      caseDetails.innerHTML = rows.map(d => `<div><dt>${esc(d.label)}${/[:：]$/.test(d.label.trim()) ? '' : ':'}</dt><dd>${esc(d.value)}</dd></div>`).join('');
+      // small bold label on top, the answer underneath; long answers (like a project scope) take two columns
+      caseDetails.innerHTML = rows.map(d => `<div${String(d.value).length > 34 ? ' class="wide"' : ''}><dt>${esc(String(d.label).trim().replace(/[:：]\s*$/, ''))}</dt><dd>${esc(d.value)}</dd></div>`).join('');
       caseDetails.hidden = !rows.length;
     }
     const caseSections = $('#caseSections'), caseMore = $('#caseMore'), caseNext = $('#caseNext'), backBtn = $('#backProject');

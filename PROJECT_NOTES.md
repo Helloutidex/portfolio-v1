@@ -121,3 +121,17 @@ size, 2-col, 3-col, stack. Images are 1920px wide. Sections and cases can be pas
   palette kept, switch back in admin → Theme → Mode). Signature band bg set to #0c0c0d. On black, the
   collaborator logos show as light grayscale and get their own colours on a white chip on hover.
   CSS/JS tag ?v=20261109e.
+- 2026-11-09 (v9): Theme Mode now has "System default" (follows each visitor's device, switches live);
+  softer gradients/glows; header logo image upload (Content → Header; white on dark, own colours on light);
+  case-study details shown as small bold label above value in a responsive grid; lens picture zooms gently
+  (1.08 → 1.2) on tap and loads faster (lens image now mvybotwj-0.jpg, 128 KB, preloaded on repeat visits);
+  second scrolling strip "Collaborators" (Content → Collaborators strip, placeholder marks until logos are
+  uploaded) scrolling the other way; all logo lists edited as neat tiles (upload/replace, reorder, bulk
+  upload). On the dark theme, strip logos are auto-checked: dark ones flipped light, light ones greyed.
+  CSS/JS tag ?v=20261109f.
+- 2026-11-09 (v10): social proof numbers roll up digit by digit (odometer, ~2.2s each, staggered); lens
+  picture loads straight from index.html (src + preload — if the lens picture is changed in admin, also
+  update the two "mvybotwj-0.jpg" references in index.html); no seam between hero and social proof;
+  favicon (assets/favicon.svg, override in Content → Header); published theme mode = System default;
+  light theme: "Let's make something" block black, links + name band white (name red); contact page uses
+  the site colours (black on dark, white on light) with a red Send button. CSS/JS tag ?v=20261109g.

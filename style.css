@@ -607,8 +607,9 @@ html.is-loading body{opacity:0}
 body{transition:opacity .35s ease}
 
 /* ---- hero, lens and floating cards: exactly as before (rings, dots, plus sign, notes) ---- */
-/* the picture inside the lens stays still — it no longer zooms or moves when tapped */
-.glass img{transition:none}
+/* the picture inside the lens: a gentle zoom when tapped (small enough that nothing important is cut off) */
+.glass img{transition:transform 1.1s cubic-bezier(.16,1,.3,1),filter 1.1s ease}
+.hero.is-zooming .glass img{transform:scale(1.2);filter:saturate(1) contrast(1.06)}
 
 /* ---- section headings: label + big line, no rules ---- */
 .section-top{border-top:0;padding-top:0;display:grid;grid-template-columns:minmax(150px,1fr) 3fr;align-items:baseline;gap:clamp(16px,4vw,60px);margin-bottom:clamp(32px,4vw,56px)}
@@ -782,11 +783,11 @@ body{transition:opacity .35s ease}
 /* social proof: a deep black band in greys with the brand red — and a scroll-in sequence */
 .proof{position:relative;isolation:isolate;background:#0c0c0d;color:#f2f2f2}
 .proof:before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
-  background:radial-gradient(60% 70% at 50% 0%,rgba(232,34,62,.16),transparent 70%),radial-gradient(40% 60% at 85% 100%,rgba(255,255,255,.05),transparent 70%)}
+  background:radial-gradient(60% 70% at 50% 0%,rgba(232,34,62,.075),transparent 70%),radial-gradient(40% 60% at 85% 100%,rgba(255,255,255,.025),transparent 70%)}
 .proof-head .label{color:var(--accent);letter-spacing:.22em}
 .stat{position:relative}
-.stat strong{background:linear-gradient(180deg,#ffffff 0%,#b9b9b9 55%,#6f6f6f 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
-.stat i{background:var(--accent);box-shadow:0 0 18px rgba(232,34,62,.55)}
+.stat strong{background:linear-gradient(180deg,#f4f4f4 0%,#cfcfcf 60%,#a3a3a3 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.stat i{background:var(--accent);box-shadow:0 0 12px rgba(232,34,62,.28)}
 .stat span{color:#a6a6a6}
 .stat strong.is-done{animation:statPop .5s cubic-bezier(.16,1,.3,1)}
 @keyframes statPop{40%{transform:scale(1.045)}100%{transform:none}}
@@ -806,9 +807,9 @@ body{transition:opacity .35s ease}
 
 /* client reviews: cards with a big red quote mark, initials, a soft glow that follows the cursor, rise-in on scroll */
 .testimonial-grid{gap:clamp(14px,2vw,24px);perspective:1200px}
-.testimonial-card{position:relative;overflow:hidden;background:linear-gradient(160deg,var(--paper) 0%,var(--soft) 100%);border:1px solid color-mix(in srgb,var(--ink) 7%,transparent);border-radius:24px;padding:clamp(28px,3.4vw,48px);gap:34px;min-height:260px;
+.testimonial-card{position:relative;overflow:hidden;background:linear-gradient(160deg,var(--paper) 0%,color-mix(in srgb,var(--soft) 60%,var(--paper)) 100%);border:1px solid color-mix(in srgb,var(--ink) 7%,transparent);border-radius:24px;padding:clamp(28px,3.4vw,48px);gap:34px;min-height:260px;
   transform:rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .5s cubic-bezier(.16,1,.3,1),box-shadow .5s ease,border-color .4s ease,opacity .9s cubic-bezier(.16,1,.3,1),translate .9s cubic-bezier(.16,1,.3,1)}
-.testimonial-card:after{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .4s ease;background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),rgba(232,34,62,.10),transparent 60%)}
+.testimonial-card:after{content:"";position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .4s ease;background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),rgba(232,34,62,.05),transparent 60%)}
 .testimonial-card:hover{box-shadow:0 30px 70px -30px rgba(20,18,17,.35);border-color:color-mix(in srgb,var(--accent) 35%,transparent)}
 .testimonial-card:hover:after{opacity:1}
 .testimonial-card .tq{position:absolute;top:-.12em;right:.12em;font:500 clamp(140px,14vw,220px)/1 'Bodoni Moda',serif;color:var(--accent);opacity:.12;pointer-events:none;transition:opacity .4s ease,transform .6s cubic-bezier(.16,1,.3,1)}
@@ -816,7 +817,7 @@ body{transition:opacity .35s ease}
 .testimonial-card blockquote{position:relative;font-size:clamp(18px,1.8vw,24px);line-height:1.45;letter-spacing:-.02em;color:var(--ink)}
 .testimonial-card blockquote:before,.testimonial-card blockquote:after{content:none}
 .testimonial-card cite{display:flex;align-items:center;gap:14px;font:500 13px Manrope,Arial,sans-serif;color:var(--muted)}
-.t-avatar{flex:0 0 auto;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:#fff;font:700 15px Manrope,Arial,sans-serif;letter-spacing:.02em;box-shadow:0 8px 20px -6px rgba(232,34,62,.55)}
+.t-avatar{flex:0 0 auto;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:#fff;font:700 15px Manrope,Arial,sans-serif;letter-spacing:.02em;box-shadow:0 6px 16px -6px rgba(232,34,62,.35)}
 .t-who b{display:block;color:var(--ink);font-size:15px;margin-bottom:2px}
 /* before it is scrolled to: hidden a little lower; each card follows the one before */
 .testimonial-card{opacity:0;translate:0 40px}
@@ -845,9 +846,9 @@ body{transition:opacity .35s ease}
 .dark .logo-mark:hover img{filter:none}
 .dark .logo-mark svg{color:#8a8a8a}
 .dark .proof{border-block:1px solid rgba(255,255,255,.04)}
-.dark .testimonial-card{background:linear-gradient(160deg,#151517 0%,#0f0f10 100%);border-color:rgba(255,255,255,.07)}
+.dark .testimonial-card{background:linear-gradient(160deg,#121214 0%,#0e0e0f 100%);border-color:rgba(255,255,255,.07)}
 .dark .testimonial-card:hover{box-shadow:0 30px 70px -30px rgba(0,0,0,.8);border-color:rgba(232,34,62,.45)}
-.dark .testimonial-card:after{background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),rgba(232,34,62,.16),transparent 60%)}
+.dark .testimonial-card:after{background:radial-gradient(420px circle at var(--mx,50%) var(--my,50%),rgba(232,34,62,.07),transparent 60%)}
 .dark .skill{background:#18181a}
 .dark .gallery-frame,.dark .card{box-shadow:0 22px 50px -18px rgba(0,0,0,.9)}
 .dark .pgrid:not(.tile) .pimg{background:#151517}
@@ -858,3 +859,77 @@ body{transition:opacity .35s ease}
   .about .portrait-frame{height:calc(clamp(165px,12.5vw,215px) * 1.28)}
   .about-grid>div:first-child{padding-right:clamp(190px,14.5vw,250px)}
 }
+
+/* =====================================================================
+   v9 — owner requests (2026-11-09, third review)
+   ===================================================================== */
+/* header logo image */
+.sb-logo.has-img:before{display:none}
+.sb-logo-img{display:block;height:clamp(22px,2.1vw,32px);width:auto;max-width:min(240px,46vw);object-fit:contain}
+.dark .sb-logo-img{filter:brightness(0) invert(1)}
+/* case study details: label above value, laid out in rows and columns, left aligned */
+.case-details{max-width:1240px;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(20px,2.4vw,34px) clamp(20px,3vw,48px);margin-top:clamp(28px,3.4vw,48px)}
+.case-details>div{display:flex;flex-direction:column;gap:7px;min-width:0}
+.case-details>div.wide{grid-column:span 2}
+.case-details dt{font:700 11px/1.2 Manrope,Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.case-details dd{font-size:clamp(15px,1.15vw,18px);line-height:1.45;font-weight:600;color:var(--ink);letter-spacing:-.01em}
+@media(max-width:1000px){.case-details{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:800px){.case-details{grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 18px}.case-details>div{display:flex}}
+@media(max-width:360px){.case-details{grid-template-columns:1fr}.case-details>div.wide{grid-column:auto}}
+/* second strip: collaborators — sits right under the clients strip and scrolls the other way */
+.collab-strip{border-top:0}
+.logo-track.reverse{animation-direction:reverse}
+.collab-strip .logo-mark svg{height:100%;width:auto}
+.dark .collab-strip .logo-mark svg{color:#8a8a8a}
+.collab-strip .logo-mark:hover svg{color:var(--ink)}
+
+/* dark theme logo strips: dark logos flipped light, light logos just greyed (decided per logo by the script) */
+.dark .logo-mark img.is-light-logo{filter:grayscale(1) opacity(.62)}
+.dark .logo-mark img.is-dark-logo{filter:grayscale(1) invert(1) opacity(.62)}
+.dark .logo-mark:hover img.is-light-logo,.dark .logo-mark:hover img.is-dark-logo{filter:none}
+
+/* =====================================================================
+   v10 — rolling numbers, instant lens picture, seamless hero → social proof
+   ===================================================================== */
+/* rolling numbers: each digit window shows one number; its column of 0–9 slides UP to the value */
+.stat strong.odo{display:inline-flex;align-items:flex-start;justify-content:center;line-height:1;background:none;-webkit-text-fill-color:currentColor;color:#dcdcdc;filter:none!important}
+.odo-d{display:inline-block;height:1em;overflow:hidden;position:relative}
+.odo-s{display:block;transform:translateY(0);will-change:transform}
+.odo-s>span,.odo-c{display:block;height:1em;line-height:1;background:linear-gradient(180deg,#f4f4f4 0%,#cfcfcf 60%,#a3a3a3 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.odo-c{display:inline-block}
+.proof.is-rolled .odo-s{transform:translateY(calc(-1em * (10 + var(--d))));transition:transform 2.2s cubic-bezier(.22,1,.36,1) var(--delay,.5s)}
+.stat strong.is-done{animation:none}
+@media(prefers-reduced-motion:reduce){.odo-s{transition:none!important;transform:translateY(calc(-1em * (10 + var(--d))))!important}}
+/* hero → social proof: no edge between them. On the black theme the band is the same black as the page,
+   and its soft red light sits in the middle and fades out before any edge, so the two flow into each other. */
+.dark .proof{background:var(--paper);border:0}
+.proof:before{background:radial-gradient(48% 42% at 50% 52%,rgba(232,34,62,.06),transparent 100%)}
+.dark .hero{border-bottom:0}
+/* the label styles (".stat span") must not reach the rolling digits */
+.stat strong span{font-size:inherit;font-weight:inherit;line-height:1;max-width:none;margin:0;letter-spacing:inherit}
+.stat strong .odo-d,.stat strong .odo-c{display:inline-block;height:1em}
+.stat strong .odo-s{display:block}
+.stat strong .odo-s>span{display:block;height:1em}
+.stat strong .odo-d{overflow:hidden;clip-path:inset(0);contain:paint}
+/* digits: plain soft-white (gradient text ignores the digit window's clipping in Chrome while rolling) */
+.stat strong .odo-s>span,.stat strong .odo-c{background:none;-webkit-background-clip:border-box;background-clip:border-box;color:#d9d9d9;-webkit-text-fill-color:#d9d9d9}
+.stat strong .odo-s{will-change:auto}
+.stat strong .odo-d{contain:none;clip-path:none;overflow:hidden;-webkit-mask-image:linear-gradient(#000,#000);mask-image:linear-gradient(#000,#000)}
+
+/* ---- light mode colour rules ---- */
+/* the "Let's make something worth seeing" block is black on the light theme (stays red on the dark theme) */
+body:not(.dark) .contact-cta{--contact-bg:#0c0c0d;--contact-text:#ffffff;background:#0c0c0d;color:#fff}
+body:not(.dark) .contact-cta .contact-cta-btn{background:var(--accent);color:#fff}
+/* the links + scrolling-name band is white on the light theme, the name stays red */
+body:not(.dark) .links-section,body:not(.dark) .signature{background:var(--paper)!important;color:var(--ink)!important;--muted:color-mix(in srgb,var(--ink) 62%,transparent);--line:color-mix(in srgb,var(--ink) 18%,transparent)}
+body:not(.dark) .links-section .big-link{border-bottom-color:currentColor}
+
+/* contact page (the form): always the site's own colours — black on the dark theme, white on the light theme */
+.contact-page{--contact-bg:var(--paper);--contact-text:var(--ink);background:var(--paper);color:var(--ink)}
+.contact-page .contact-card{background:var(--soft);border-color:color-mix(in srgb,var(--ink) 10%,transparent)}
+.contact-page .contact-form label{color:var(--muted)}
+.contact-page .contact-form input,.contact-page .contact-form textarea{background:var(--paper);border-color:color-mix(in srgb,var(--ink) 16%,transparent);color:var(--ink)}
+.contact-page .contact-form input:focus,.contact-page .contact-form textarea:focus{border-color:var(--accent)}
+.contact-page .contact-submit{background:var(--accent);color:#fff}
+.contact-page .contact-intro .small{color:var(--accent);opacity:1}
+.contact-page .contact-back:hover{background:var(--ink);color:var(--paper)}

@@ -25,7 +25,7 @@
       "opticNote": "Tap the lens · reveal the work",
       "note": "The work is hidden in the lens.",
       "zoomInstruction": "Tap to explore",
-      "lensImage": "assets/uploads/mvybotwj-0.png",
+      "lensImage": "assets/uploads/mvybotwj-0.jpg",
       "ctaLabel": "View my work ↗",
       "ctaHref": "#work"
     },
@@ -175,7 +175,7 @@
     }
   },
   "theme": {
-    "mode": "dark",
+    "mode": "system",
     "scale": 1,
     "light": {
       "paper": "#ffffff",

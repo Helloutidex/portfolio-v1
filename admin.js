@@ -107,7 +107,7 @@ try {
   ============================================================ */
   const CONTENT_STORAGE_KEY = 'ferricool-portfolio-content';
   const DEFAULT_CONTENT = {
-    nav: { logo: 'ADEDEJI SAMUEL / DESIGN', links: [{ label: 'About', href: '#about' }, { label: 'Work', href: '#work' }], ctaLabel: "Let's talk", ctaHref: 'contact.html' },
+    nav: { logo: 'ADEDEJI SAMUEL / DESIGN', logoImage: '', favicon: '', links: [{ label: 'About', href: '#about' }, { label: 'Work', href: '#work' }], ctaLabel: "Let's talk", ctaHref: 'contact.html' },
     hero: {
       eyebrow: 'Independent designer · Lagos, Nigeria',
       titlePre: 'Designing ', titleEm: "what's", titlePost: ' next.',
@@ -137,6 +137,10 @@ try {
       { value: '80+', label: 'Satisfied Clients.' },
       { value: '120+', label: 'Completed Projects.' },
       { value: '5yrs+', label: 'Design Experience.' },
+    ]},
+    collaborators: { label: 'Collaborators', items: [
+      { name: 'Northwind Studio', logo: '' }, { name: 'Kora Labs', logo: '' }, { name: 'Lumen & Co', logo: '' },
+      { name: 'Atlas Creative', logo: '' }, { name: 'Orbit Media', logo: '' }, { name: 'Verde Foods', logo: '' },
     ]},
     logofolio: { label: 'Logofolio', heading: 'Marks & identities I have designed.', tiles: 'light', items: [] },
     work: { label: 'Gallery / automatic', description: 'Selected work, continuously moving. Tap any frame to explore.', noteRight: 'Tap any frame to explore' },
@@ -181,7 +185,7 @@ try {
   let content = loadContent();
 
   // Pictures are shrunk to the width you give (1920 for work) before being stored / published; taller is fine.
-  async function readImageResized(file, maxW){
+  async function readImageResized(file, maxW, keepFormat){
     const url = await readFileAsDataURL(file);
     if (!/^image\/(jpeg|png|webp)$/.test(file.type)) return url;
     try {
@@ -192,7 +196,7 @@ try {
       // speed: a big PNG with no see-through parts (a photo / flyer) is saved as a JPEG — looks the same, a fraction of the size.
       // Logos and anything with transparency stay PNG.
       let type = file.type;
-      if (type === 'image/png' && file.size > 300000) {
+      if (!keepFormat && type === 'image/png' && file.size > 300000) {
         const t = document.createElement('canvas'); t.width = 64; t.height = 64; const tg = t.getContext('2d');
         tg.drawImage(img, 0, 0, 64, 64); const px = tg.getImageData(0, 0, 64, 64).data; let opaque = true;
         for (let i = 3; i < px.length; i += 4) if (px[i] < 255) { opaque = false; break; }
@@ -226,32 +230,32 @@ try {
         <label>Label<input data-link-field="label" value="${esc(it.label)}"></label>
         <label>Href<input data-link-field="href" value="${esc(it.href)}"></label><span></span>`, 'data-link-remove')).join('');
   }
-  function renderCollabs(){
-    $('#collabEditor').innerHTML = content.social.items.map((it, i) => `
-      <div class="admin-mini-row admin-collab-row" data-index="${i}">
-        <label>Logo<div class="admin-image-field">${it.logo ? `<img src="${esc(it.logo)}" alt="">` : `<span class="admin-thumb-empty">No logo</span>`}
-          <input type="file" accept="image/*" data-collab-upload="${i}" class="admin-upload-input">
-          <button type="button" class="admin-upload-btn" data-collab-upload-btn="${i}">Upload logo</button></div></label>
-        <label>Name<input data-collab-field="name" value="${esc(it.name)}"></label><span></span>
-        <button class="admin-mini-remove" type="button" data-collab-remove="${i}">Remove</button>
-      </div>`).join('');
-  }
+
   function renderStats(){
     content.proof.stats = content.proof.stats || [];
     $('#statsEditor').innerHTML = content.proof.stats.map((st, i) => listRow(i, `
         <label>Number<input data-stat-field="value" value="${esc(st.value)}" placeholder="80+"></label>
         <label>Label<input data-stat-field="label" value="${esc(st.label)}" placeholder="Satisfied Clients."></label><span></span>`, 'data-stat-remove')).join('');
   }
-  function renderLogofolio(){
-    content.logofolio.items = content.logofolio.items || [];
-    const items = content.logofolio.items;
-    $('#logofolioEditor').innerHTML = items.length ? `<div class="admin-logo-grid">${items.map((it, i) => `
-      <div class="admin-logo-tile" data-index="${i}">
-        ${it.logo ? `<img src="${esc(it.logo)}" alt="">` : '<span class="admin-thumb-empty">No logo</span>'}
-        <input data-lf-field="name" value="${esc(it.name || '')}" placeholder="Name (for screen readers)">
-        <div class="admin-logo-actions"><button type="button" data-lf-move="-1" title="Move earlier">←</button><button type="button" data-lf-move="1" title="Move later">→</button><button type="button" data-lf-remove="${i}">Remove</button></div>
-      </div>`).join('')}</div>` : '<p class="admin-hint">No logos yet.</p>';
+
+  // one tidy tile editor for every logo list: the clients strip, the collaborators strip and the logofolio
+  const LOGO_LISTS = { social: '#collabEditor', collaborators: '#collaboratorsEditor', logofolio: '#logofolioEditor' };
+  function renderLogoList(key){
+    const box = $(LOGO_LISTS[key]); if (!box) return;
+    content[key] = content[key] || { items: [] }; content[key].items = content[key].items || [];
+    box.innerHTML = `<div class="admin-logo-grid">${content[key].items.map((it, i) => `
+      <div class="admin-logo-tile" data-list="${key}" data-index="${i}">
+        ${it.logo ? `<img src="${esc(it.logo)}" alt="">` : '<span class="admin-thumb-empty">No logo yet<small>a placeholder shows</small></span>'}
+        <input data-ll-field="name" value="${esc(it.name || '')}" placeholder="Name">
+        <input type="file" accept="image/*" class="admin-upload-input" data-ll-upload>
+        <div class="admin-logo-actions"><button type="button" data-ll-upload-btn>${it.logo ? 'Replace' : 'Upload'}</button><button type="button" data-ll-move="-1" title="Move earlier">←</button><button type="button" data-ll-move="1" title="Move later">→</button><button type="button" data-ll-remove title="Remove">✕</button></div>
+      </div>`).join('')}
+      <div class="admin-logo-add" data-list="${key}">
+        <button type="button" data-ll-add>+ Add one</button>
+        <label>+ Upload many<input type="file" accept="image/*" multiple class="admin-upload-input" data-ll-bulk></label>
+      </div></div>`;
   }
+  const renderLogoLists = () => Object.keys(LOGO_LISTS).forEach(renderLogoList);
   function renderTestimonials(){
     $('#testimonialsEditor').innerHTML = content.testimonials.items.map((t, i) => `
       <div class="admin-mini-row admin-testimonial-row" data-index="${i}">
@@ -282,7 +286,7 @@ try {
       else if (el.dataset.list === 'lines') el.value = Array.isArray(val) ? val.join('\n') : '';
       else el.value = val == null ? '' : val;
     });
-    renderFileFields(); renderNavLinks(); renderExpRows(); renderLinks(); renderCollabs(); renderTestimonials(); renderStats(); renderLogofolio();
+    renderFileFields(); renderNavLinks(); renderExpRows(); renderLinks(); renderTestimonials(); renderStats(); renderLogoLists();
   }
   fillContentForm();
 
@@ -300,50 +304,46 @@ try {
     if (el.dataset.navlinkField) content.nav.links[idx][el.dataset.navlinkField] = el.value;
     if (el.dataset.expField) content.experience.rows[idx][el.dataset.expField] = el.value;
     if (el.dataset.linkField) content.links.items[idx][el.dataset.linkField] = el.value;
-    if (el.dataset.collabField) content.social.items[idx][el.dataset.collabField] = el.value;
     if (el.dataset.testimonialField) content.testimonials.items[idx][el.dataset.testimonialField] = el.value;
     if (el.dataset.statField) content.proof.stats[idx][el.dataset.statField] = el.value;
-    if (el.dataset.lfField) { const tile = el.closest('.admin-logo-tile'); content.logofolio.items[Number(tile.dataset.index)][el.dataset.lfField] = el.value; }
+    if (el.dataset.llField) { const tile = el.closest('.admin-logo-tile'); content[tile.dataset.list].items[Number(tile.dataset.index)][el.dataset.llField] = el.value; }
   });
   contentPanel.addEventListener('click', e => {
     let m; const t = e.target;
     if ((m = t.closest('[data-navlink-remove]'))) { content.nav.links.splice(Number(m.dataset.navlinkRemove), 1); renderNavLinks(); }
     if ((m = t.closest('[data-exp-remove]'))) { content.experience.rows.splice(Number(m.dataset.expRemove), 1); renderExpRows(); }
     if ((m = t.closest('[data-link-remove]'))) { content.links.items.splice(Number(m.dataset.linkRemove), 1); renderLinks(); }
-    if ((m = t.closest('[data-collab-remove]'))) { content.social.items.splice(Number(m.dataset.collabRemove), 1); renderCollabs(); }
     if ((m = t.closest('[data-testimonial-remove]'))) { content.testimonials.items.splice(Number(m.dataset.testimonialRemove), 1); renderTestimonials(); }
     if ((m = t.closest('[data-stat-remove]'))) { content.proof.stats.splice(Number(m.dataset.statRemove), 1); renderStats(); }
-    if ((m = t.closest('[data-lf-remove]'))) { content.logofolio.items.splice(Number(m.dataset.lfRemove), 1); renderLogofolio(); }
-    if ((m = t.closest('[data-lf-move]'))) {
-      const arr = content.logofolio.items, i = Number(m.closest('.admin-logo-tile').dataset.index), j = i + Number(m.dataset.lfMove);
-      if (j >= 0 && j < arr.length) { [arr[i], arr[j]] = [arr[j], arr[i]]; renderLogofolio(); }
-    }
-    if ((m = t.closest('[data-collab-upload-btn]'))) $(`[data-collab-upload="${m.dataset.collabUploadBtn}"]`)?.click();
+    const tile = t.closest('.admin-logo-tile'), tlist = tile && content[tile.dataset.list].items, ti = tile ? Number(tile.dataset.index) : -1;
+    if (tile && t.closest('[data-ll-upload-btn]')) tile.querySelector('[data-ll-upload]').click();
+    if (tile && (m = t.closest('[data-ll-move]'))) { const j = ti + Number(m.dataset.llMove); if (j >= 0 && j < tlist.length) { [tlist[ti], tlist[j]] = [tlist[j], tlist[ti]]; renderLogoList(tile.dataset.list); } }
+    if (tile && t.closest('[data-ll-remove]')) { tlist.splice(ti, 1); renderLogoList(tile.dataset.list); }
+    if (t.closest('[data-ll-add]')) { const k = t.closest('[data-list]').dataset.list; content[k].items.push({ name: '', logo: '' }); renderLogoList(k); }
     if ((m = t.closest('[data-file-upload-btn]'))) m.parentElement.querySelector('input[type=file]')?.click();
     if ((m = t.closest('[data-file-clear]'))) { setPath(content, m.dataset.fileClear, ''); renderFileFields(); }
   });
   contentPanel.addEventListener('change', async e => {
     const t = e.target;
     if (t.dataset.fileText) renderFileFields();
-    if ((t.id === 'logofolioBulk') && t.files.length) {
-      const files = Array.from(t.files).sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
-      const target = t.id === 'logofolioBulk' ? content.logofolio.items : content.social.items;
-      for (const f of files) target.push({ name: f.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' '), logo: await readImageResized(f, 600) });
-      t.value = ''; t.id === 'logofolioBulk' ? renderLogofolio() : renderCollabs();
-      setStatus('contentStatus', `Added ${files.length} logo${files.length > 1 ? 's' : ''}. Save, then Publish.`);
-      return;
+    if (t.matches('[data-ll-upload]') && t.files[0]) {
+      const tile = t.closest('.admin-logo-tile'); content[tile.dataset.list].items[Number(tile.dataset.index)].logo = await readImageResized(t.files[0], 600, true);
+      renderLogoList(tile.dataset.list); return;
     }
-    if (t.matches('[data-collab-upload]') && t.files[0]) { content.social.items[Number(t.dataset.collabUpload)].logo = await readImageResized(t.files[0], 600); renderCollabs(); }
+    if (t.matches('[data-ll-bulk]') && t.files.length) {
+      const k = t.closest('[data-list]').dataset.list, files = Array.from(t.files).sort((x, y) => x.name.localeCompare(y.name, undefined, { numeric: true }));
+      for (const f of files) content[k].items.push({ name: f.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' '), logo: await readImageResized(f, 600, true) });
+      renderLogoList(k); setStatus('contentStatus', `Added ${files.length} logo${files.length > 1 ? 's' : ''}. Save, then Publish.`); return;
+    }
     if (t.matches('[data-file-upload]') && t.files[0]) {
       const kind = t.parentElement.dataset.kind || 'image';
-      setPath(content, t.dataset.fileUpload, kind === 'file' ? await readFileAsDataURL(t.files[0]) : await readImageResized(t.files[0], 1600));
+      setPath(content, t.dataset.fileUpload, kind === 'file' ? await readFileAsDataURL(t.files[0]) : await readImageResized(t.files[0], 1600, /logo|badge|favicon/i.test(t.dataset.fileUpload)));
       renderFileFields();
     }
   });
   $('#addNavLink').addEventListener('click', () => { content.nav.links.push({ label: '', href: '#' }); renderNavLinks(); });
   $('#addExpRow').addEventListener('click', () => { content.experience.rows.push({ tag: '', role: '', meta: '' }); renderExpRows(); });
   $('#addLink').addEventListener('click', () => { content.links.items.push({ label: '', href: '#' }); renderLinks(); });
-  $('#addCollab').addEventListener('click', () => { content.social.items.push({ name: 'New collaborator', logo: '' }); renderCollabs(); });
   $('#addStat').addEventListener('click', () => { content.proof.stats.push({ value: '', label: '' }); renderStats(); });
   $('#addTestimonial').addEventListener('click', () => { content.testimonials.items.push({ quote: '', name: '', role: '' }); renderTestimonials(); });
 
@@ -369,7 +369,7 @@ try {
   function migrateTheme(saved){
     const d = JSON.parse(JSON.stringify(DEFAULT_THEME));
     if (!saved || typeof saved !== 'object') return d;
-    const out = { mode: saved.mode === 'dark' ? 'dark' : 'light', scale: saved.scale != null ? Number(saved.scale) : 1, light: { ...d.light }, dark: { ...d.dark } };
+    const out = { mode: ['dark', 'system'].includes(saved.mode) ? saved.mode : 'light', scale: saved.scale != null ? Number(saved.scale) : 1, light: { ...d.light }, dark: { ...d.dark } };
     if (saved.light || saved.dark) { Object.assign(out.light, saved.light || {}); Object.assign(out.dark, saved.dark || {}); }
     else {   // older single-palette shape
       ['paper', 'ink', 'muted', 'line', 'tint1', 'tint2'].forEach(k => { if (saved[k]) out.light[k] = saved[k]; });

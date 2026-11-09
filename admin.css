@@ -140,3 +140,14 @@ body.admin-body.dark{--paper:#141211;--ink:#faf6ee;--muted:#9a948b;--line:#2c292
 .admin-logo-actions button{flex:1;font-size:11px;padding:5px 4px;border:1px solid var(--line);background:none;color:inherit;border-radius:6px;cursor:pointer}
 .admin-details{margin:14px 0;padding:12px;border:1px solid var(--line);border-radius:10px}
 .admin-details .admin-mini-row{grid-template-columns:1fr 2fr auto auto auto}
+
+/* v9: one neat tile editor for every logo list */
+.admin-logo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.admin-logo-tile{background:var(--paper);transition:border-color .2s ease,box-shadow .2s ease}
+.admin-logo-tile:hover{border-color:var(--accent,#E8223E);box-shadow:0 8px 24px -14px rgba(0,0,0,.4)}
+.admin-logo-tile .admin-thumb-empty{flex-direction:column;gap:4px;font-size:12px;text-align:center;display:flex;align-items:center;justify-content:center}
+.admin-logo-tile .admin-thumb-empty small{font-size:10px;opacity:.7}
+.admin-logo-actions button[data-ll-upload-btn]{flex:2;font-weight:600}
+.admin-logo-add{display:flex;flex-direction:column;gap:8px;justify-content:center;padding:10px;border:1px dashed var(--line);border-radius:12px;min-height:150px}
+.admin-logo-add button,.admin-logo-add label{display:block;text-transform:none;letter-spacing:0;text-align:center;padding:10px;border:1px solid var(--line);border-radius:8px;background:none;color:inherit;font:600 12px Manrope,Arial,sans-serif;cursor:pointer;margin:0}
+.admin-logo-add button:hover,.admin-logo-add label:hover{border-color:var(--accent,#E8223E);color:var(--accent,#E8223E)}
