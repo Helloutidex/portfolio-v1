@@ -6,8 +6,8 @@
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,500;1,500&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=UnifrakturCook:wght@700&display=swap">
-<link rel="stylesheet" href="style.css?v=20261109h">
-<link rel="stylesheet" href="admin.css?v=20261109h">
+<link rel="stylesheet" href="style.css?v=20261109i">
+<link rel="stylesheet" href="admin.css?v=20261109i">
 </head>
 <body class="admin-body">
 <section class="lock-screen" id="lockScreen">
@@ -141,6 +141,26 @@
       <div id="logofolioEditor"></div>
     </div>
 
+    <div class="admin-group" data-group="process">
+      <h2>My process <span class="admin-hint">(short steps — Ideate, Think, Explore, Design… — hidden if empty)</span></h2>
+      <div class="admin-row2">
+        <label>Label<input data-path="process.label"></label>
+        <label>Heading<input data-path="process.heading"></label>
+      </div>
+      <div id="processEditor"></div>
+      <button class="admin-add-small" type="button" id="addStep">+ Add a step</button>
+    </div>
+
+    <div class="admin-group" data-group="resources">
+      <h2>Resources <span class="admin-hint">(books, YouTube channels, programmes — a cover picture is optional; YouTube / programme cards are wider)</span></h2>
+      <div class="admin-row2">
+        <label>Label<input data-path="resources.label"></label>
+        <label>Heading<input data-path="resources.heading"></label>
+      </div>
+      <div id="resourcesEditor"></div>
+      <button class="admin-add-small" type="button" id="addResource">+ Add a resource</button>
+    </div>
+
     <div class="admin-group" data-group="testimonials">
       <h2>Testimonials</h2>
       <div class="admin-row2">
@@ -237,7 +257,25 @@
     <div class="admin-group" data-group="effects">
       <h2>Effects</h2>
       <label class="admin-check"><input type="checkbox" data-path="effects.particles"> Soft particles that bloom where the cursor moves or lands</label>
-      <label class="admin-check"><input type="checkbox" data-path="effects.intro"> Opening animation (a red paper plane takes off and reveals the site — once per visit)</label>
+      <label class="admin-check"><input type="checkbox" data-path="effects.intro"> Opening animation when someone arrives (once per visit, tap to skip)</label>
+      <label>Which opening<select data-path="effects.introStyle"><option value="poster">Poster — "Every project is a conversation…" (set it up below)</option><option value="plane">Paper plane — a red plane takes off and reveals the site</option></select></label>
+    </div>
+
+    <div class="admin-group" data-group="poster">
+      <h2>Opening poster <span class="admin-hint">(the animated first screen — about 3 seconds, then the portfolio)</span></h2>
+      <label>Headline (one line per row)<textarea data-path="poster.headLines" data-list="lines" id="posterHead"></textarea></label>
+      <div class="admin-row3">
+        <label>Button text (opens the contact page)<input data-path="poster.btn"></label>
+        <label>Monogram top-right<input data-path="poster.mark" maxlength="4"></label>
+        <label>Seconds before it opens the site<input type="number" min="1.5" max="8" step="0.1" data-path="poster.hold"></label>
+      </div>
+      <label>Red tag text<input data-path="poster.tag"></label>
+      <label>Signature text (written in a handwriting font)<input data-path="poster.sign"></label>
+      <label>Or your own signature (transparent PNG / SVG, white)<div class="admin-image-field" data-image-path="poster.signImage"></div></label>
+      <label>Portrait (shown in black &amp; white with a fine line texture)<div class="admin-image-field" data-image-path="poster.image"></div></label>
+      <p class="admin-hint" style="margin-top:12px">Links shown top-left next to Home / About / Works (only ones with a link appear)</p>
+      <div id="posterSocialsEditor"></div>
+      <button class="admin-add-small" type="button" id="addPosterSocial">+ Add a link</button>
     </div>
 
     <div class="admin-group" data-group="games">
@@ -260,10 +298,11 @@
     </div>
 
     <div class="admin-group" data-group="footer">
-      <h2>Footer</h2>
-      <div class="admin-row2">
-        <label>Left<input data-path="footer.left"></label>
-        <label>Right<input data-path="footer.right"></label>
+      <h2>Footer <span class="admin-hint">(brand · colour line · TM · globe · crosshair · name … version)</span></h2>
+      <div class="admin-row3">
+        <label>Brand<input data-path="footer.brand" placeholder="Helloutidex"></label>
+        <label>Name<input data-path="footer.name" placeholder="SAMUEL ADEDEJI"></label>
+        <label>Right side (version)<input data-path="footer.version" placeholder="v2.0 (2026)"></label>
       </div>
     </div>
 
@@ -342,5 +381,5 @@
 </main>
 </div>
 
-<script src="admin.js?v=20261109h" defer></script>
+<script src="admin.js?v=20261109i" defer></script>
 </body></html>

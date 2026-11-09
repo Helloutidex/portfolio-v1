@@ -151,3 +151,6 @@ body.admin-body.dark{--paper:#141211;--ink:#faf6ee;--muted:#9a948b;--line:#2c292
 .admin-logo-add{display:flex;flex-direction:column;gap:8px;justify-content:center;padding:10px;border:1px dashed var(--line);border-radius:12px;min-height:150px}
 .admin-logo-add button,.admin-logo-add label{display:block;text-transform:none;letter-spacing:0;text-align:center;padding:10px;border:1px solid var(--line);border-radius:8px;background:none;color:inherit;font:600 12px Manrope,Arial,sans-serif;cursor:pointer;margin:0}
 .admin-logo-add button:hover,.admin-logo-add label:hover{border-color:var(--accent,#E8223E);color:var(--accent,#E8223E)}
+.admin-res-row{grid-template-columns:150px 1fr 1fr 120px auto;align-items:end}
+.admin-res-row .admin-image-field{flex-wrap:wrap}
+@media(max-width:800px){.admin-res-row{grid-template-columns:1fr}}

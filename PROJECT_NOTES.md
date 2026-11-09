@@ -146,3 +146,10 @@ size, 2-col, 3-col, stack. Images are 1920px wide. Sections and cases can be pas
   updatedAt; admin now only prefers its local copy if it is strictly newer and < 15 min old.
   The 21:52 Publish removed Swyftsend (locked case), the Kalvia campaign ad and the Conversation Circle
   flyer from the data — recoverable from commit 91c39d1's site-data.json. CSS/JS tag ?v=20261109h.
+- 2026-11-09 (v12): opening "poster" animation (based on the owner's "Every project is a conversation"
+  page, no page number) — default opening, plane still selectable (Content → Effects / Opening poster:
+  headline, button, tag, signature text or PNG, portrait, links, seconds); "My process" section after
+  About (Ideate, Think, Explore, Design; line + dots animate in); "Resources" bento section before Links
+  (books / YouTube / programmes, optional covers + links); new footer: brand · colour line · TM · globe ·
+  crosshair · name … version (Content → Footer), transparent so it works in light and dark.
+  CSS/JS tag ?v=20261109i.

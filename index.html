@@ -5,14 +5,27 @@
 <title>Adedeji Samuel — Designing What's Next</title>
 <link rel="preload" as="image" href="assets/uploads/mvybotwj-0.jpg" fetchpriority="high">
 <link rel="icon" id="favicon" href="assets/favicon.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mrs+Saint+Delafield&display=swap"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,500;1,500&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=UnifrakturCook:wght@700&display=swap">
-<link rel="stylesheet" href="style.css?v=20261109h">
+<link rel="stylesheet" href="style.css?v=20261109i">
 <script>/* paint the saved colours before anything shows, and hold the page until the real content is in (max 2.5s) */
 (function(){var d=document.documentElement;d.classList.add("is-loading");try{var t=JSON.parse(localStorage.getItem("ferricool-theme-cache")||"null"),m;if(t){m=t.mode==="system"?(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"):t.mode;var v=t[m];if(v)for(var k in v)d.style.setProperty(k,v[k])}else m=localStorage.getItem("ferricool-mode")||(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");if(m==="dark")d.classList.add("predark");var l=localStorage.getItem("ferricool-lens");if(l){var p=document.createElement("link");p.rel="preload";p.as="image";p.href=l;document.head.appendChild(p)}}catch(e){}setTimeout(function(){d.classList.remove("is-loading")},1500)})();</script>
 </head>
 <body>
-<!-- opening animation: a red paper plane takes off and reveals the site (first visit of a session; tap to skip) -->
+<!-- opening animations (once per visit, tap to skip). Admin → Content → Effects picks "poster" (default) or "plane". -->
+<div class="poster-intro" id="posterIntro" aria-hidden="true" hidden>
+  <div class="pz-dots"></div>
+  <nav class="pz-nav"><div class="pz-col"><a href="#top" data-pz-enter>Home</a><a href="#about" data-pz-enter>About</a><a href="#work" data-pz-enter>Works</a></div><div class="pz-col" id="pzSocial"></div></nav>
+  <div class="pz-mark"><b id="pzMark">SA</b><i>.</i><span>PORTFOLIO.</span></div>
+  <span class="pz-bar pz-bar-b"></span>
+  <div class="pz-panel"></div>
+  <div class="pz-photo"><img id="pzImg" src="assets/portrait.jpg" alt="" decoding="async" fetchpriority="high"></div>
+  <div class="pz-red"></div>
+  <div class="pz-copy"><span class="pz-bar pz-bar-c"></span><h1 id="pzHead"><span>Every project is a</span><span>conversation, this is</span><span>where yours begins.</span></h1><a class="pz-btn" id="pzBtn" href="contact.html">Book a Call</a></div>
+  <div class="pz-sign" id="pzSign">Samuel Adedeji</div>
+  <div class="pz-tag"><span class="pz-x" aria-hidden="true">✕</span><span id="pzTag">What are you waiting for, let's build bold brands.</span></div>
+  <button class="pz-skip" type="button" data-pz-enter>Enter portfolio →</button>
+</div>
 <div class="plane-intro" id="intro" aria-hidden="true" hidden>
   <svg class="pi-trail" id="introTrail"><path id="introPath" d=""/></svg>
   <div class="pi-plane" id="introPlane"><svg viewBox="0 0 64 64"><path d="M4 31 L60 6 L33 57 L27 38 Z" fill="#E8223E"/><path d="M27 38 L60 6 L22 47 Z" fill="#a8152b"/><path d="M27 38 L22 47 L33 57 Z" fill="#c81b33"/></svg></div>
@@ -21,11 +34,33 @@
 </div>
 <script>
 (function(){
-  var d=document.documentElement,el=document.getElementById('intro');
-  var on=true;try{on=localStorage.getItem('ferricool-intro')!=='off'&&!sessionStorage.getItem('intro-done')}catch(e){}
-  if(!on||(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)){el.remove();return}
+  var d=document.documentElement,pz=document.getElementById('posterIntro'),pl=document.getElementById('intro');
+  var style='poster',seen=false;
+  try{style=localStorage.getItem('ferricool-intro-style')||(localStorage.getItem('ferricool-intro')==='off'?'off':'poster');seen=!!sessionStorage.getItem('intro-done')}catch(e){}
+  var reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(seen||style==='off'||reduce){pz.remove();pl.remove();return}
   try{sessionStorage.setItem('intro-done','1')}catch(e){}
-  d.classList.add('has-intro');el.hidden=false;
+  d.classList.add('has-intro');
+  function end(el,after){if(!el||el._done)return;el._done=true;el.classList.add('is-out');setTimeout(function(){el.remove();d.classList.remove('has-intro');after&&after()},620)}
+  if(style==='poster'){
+    pl.remove();pz.hidden=false;
+    var c={};try{c=JSON.parse(localStorage.getItem('ferricool-poster')||'{}')}catch(e){}
+    if(c.head){var hd=document.getElementById('pzHead');hd.innerHTML='';String(c.head).split('\n').forEach(function(t){var s=document.createElement('span');s.textContent=t;hd.appendChild(s)})}
+    if(c.btn)document.getElementById('pzBtn').textContent=c.btn;
+    if(c.tag)document.getElementById('pzTag').textContent=c.tag;
+    if(c.sign)document.getElementById('pzSign').textContent=c.sign;
+    if(c.mark)document.getElementById('pzMark').textContent=c.mark;
+    if(c.img)document.getElementById('pzImg').src=c.img;
+    if(c.signImg){var sg=document.getElementById('pzSign');sg.textContent='';var im=new Image();im.src=c.signImg;im.alt='';sg.appendChild(im);sg.classList.add('is-img')}
+    var so=document.getElementById('pzSocial');(c.socials||[]).forEach(function(x){if(!x||!x.label)return;var a=document.createElement('a');a.textContent=x.label;a.href=x.url||'#';a.target='_blank';a.rel='noopener';so.appendChild(a)});
+    requestAnimationFrame(function(){pz.classList.add('is-play')});
+    var go=function(){end(pz)};
+    pz.addEventListener('click',function(e){var a=e.target.closest('a');if(a&&!a.hasAttribute('data-pz-enter'))return;if(a)e.preventDefault();go()});
+    addEventListener('keydown',function k(){go();removeEventListener('keydown',k)});
+    setTimeout(go,Number(c.hold)||2900);
+    return;
+  }
+  pz.remove();pl.hidden=false;
   var name='';try{name=localStorage.getItem('ferricool-intro-name')||''}catch(e){}
   document.getElementById('introName').textContent=name||'Adedeji Samuel';
   var W=innerWidth,H=innerHeight,svg=document.getElementById('introTrail'),path=document.getElementById('introPath'),plane=document.getElementById('introPlane');
@@ -33,7 +68,7 @@
   var sx=W*.12,sy=H*.72;
   path.setAttribute('d','M'+sx+' '+sy+' C '+W*.34+' '+H*.74+', '+W*.5+' '+H*.58+', '+W*.62+' '+H*.42+' S '+W*.9+' '+H*.06+', '+(W+120)+' '+(-H*.12));
   var len=path.getTotalLength();path.style.strokeDasharray=len;path.style.strokeDashoffset=len;
-  var t0=performance.now(),done=false,LIFT=380,FLY=1350,OUT=520;
+  var t0=performance.now(),done=false,LIFT=380,FLY=1350;
   function ease(p){return p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2}
   function frame(now){
     if(done)return;var t=now-t0;
@@ -42,8 +77,8 @@
       plane.style.opacity=1;plane.style.transform='translate('+(pt.x-28)+'px,'+(pt.y-28)+'px) rotate('+(a+18)+'deg) scale('+(1-e*.25)+')';path.style.strokeDashoffset=len-L;
       if(p>=1){finish();return}}
     requestAnimationFrame(frame)}
-  function finish(){if(done)return;done=true;el.classList.add('is-out');setTimeout(function(){el.remove();d.classList.remove('has-intro')},OUT)}
-  document.getElementById('introSkip').addEventListener('click',finish);el.addEventListener('pointerdown',function(e){if(e.target.id!=='introSkip')finish()});
+  function finish(){if(done)return;done=true;end(pl)}
+  document.getElementById('introSkip').addEventListener('click',finish);pl.addEventListener('pointerdown',function(e){if(e.target.id!=='introSkip')finish()});
   addEventListener('keydown',function k(){finish();removeEventListener('keydown',k)});
   requestAnimationFrame(frame);setTimeout(finish,3200);
 })();
@@ -107,6 +142,11 @@
   </div>
 </section>
 
+<section class="process" id="process">
+  <div class="section-top"><span id="processLabel">My process</span><p id="processHeading"></p></div>
+  <ol class="process-steps" id="processSteps"></ol>
+</section>
+
 <section class="social-proof" aria-label="Selected clients and collaborations">
   <div class="social-proof-head"><span id="socialLabel">Selected collaborators</span><span id="socialCount">01 — 05</span></div>
   <div class="logo-marquee"><div class="logo-track" id="logoTrack"></div></div>
@@ -139,6 +179,11 @@
   </div>
 </section>
 
+<section class="resources" id="resources">
+  <div class="section-top"><span id="resourcesLabel">Resources</span><p id="resourcesHeading"></p></div>
+  <div class="res-grid" id="resGrid"></div>
+</section>
+
 <section class="links-section">
   <div class="section-top"><span id="linksLabel">Links</span><p id="linksDescription">Find the work, the process, or start a conversation.</p></div>
   <div class="links-grid" id="linksGrid"></div>
@@ -150,7 +195,15 @@
   <h2 id="contactHeading">LET'S MAKE<br>SOMETHING<br>WORTH SEEING.</h2>
   <a class="contact-cta-btn" id="contactCtaBtn" href="contact.html">Let's talk ↗</a>
 </section>
-<footer class="footer"><span id="footerLeft">© 2026 Adedeji Samuel</span><span id="footerRight">Designed with intention / Lagos</span></footer>
+<footer class="footer site-foot">
+  <div class="sf-left">
+    <span class="sf-brand" id="footBrand">Helloutidex</span><span class="sf-line" aria-hidden="true"></span><span class="sf-tm">TM</span>
+    <svg class="sf-globe" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="13"/><ellipse cx="16" cy="16" rx="6" ry="13"/><path d="M3 16h26M5.5 9h21M5.5 23h21"/></svg>
+    <svg class="sf-cross" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="7"/><path d="M16 2v28M2 16h28"/></svg>
+    <span class="sf-name" id="footName">SAMUEL ADEDEJI</span>
+  </div>
+  <span class="sf-ver" id="footVersion">v2.0 (2026)</span>
+</footer>
 
 <div class="modal" id="modal">
   <div class="modal-box">
@@ -200,5 +253,5 @@
   <span class="floating-badge-center"><b id="floatingBadgeInitials">SA</b><i>.</i></span>
 </a>
 
-<script src="script.js?v=20261109h" defer></script>
+<script src="script.js?v=20261109i" defer></script>
 </body></html>

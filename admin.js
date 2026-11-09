@@ -159,14 +159,31 @@ try {
         { tag: '03 / Community', role: 'Design volunteering & mentoring', meta: 'People · Events' },
       ],
     },
+    process: { label: 'My process', heading: 'How an idea becomes the work.', steps: [
+      { title: 'Ideate', text: 'Listen, ask questions and find the real problem.' },
+      { title: 'Think', text: 'Shape the strategy before a single pixel.' },
+      { title: 'Explore', text: 'Sketch wide and test bold directions.' },
+      { title: 'Design', text: 'Craft the system and polish every detail.' },
+    ]},
+    resources: { label: 'Resources', heading: 'Books, channels and programs that shaped how I design.', items: [
+      { title: 'Incubator', by: 'Design programme', kind: 'Program', image: '', url: '' },
+      { title: 'Logo Design Love', by: 'David Airey', kind: 'Book', image: '', url: '' },
+      { title: 'Satori Graphics', by: 'YouTube channel', kind: 'YouTube', image: '', url: 'https://www.youtube.com/@SatoriGraphics' },
+      { title: 'The Brand Gap', by: 'Marty Neumeier', kind: 'Book', image: '', url: '' },
+      { title: 'The Advertising Concept Book', by: 'Pete Barry', kind: 'Book', image: '', url: '' },
+      { title: 'Designing Brand Identity', by: 'Alina Wheeler', kind: 'Book', image: '', url: '' },
+      { title: 'The Futur', by: 'YouTube channel', kind: 'YouTube', image: '', url: 'https://www.youtube.com/@thefutur' },
+    ]},
     links: { label: 'Links', description: 'Find the work, the process, or start a conversation.', items: [
       { label: 'Work ↗', href: '#work' }, { label: 'About ↗', href: '#about' }, { label: 'Contact ↗', href: '#contact' },
     ]},
     badge: { initials: 'AS', ringText: 'ADEDEJI SAMUEL', ringImage: '', size: 96, href: 'contact.html' },
     signature: { name: 'ADEDEJI SAMUEL', font: 'UnifrakturCook', nameColor: '#E8223E', bg: '#141211', textColor: '#faf6ee' },
     contact: { ctaLabel: "Let's talk ↗", pageHeading: "Let's talk.", subheading: 'Tell me about your project.', body: 'Share a little about what you have in mind — the goal, the timeline, anything that helps. I read every message and reply personally.', whatsappLabel: 'WhatsApp number (optional)', backLabel: '← Back home', small: 'Start a project', headingLines: ["LET'S MAKE","SOMETHING","WORTH SEEING."], available: 'Available for selected projects', emailText: 'samuel.s.adedeji@gmail.com ↗', emailHref: 'mailto:samuel.s.adedeji@gmail.com' },
-    footer: { left: '© 2026 Adedeji Samuel', right: 'Designed with intention / Lagos' },
-    effects: { particles: true, intro: true },
+    footer: { left: '© 2026 Adedeji Samuel', right: 'Designed with intention / Lagos', brand: 'Helloutidex', name: 'SAMUEL ADEDEJI', version: 'v2.0 (2026)' },
+    effects: { particles: true, intro: true, introStyle: 'poster' },
+    poster: { head: "Every project is a\nconversation, this is\nwhere yours begins.", btn: 'Book a Call', tag: "What are you waiting for, let's build bold brands.", sign: 'Samuel Adedeji', signImage: '', image: 'assets/portrait.jpg', mark: 'SA', hold: 2.9,
+      socials: [{ label: 'Instagram', url: '' }, { label: 'LinkedIn', url: '' }, { label: 'Linktree', url: '' }] },
     games: { enabled: true, idleMinutes: 5, offline: true, title: 'Taking a break? Play a quick game.', odd: true, memory: true, sudoku: true, words: true },
   };
 
@@ -282,7 +299,33 @@ try {
         <button type="button" class="admin-upload-btn" data-file-clear="${path}">Remove</button>`;
     });
   }
+  function renderSteps(){
+    content.process.steps = content.process.steps || [];
+    $('#processEditor').innerHTML = content.process.steps.map((st, i) => listRow(i, `
+        <label>Step<input data-step-field="title" value="${esc(st.title)}" placeholder="Ideate"></label>
+        <label>Short line<input data-step-field="text" value="${esc(st.text)}"></label><span></span>`, 'data-step-remove')).join('');
+  }
+  function renderResources(){
+    content.resources.items = content.resources.items || [];
+    $('#resourcesEditor').innerHTML = content.resources.items.map((r, i) => `
+      <div class="admin-mini-row admin-res-row" data-index="${i}">
+        <div class="admin-image-field">${r.image ? `<img src="${esc(r.image)}" alt="">` : '<span class="admin-thumb-empty">No cover</span>'}
+          <input type="file" accept="image/*" class="admin-upload-input" data-res-upload><button type="button" class="admin-upload-btn" data-res-upload-btn>${r.image ? 'Replace' : 'Cover'}</button>${r.image ? '<button type="button" class="admin-upload-btn" data-res-clear>Remove cover</button>' : ''}</div>
+        <label>Title<input data-res-field="title" value="${esc(r.title)}"></label>
+        <label>By / what it is<input data-res-field="by" value="${esc(r.by)}"></label>
+        <label>Type<select data-res-field="kind">${['Book', 'YouTube', 'Program', 'Course', 'Podcast', 'Website'].map(k => `<option ${r.kind === k ? 'selected' : ''}>${k}</option>`).join('')}</select></label>
+        <label class="full">Link (optional)<input data-res-field="url" value="${esc(r.url)}" placeholder="https://…"></label>
+        <button class="admin-mini-remove" type="button" data-res-remove="${i}">Remove</button>
+      </div>`).join('');
+  }
+  function renderPosterSocials(){
+    content.poster.socials = content.poster.socials || [];
+    $('#posterSocialsEditor').innerHTML = content.poster.socials.map((it, i) => listRow(i, `
+        <label>Label<input data-ps-field="label" value="${esc(it.label)}" placeholder="Instagram"></label>
+        <label>Link<input data-ps-field="url" value="${esc(it.url)}" placeholder="https://instagram.com/…"></label><span></span>`, 'data-ps-remove')).join('');
+  }
   function fillContentForm(){
+    content.poster = content.poster || {}; content.poster.headLines = String(content.poster.head || '').split('\n');
     $$('#panel-content [data-path]').forEach(el => {
       const val = getPath(content, el.dataset.path);
       if (el.type === 'checkbox') el.checked = !!val;
@@ -290,7 +333,7 @@ try {
       else if (el.dataset.list === 'lines') el.value = Array.isArray(val) ? val.join('\n') : '';
       else el.value = val == null ? '' : val;
     });
-    renderFileFields(); renderNavLinks(); renderExpRows(); renderLinks(); renderTestimonials(); renderStats(); renderLogoLists();
+    renderFileFields(); renderNavLinks(); renderExpRows(); renderLinks(); renderTestimonials(); renderStats(); renderLogoLists(); renderPosterSocials(); renderSteps(); renderResources();
   }
   fillContentForm();
 
@@ -302,6 +345,7 @@ try {
       if (el.dataset.list === 'comma') val = el.value.split(',').map(s => s.trim()).filter(Boolean);
       else if (el.dataset.list === 'lines') val = el.value.split('\n').map(s => s.trim()).filter(Boolean);
       setPath(content, el.dataset.path, val);
+      if (el.dataset.path === 'poster.headLines') content.poster.head = val.join('\n');
     }
     if (el.dataset.fileText) setPath(content, el.dataset.fileText, el.value);
     const row = el.closest('.admin-mini-row'); const idx = row ? Number(row.dataset.index) : -1;
@@ -310,6 +354,9 @@ try {
     if (el.dataset.linkField) content.links.items[idx][el.dataset.linkField] = el.value;
     if (el.dataset.testimonialField) content.testimonials.items[idx][el.dataset.testimonialField] = el.value;
     if (el.dataset.statField) content.proof.stats[idx][el.dataset.statField] = el.value;
+    if (el.dataset.psField) content.poster.socials[idx][el.dataset.psField] = el.value;
+    if (el.dataset.stepField) content.process.steps[idx][el.dataset.stepField] = el.value;
+    if (el.dataset.resField) content.resources.items[idx][el.dataset.resField] = el.value;
     if (el.dataset.llField) { const tile = el.closest('.admin-logo-tile'); content[tile.dataset.list].items[Number(tile.dataset.index)][el.dataset.llField] = el.value; }
   });
   contentPanel.addEventListener('click', e => {
@@ -318,6 +365,11 @@ try {
     if ((m = t.closest('[data-exp-remove]'))) { content.experience.rows.splice(Number(m.dataset.expRemove), 1); renderExpRows(); }
     if ((m = t.closest('[data-link-remove]'))) { content.links.items.splice(Number(m.dataset.linkRemove), 1); renderLinks(); }
     if ((m = t.closest('[data-testimonial-remove]'))) { content.testimonials.items.splice(Number(m.dataset.testimonialRemove), 1); renderTestimonials(); }
+    if ((m = t.closest('[data-step-remove]'))) { content.process.steps.splice(Number(m.dataset.stepRemove), 1); renderSteps(); }
+    if ((m = t.closest('[data-res-remove]'))) { content.resources.items.splice(Number(m.dataset.resRemove), 1); renderResources(); }
+    if (t.closest('[data-res-upload-btn]')) t.closest('.admin-res-row').querySelector('[data-res-upload]').click();
+    if (t.closest('[data-res-clear]')) { content.resources.items[Number(t.closest('.admin-res-row').dataset.index)].image = ''; renderResources(); }
+    if ((m = t.closest('[data-ps-remove]'))) { content.poster.socials.splice(Number(m.dataset.psRemove), 1); renderPosterSocials(); }
     if ((m = t.closest('[data-stat-remove]'))) { content.proof.stats.splice(Number(m.dataset.statRemove), 1); renderStats(); }
     const tile = t.closest('.admin-logo-tile'), tlist = tile && content[tile.dataset.list].items, ti = tile ? Number(tile.dataset.index) : -1;
     if (tile && t.closest('[data-ll-upload-btn]')) tile.querySelector('[data-ll-upload]').click();
@@ -330,6 +382,8 @@ try {
   contentPanel.addEventListener('change', async e => {
     const t = e.target;
     if (t.dataset.fileText) renderFileFields();
+    if (t.matches('[data-res-upload]') && t.files[0]) { content.resources.items[Number(t.closest('.admin-res-row').dataset.index)].image = await readImageResized(t.files[0], 900); renderResources(); return; }
+    if (t.dataset.resField === 'kind') return;
     if (t.matches('[data-ll-upload]') && t.files[0]) {
       const tile = t.closest('.admin-logo-tile'); content[tile.dataset.list].items[Number(tile.dataset.index)].logo = await readImageResized(t.files[0], 600, true);
       renderLogoList(tile.dataset.list); return;
@@ -341,13 +395,16 @@ try {
     }
     if (t.matches('[data-file-upload]') && t.files[0]) {
       const kind = t.parentElement.dataset.kind || 'image';
-      setPath(content, t.dataset.fileUpload, kind === 'file' ? await readFileAsDataURL(t.files[0]) : await readImageResized(t.files[0], 1600, /logo|badge|favicon/i.test(t.dataset.fileUpload)));
+      setPath(content, t.dataset.fileUpload, kind === 'file' ? await readFileAsDataURL(t.files[0]) : await readImageResized(t.files[0], 1600, /logo|badge|favicon|signImage/i.test(t.dataset.fileUpload)));
       renderFileFields();
     }
   });
   $('#addNavLink').addEventListener('click', () => { content.nav.links.push({ label: '', href: '#' }); renderNavLinks(); });
   $('#addExpRow').addEventListener('click', () => { content.experience.rows.push({ tag: '', role: '', meta: '' }); renderExpRows(); });
   $('#addLink').addEventListener('click', () => { content.links.items.push({ label: '', href: '#' }); renderLinks(); });
+  $('#addStep').addEventListener('click', () => { content.process.steps.push({ title: '', text: '' }); renderSteps(); });
+  $('#addResource').addEventListener('click', () => { content.resources.items.push({ title: '', by: '', kind: 'Book', image: '', url: '' }); renderResources(); });
+  $('#addPosterSocial').addEventListener('click', () => { content.poster.socials.push({ label: '', url: '' }); renderPosterSocials(); });
   $('#addStat').addEventListener('click', () => { content.proof.stats.push({ value: '', label: '' }); renderStats(); });
   $('#addTestimonial').addEventListener('click', () => { content.testimonials.items.push({ quote: '', name: '', role: '' }); renderTestimonials(); });
 

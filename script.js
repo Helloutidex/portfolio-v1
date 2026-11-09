@@ -75,14 +75,31 @@
         { tag: '03 / Community', role: 'Design volunteering & mentoring', meta: 'People · Events' },
       ],
     },
+    process: { label: 'My process', heading: 'How an idea becomes the work.', steps: [
+      { title: 'Ideate', text: 'Listen, ask questions and find the real problem.' },
+      { title: 'Think', text: 'Shape the strategy before a single pixel.' },
+      { title: 'Explore', text: 'Sketch wide and test bold directions.' },
+      { title: 'Design', text: 'Craft the system and polish every detail.' },
+    ]},
+    resources: { label: 'Resources', heading: 'Books, channels and programs that shaped how I design.', items: [
+      { title: 'Incubator', by: 'Design programme', kind: 'Program', image: '', url: '' },
+      { title: 'Logo Design Love', by: 'David Airey', kind: 'Book', image: '', url: '' },
+      { title: 'Satori Graphics', by: 'YouTube channel', kind: 'YouTube', image: '', url: 'https://www.youtube.com/@SatoriGraphics' },
+      { title: 'The Brand Gap', by: 'Marty Neumeier', kind: 'Book', image: '', url: '' },
+      { title: 'The Advertising Concept Book', by: 'Pete Barry', kind: 'Book', image: '', url: '' },
+      { title: 'Designing Brand Identity', by: 'Alina Wheeler', kind: 'Book', image: '', url: '' },
+      { title: 'The Futur', by: 'YouTube channel', kind: 'YouTube', image: '', url: 'https://www.youtube.com/@thefutur' },
+    ]},
     links: { label: 'Links', description: 'Find the work, the process, or start a conversation.', items: [
       { label: 'Work ↗', href: '#work' }, { label: 'About ↗', href: '#about' }, { label: 'Contact ↗', href: '#contact' },
     ]},
     badge: { initials: 'AS', ringText: 'ADEDEJI SAMUEL', ringImage: '', size: 96, href: 'contact.html' },
     signature: { name: 'ADEDEJI SAMUEL', font: 'UnifrakturCook', nameColor: '#E8223E', bg: '#141211', textColor: '#faf6ee' },
     contact: { ctaLabel: "Let's talk ↗", pageHeading: "Let's talk.", subheading: 'Tell me about your project.', body: 'Share a little about what you have in mind — the goal, the timeline, anything that helps. I read every message and reply personally.', whatsappLabel: 'WhatsApp number (optional)', backLabel: '← Back home', small: 'Start a project', headingLines: ["LET'S MAKE","SOMETHING","WORTH SEEING."], available: 'Available for selected projects', emailText: 'samuel.s.adedeji@gmail.com ↗', emailHref: 'mailto:samuel.s.adedeji@gmail.com' },
-    footer: { left: '© 2026 Adedeji Samuel', right: 'Designed with intention / Lagos' },
-    effects: { particles: true, intro: true },
+    footer: { left: '© 2026 Adedeji Samuel', right: 'Designed with intention / Lagos', brand: 'Helloutidex', name: 'SAMUEL ADEDEJI', version: 'v2.0 (2026)' },
+    effects: { particles: true, intro: true, introStyle: 'poster' },
+    poster: { head: "Every project is a\nconversation, this is\nwhere yours begins.", btn: 'Book a Call', tag: "What are you waiting for, let's build bold brands.", sign: 'Samuel Adedeji', signImage: '', image: 'assets/portrait.jpg', mark: 'SA', hold: 2.9,
+      socials: [{ label: 'Instagram', url: '' }, { label: 'LinkedIn', url: '' }, { label: 'Linktree', url: '' }] },
     games: { enabled: true, idleMinutes: 5, offline: true, title: 'Taking a break? Play a quick game.', odd: true, memory: true, sudoku: true, words: true },
   };
 
@@ -221,6 +238,35 @@
     set('contactCtaBtn', c.contact.ctaLabel || "Let's talk ↗");
     const formEl = $('#contactForm'); if (formEl) formEl.action = 'https://formsubmit.co/' + String(c.contact.emailHref || '').replace(/^mailto:/, '').split('?')[0];
     set('footerLeft', c.footer.left); set('footerRight', c.footer.right);
+    set('footBrand', c.footer.brand || ''); set('footName', c.footer.name || ''); set('footVersion', c.footer.version || '');
+    // my process
+    const pr2 = c.process || {}, steps = (pr2.steps || []).filter(s => s.title);
+    const procEl = $('#process'); if (procEl) procEl.hidden = !steps.length;
+    set('processLabel', pr2.label || ''); set('processHeading', pr2.heading || '');
+    const ps2 = $('#processSteps'); if (ps2) ps2.innerHTML = steps.map((s, i) => `<li class="pstep" style="--i:${i}"><span class="pstep-dot" aria-hidden="true"></span><h3>${esc(s.title)}</h3>${s.text ? `<p>${esc(s.text)}</p>` : ''}</li>`).join('');
+    // resources
+    const rs = c.resources || {}, ritems = (rs.items || []).filter(r => r.title || r.image);
+    const resEl = $('#resources'); if (resEl) resEl.hidden = !ritems.length;
+    set('resourcesLabel', rs.label || ''); set('resourcesHeading', rs.heading || '');
+    const kindIcon = k => /you ?tube|video|channel/i.test(k || '') ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7.5v9l7.5-4.5z" fill="currentColor"/></svg>'
+      : /book/i.test(k || '') ? '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h9a4 4 0 0 1 4 4v12H9a4 4 0 0 1-4-4z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M5 16a4 4 0 0 1 4-4h9" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>'
+      : '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="currentColor"/></svg>';
+    const rg = $('#resGrid');
+    if (rg) rg.innerHTML = ritems.map((r, i) => {
+      const wide = /you ?tube|video|channel|program/i.test(r.kind || ''), tag = r.url ? 'a' : 'div';
+      const attrs = r.url ? ` href="${esc(r.url)}" target="_blank" rel="noopener"` : '';
+      return `<${tag} class="res-card${wide ? ' wide' : ''}${r.image ? ' has-img' : ''}" style="--i:${i}"${attrs}>
+        ${r.image ? `<img src="${esc(r.image)}" alt="" loading="lazy" decoding="async">` : ''}
+        <span class="res-kind">${kindIcon(r.kind)}${esc(r.kind || '')}</span>
+        <span class="res-body"><strong>${esc(r.title || '')}</strong>${r.by ? `<em>${esc(r.by)}</em>` : ''}</span>
+        ${r.url ? '<span class="res-go" aria-hidden="true">↗</span>' : ''}
+      </${tag}>`;
+    }).join('');
+    // computers (4 columns): the last card stretches to fill any gap at the end of the grid
+    if (rg && rg.lastElementChild) {
+      const cells = ritems.reduce((n, r) => n + (/you ?tube|video|channel|program/i.test(r.kind || '') ? 2 : 1), 0), rem = (4 - cells % 4) % 4;
+      if (rem) rg.lastElementChild.dataset.span = String((rg.lastElementChild.classList.contains('wide') ? 2 : 1) + rem);
+    }
     // floating badge: initials, ring text OR your own spinning PNG, size and link
     const badge = $('#floatingBadge');
     if (badge) {
@@ -244,7 +290,14 @@
   const C = loadContent();
   applyContent(C);
   // the opening animation reads these on the next visit (it runs before the site data has loaded)
-  try { localStorage.setItem('ferricool-intro', (C.effects && C.effects.intro === false) ? 'off' : 'on'); localStorage.setItem('ferricool-intro-name', (C.signature && C.signature.name) || ''); } catch (e) {}
+  try {
+    const ef = C.effects || {}, po = C.poster || {};
+    localStorage.setItem('ferricool-intro', ef.intro === false ? 'off' : 'on');
+    localStorage.setItem('ferricool-intro-style', ef.intro === false ? 'off' : (ef.introStyle || 'poster'));
+    localStorage.setItem('ferricool-intro-name', (C.signature && C.signature.name) || '');
+    const img = po.image && !String(po.image).startsWith('data:') ? po.image : 'assets/portrait.jpg', simg = po.signImage && !String(po.signImage).startsWith('data:') ? po.signImage : '';
+    localStorage.setItem('ferricool-poster', JSON.stringify({ head: po.head, btn: po.btn, tag: po.tag, sign: po.sign, signImg: simg, img, mark: po.mark, hold: Math.round((Number(po.hold) || 2.9) * 1000), socials: (po.socials || []).filter(x => x && x.label && x.url) }));
+  } catch (e) {}
 
   /* ---------- colours: one light palette and one dark palette; admin picks which one the site uses ---------- */
   const THEME_STORAGE_KEY = 'ferricool-portfolio-theme';
@@ -344,6 +397,14 @@
       band.classList.add('is-in'); requestAnimationFrame(() => requestAnimationFrame(() => band.classList.add('is-rolled'))); io.disconnect();
     }), { threshold: .35 });
     io.observe(band);
+  })();
+
+  // process steps + resource cards come in one after another as they scroll into view
+  (function riseIn(){
+    const els = $$('.pstep, .res-card, #process'); if (!els.length) return;
+    if (!('IntersectionObserver' in window) || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) { els.forEach(e => e.classList.add('is-in')); return; }
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } }), { threshold: .2 });
+    els.forEach(e => io.observe(e));
   })();
 
   // testimonials: cards rise in one after another when scrolled to, and tilt toward the cursor on hover (computers only)
