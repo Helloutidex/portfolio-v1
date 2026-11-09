@@ -2,6 +2,8 @@
   "content": {
     "nav": {
       "logo": "ADEDEJI SAMUEL / DESIGN",
+      "logoImage": "",
+      "favicon": "",
       "links": [
         {
           "label": "About",
@@ -25,7 +27,7 @@
       "opticNote": "Tap the lens · reveal the work",
       "note": "The work is hidden in the lens.",
       "zoomInstruction": "Tap to explore",
-      "lensImage": "assets/uploads/mvybotwj-0.jpg",
+      "lensImage": "assets/uploads/mvybotwj-0.png",
       "ctaLabel": "View my work ↗",
       "ctaHref": "#work"
     },
@@ -74,6 +76,59 @@
           "logo": "assets/uploads/mvyccrmy-1.png"
         }
       ]
+    },
+    "proof": {
+      "label": "Social proof",
+      "heading": "",
+      "stats": [
+        {
+          "value": "80+",
+          "label": "Satisfied Clients."
+        },
+        {
+          "value": "120+",
+          "label": "Completed Projects."
+        },
+        {
+          "value": "5yrs+",
+          "label": "Design Experience."
+        }
+      ]
+    },
+    "collaborators": {
+      "label": "Collaborators",
+      "items": [
+        {
+          "name": "Northwind Studio",
+          "logo": ""
+        },
+        {
+          "name": "Kora Labs",
+          "logo": ""
+        },
+        {
+          "name": "Lumen & Co",
+          "logo": ""
+        },
+        {
+          "name": "Atlas Creative",
+          "logo": ""
+        },
+        {
+          "name": "Orbit Media",
+          "logo": ""
+        },
+        {
+          "name": "Verde Foods",
+          "logo": ""
+        }
+      ]
+    },
+    "logofolio": {
+      "label": "Logofolio",
+      "heading": "Marks & identities I have designed.",
+      "tiles": "light",
+      "items": []
     },
     "work": {
       "label": "utidex Gallery",
@@ -146,7 +201,7 @@
       "name": "Adedeji Sunday Samuel",
       "font": "Grenze Gotisch",
       "nameColor": "#E8223E",
-      "bg": "#0c0c0d",
+      "bg": "#141211",
       "textColor": "#faf6ee"
     },
     "contact": {
@@ -189,15 +244,15 @@
       "tint2": "#ffffff"
     },
     "dark": {
-      "paper": "#0c0c0d",
-      "ink": "#f2f2f2",
-      "muted": "#a6a6a6",
-      "line": "#242426",
+      "paper": "#000000",
+      "ink": "#faf6ee",
+      "muted": "#9a948b",
+      "line": "#2c2926",
       "accent": "#e8223e",
       "contactBg": "#e8223e",
       "contactText": "#ffffff",
-      "tint1": "#0c0c0d",
-      "tint2": "#0c0c0d"
+      "tint1": "#000000",
+      "tint2": "#000000"
     }
   },
   "categories": [
@@ -221,9 +276,9 @@
           "locked": true,
           "lockNote": "Enter your password",
           "enc": {
-            "salt": "bRr9lVaYhNMofT0657unFA==",
-            "iv": "jzfjBpbiNvqFrZpb",
-            "data": "PgIIGHgkH6JIauaJl5s17pWOSLvRaBHzYER/Y+oKYeQpLmYA6Jkh7ogzqac9s+YUWQ/Ox8c0yBX18fb/WIsmu3CFI5NN2QMLRnBRB7nAy5bQYNNWjlKS2drQE1g238WuYv3WzFqB5p3z1zYIN5IgFUw5GtfHegRBnKAWPzWUE8vQMXeil7N2/5qzN5DOSyBMgdLYi2g0RZbRdIeikUNr5gqU/xpQObD1LH4QSwrsUOzqSTxAuzZW1QqGjhvrL6jxEJDkuoMmYAA5XIF3O+A+UZPxmva07xXC7LCh3101B4zU2Ozldp5nb8B4Jk/Vt5DHh5gBZaUi4wMddndrgRoz+T3oNR1cYiXh/PbVuxm+trdiXVZv/qrtPe1JSi6bNU4ZWcrGcdfc2wjKjhwJtRXERj1Nrga05ogc7i888uoj9RLvaRzdKaeDaR6uwiPS/ZQFRBp1KYSbwfdIh3G/WGjEi7jBT5fJoWJjbzFE5FY/2aIcX5KxnPCHfeNZCRsdTlGlYMEXgm8nSb+G80t8DViWWfvb6dNkI6ii6lnPqrI5MEX7gXTmNQc2OJfulnVEOW1n91AONRp2/xhQAnmOU0nWyRPOnn8r1fgwiqc/8wJubNunRF2xcIMB1XRxOAa5LVehndnMWERK51LI6jMmFAywExDkVgWiNXHd+Bl625S3boGSh66R+L+jafx+aBNNuP7B6jwtLHCeHjYFzS8vKME3F6BCXIJCWMiUBqXSzfrdvjXtQvJRyTLXyHDNCrDm/EGWggqrXn7+3eph5ZBLKD42grl50NYp3X4KQPf/r6lFFClXPSlsvaSW2cwizW9QO+0w7W1s5y7LJeRyB2FHolFCqZSjNCSaGpBFlNZsWhehYuXLNFrWVOvnSy/2Liqu9nqhDNXnDGy+dzdqWBi5b2sjuyeXvIRGi91aL6YXN20tomQJetLd+5se0pi5tkSkmRTbJiOCfsSek+gRN0Hm+EfadFBzIqpjwqmj118aD64MFbN8ZMXlG/krA/pwmzzh1iDYncCJb5nQ+Q10zQOz0r3WLlq9DHkUknmBd4ufNACza2GK8XCfeh+k4sar7svec3c7I/vM/EGvrxOzKZPwkgN2hTMx+HzkvJWdjq3O4f8exxv6lhAzd+qIXItNyCWSvGyViQJMwMZN3vU5H9iht4ZdfCyKWWuWowVplJyja/iDFtl+"
+            "salt": "2wb/hwXtNmv8YDeOJnl3Gg==",
+            "iv": "UkTQmOOZraTTYTfm",
+            "data": "ZSp7lhOpNHcf+2V18ylZN79xeMwrAuk+f2xN92IFDT/AG15iupfiU1MooCgOFq7koWMW+5s9rFuYziRukR+BRH3G3/AOy0qtIM8aLkz1iQfGNYOiF2i13QkUh2dGIukbBxuycWWKSXvbj5hqMIJHwaJdNSGqxGCxLeoLzXdHZfe3rVGvNp9l7iI6rQPQQT+MA12aD+A4BJvV96KXFo9rhN9iQ/pVtd5P05CUl/9ZzIkSSgAz2Q7vMcLFRSXzha1oUR9ch+mF6RhX8EJv9emGORIGcyRD70Q5AnkZO2GOXTluJBWwvxGUpspMEXkLMAB950i49G27Y8UNllhaRgnngUn55eI8ywrSiom2jRfPSCqK+kkcFHW1ve7hVoZrl0414S2f5Ft6U9u0zUmIhDfw02XoBOYdoskZg9uFb6kMHS5qwvbMXypU0IUaGiUvy2mSmZcWb0zyGHIjqV/JsQW/+Nu/SpWSUjlPwll0RuFZ3kcHqbatcVYTvHKL5htWTWjCAR0Wvwb6IHhcrFdVJ3W7LZZL3bqpdhDk5/owxORopEajn9cYMujU40OTFCDIQ30zz/a7s0Pn8sbqCqHsfOt59A7KUl/j1pizwY2DceAUOz8CCPlHxzujdm17Z1aY1RTp4Vwt9DYNNxA/E4P8oH+9CkNnFo23RoF9UF9B/8L4dk2ZpS020jfDYWnKR8WrqV9d132r5l6acZ/ujGt+d+uD8n5dxKy3c+wKhNWVS2VlfN0evu5MH308G9JQjyBexpHXDcncfCLKXziagBvTh4LXb+qjkw6bItfuSTdqG0rMbrvxzNPtgNZthwSoKNG5L13qzmaO+a3nLjsgnK+garIX0QJeoSYkXLGEc1xo3XHkBGS1W+K0CduljPt/7Sz3K6GYNuFnkZJWe1GCp+tw+bL/6zuVYosndeg+a3b7BGwPtQ91cYhrfYIM4EuLUil6BlYlIOCiIiMTF3wuqaWc7YdVJjYJf9XYmljB+u5SkDOL8jH9iZYBTgsR1rZ+aOIkRKlLQXPWROEcqP9xv9qCdcfC/Lw/+Uzgg16aOJpwdJqwwvAJHj1B6C0ACVcoV4Bq93r3fmQyE8VB59htGWKHAO/OJ1YnEQCKYXgxiyRC0MnHURHvBtOnnrk0Tx+az0v3HhVmmof8N5jPfx2r243m18DglG4cQkwfLJhBcGIs25Cqfs93+l9oToCd/LXrLax9SA=="
           }
         },
         {
@@ -359,7 +414,7 @@
       "items": [
         {
           "type": "image",
-          "src": "assets/uploads/mw3sn5ib-0.jpg"
+          "src": "assets/uploads/mw3sn5ib-0.png"
         }
       ]
     },
@@ -386,10 +441,10 @@
       "items": [
         {
           "type": "image",
-          "src": "assets/uploads/mw3sn94h-1.jpg"
+          "src": "assets/uploads/mw3sn94h-1.png"
         }
       ]
     }
   ],
-  "updatedAt": "2026-11-05T17:39:42.153Z"
+  "updatedAt": "2026-11-09T20:23:07.256Z"
 }
