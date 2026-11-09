@@ -62,7 +62,7 @@
       { name: 'Atlas Creative', logo: '' }, { name: 'Orbit Media', logo: '' }, { name: 'Verde Foods', logo: '' },
     ]},
     logofolio: { label: 'Logofolio', heading: 'Marks & identities I have designed.', tiles: 'light', items: [] },
-    work: { label: 'Gallery / automatic', description: 'Selected work, continuously moving. Tap any frame to explore.', noteRight: 'Tap any frame to explore' },
+    work: { label: 'Gallery / automatic', description: 'Selected work, continuously moving. Tap any frame to explore.', noteRight: 'Tap any frame to explore', thanks: 'Thank you for viewing.', thanksNote: 'Have a project in mind?', thanksCta: "Let's talk ↗" },
     testimonials: { label: 'Praise', description: 'What collaborators say about working together.', items: [
       { quote: "Sam translated a vague brief into a brand system that felt inevitable — like it always should have looked that way.", name: 'Client name', role: 'Urban Food Fest' },
       { quote: "Fast, sharp, and genuinely collaborative. The kind of designer who makes the whole project easier.", name: 'Client name', role: 'Shop Soma' },
@@ -82,7 +82,8 @@
     signature: { name: 'ADEDEJI SAMUEL', font: 'UnifrakturCook', nameColor: '#E8223E', bg: '#141211', textColor: '#faf6ee' },
     contact: { ctaLabel: "Let's talk ↗", pageHeading: "Let's talk.", subheading: 'Tell me about your project.', body: 'Share a little about what you have in mind — the goal, the timeline, anything that helps. I read every message and reply personally.', whatsappLabel: 'WhatsApp number (optional)', backLabel: '← Back home', small: 'Start a project', headingLines: ["LET'S MAKE","SOMETHING","WORTH SEEING."], available: 'Available for selected projects', emailText: 'samuel.s.adedeji@gmail.com ↗', emailHref: 'mailto:samuel.s.adedeji@gmail.com' },
     footer: { left: '© 2026 Adedeji Samuel', right: 'Designed with intention / Lagos' },
-    effects: { particles: true },
+    effects: { particles: true, intro: true },
+    games: { enabled: true, idleMinutes: 5, offline: true, title: 'Taking a break? Play a quick game.', odd: true, memory: true, sudoku: true, words: true },
   };
 
   const cloneDefaultContent = () => JSON.parse(JSON.stringify(DEFAULT_CONTENT));
@@ -242,6 +243,8 @@
   }
   const C = loadContent();
   applyContent(C);
+  // the opening animation reads these on the next visit (it runs before the site data has loaded)
+  try { localStorage.setItem('ferricool-intro', (C.effects && C.effects.intro === false) ? 'off' : 'on'); localStorage.setItem('ferricool-intro-name', (C.signature && C.signature.name) || ''); } catch (e) {}
 
   /* ---------- colours: one light palette and one dark palette; admin picks which one the site uses ---------- */
   const THEME_STORAGE_KEY = 'ferricool-portfolio-theme';
@@ -310,6 +313,24 @@
     $$('.hero, .social-proof, .work, .signature, .links-section').forEach(el => pauser.observe(el));
   }
 
+  // break-time games: after a few quiet minutes (or when the visitor goes offline) a small game pops up.
+  // game.js is fetched quietly once the page has settled, so the games still work if the connection drops.
+  (function breakGames(){
+    const g = C.games || {}; if (g.enabled === false) return;
+    const list = ['odd', 'memory', 'sudoku', 'words'].filter(k => g[k] !== false); if (!list.length) return;
+    let ready = null;
+    const load = () => ready || (ready = new Promise((res, rej) => { if (window.PortfolioGames) return res(); const s = document.createElement('script'); s.src = 'game.js?v=1'; s.onload = res; s.onerror = () => { ready = null; rej(); }; document.head.appendChild(s); }));
+    (window.requestIdleCallback || (f => setTimeout(f, 2500)))(() => load().catch(() => {}));
+    const wait = Math.max(1, Number(g.idleMinutes) || 5) * 60 * 1000;
+    let t = null;
+    const busy = () => (window.PortfolioGames && PortfolioGames.isOpen()) || document.querySelector('.modal.open, .lightbox.open, .pwpage.open');
+    const show = offline => load().then(() => { if (!busy()) PortfolioGames.open({ games: list, title: g.title, offline, onClose: arm }); }).catch(() => {});
+    const arm = () => { clearTimeout(t); t = setTimeout(() => { if (document.visibilityState === 'visible') show(false); else arm(); }, wait); };
+    ['pointerdown', 'pointermove', 'keydown', 'scroll', 'touchstart', 'wheel'].forEach(ev => window.addEventListener(ev, () => { if (!(window.PortfolioGames && PortfolioGames.isOpen())) arm(); }, { passive: true }));
+    if (g.offline !== false) window.addEventListener('offline', () => show(true));
+    arm();
+  })();
+
   // numbers in the social proof band count up once when they scroll into view ("80+" counts 0 → 80, keeps the "+")
   (function rollUp(){
     // social proof: when the band scrolls into view the label and numbers come in one after another,
@@ -377,7 +398,7 @@
     return JSON.parse(new TextDecoder().decode(plain));
   }
 
-  const LAYOUTS = ['cases', 'natural', 'grid2', 'grid3', 'stack'];
+  const LAYOUTS = ['cases', 'book', 'natural', 'grid2', 'grid3', 'stack'];
   const PHOTOS = [
     'https://images.unsplash.com/photo-1518005020951-eccb494ad742',
     'https://images.unsplash.com/photo-1504674900247-0877df9cc836',
@@ -710,16 +731,20 @@
       let h = bg.slice(1); if (h.length === 3) h = h.split('').map(x => x + x).join('');
       const [r, g, b] = [0, 2, 4].map(i => parseInt(h.substr(i, 2), 16));
       const dark = (0.2126 * r + 0.7152 * g + 0.0722 * b) / 255 < .5;
+      // on the dark theme a light custom background is skipped, so pages stay black like the rest of the site
+      if (!dark && document.body.classList.contains('dark')) { keys.forEach(k => modalBox.style.removeProperty(k)); return; }
       modalBox.style.setProperty('--paper', bg); modalBox.style.setProperty('--ink', dark ? '#faf6ee' : '#141211');
       modalBox.style.setProperty('--muted', dark ? 'rgba(250,246,238,.62)' : 'rgba(20,18,17,.6)'); modalBox.style.setProperty('--line', dark ? 'rgba(250,246,238,.16)' : 'rgba(20,18,17,.12)');
     }
     function blocksHTML(blocks){
       return (blocks || []).map(b => {
-        const cap = b.caption ? `<figcaption>${esc(b.caption)}</figcaption>` : '';
+        // caption under a picture / video / PDF: optional heading + readable text (long ones flow into 2 columns on computers)
+        const capText = String(b.caption || '').trim(), capHead = String(b.captionTitle || '').trim();
+        const cap = (capText || capHead) ? `<figcaption class="pcap${capText.length > 380 ? ' is-long' : ''}">${capHead ? `<strong>${esc(capHead)}</strong>` : ''}${capText ? `<span>${esc(capText)}</span>` : ''}</figcaption>` : '';
         if (b.type === 'image') { currentImages.push(b.src); return `<figure class="pimg" data-lb="${currentImages.length - 1}"><img src="${esc(b.src)}" alt="" loading="lazy" decoding="async">${cap}</figure>`; }
         if (b.type === 'pdf') return `<div class="ppdf"><iframe data-pdf="${esc(b.src)}" title="PDF document"></iframe><a class="ppdf-open" data-pdf-link="${esc(b.src)}" href="${b.src.startsWith('data:') ? '#' : esc(b.src)}" target="_blank" rel="noopener">Open PDF ↗</a>${cap}</div>`;
         if (b.type === 'video') return `<div class="pvideo"><video src="${esc(b.src)}" controls playsinline preload="metadata"></video>${cap}</div>`;
-        return `<div class="ptext reveal"><h3>${esc(b.heading)}</h3><p>${esc(b.body)}</p>${(b.tags && b.tags.length) ? `<div class="case-tags"><ul>${b.tags.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>` : ''}</div>`;
+        return `<div class="ptext reveal${String(b.body || '').length > 420 ? ' is-long' : ''}"><h3>${esc(b.heading)}</h3><p>${esc(b.body)}</p>${(b.tags && b.tags.length) ? `<div class="case-tags"><ul>${b.tags.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>` : ''}</div>`;
       }).join('');
     }
     async function fillPdfs(){
@@ -734,7 +759,77 @@
     }
     function finish(){ modalBody.scrollTop = 0; armReveals(modalBody); fillPdfs(); }
 
+    /* ---------- BOOK layout: the cover on its own, then pages side by side that flip like a real book ----------
+       Uses page-flip (assets/vendor, MIT). Drag a corner, tap a page edge, use the arrows / ← → keys, or swipe.
+       A soft paper sound plays on every turn (made in the browser, no sound file). "All pages" shows the spreads
+       one under another instead. On phones the book shows one page at a time. */
+    let book = null, bookSound = true, bookResize = null;
+    const loadScript = (src) => new Promise((res, rej) => { const s = document.createElement('script'); s.src = src; s.onload = res; s.onerror = rej; document.head.appendChild(s); });
+    function bookHTML(pages){
+      const spreads = [`<div class="pspread cover"><figure class="pimg" data-lb="${currentImages.push(pages[0].src) - 1}"><img src="${esc(pages[0].src)}" alt="" loading="lazy" decoding="async"></figure></div>`];
+      for (let i = 1; i < pages.length; i += 2) spreads.push(`<div class="pspread">${pages.slice(i, i + 2).map(p => `<figure class="pimg" data-lb="${currentImages.push(p.src) - 1}"><img src="${esc(p.src)}" alt="" loading="lazy" decoding="async"></figure>`).join('')}</div>`);
+      return `<div class="pbook-bar">
+          <button class="modal-nav" type="button" data-book="prev" aria-label="Previous page">←</button>
+          <span class="pbook-count" id="bookCount">Cover</span>
+          <button class="modal-nav" type="button" data-book="next" aria-label="Next page">→</button>
+          <span class="pbook-sep"></span>
+          <button class="modal-nav" type="button" data-book="sound" aria-pressed="true">Sound on</button>
+          <button class="modal-nav" type="button" data-book="view">All pages</button>
+        </div>
+        <div class="pbook-stage" id="bookStage"><div class="pbook" id="bookEl">${pages.map(p => `<div class="pbook-page"><img src="${esc(p.src)}" alt="" decoding="async" draggable="false"></div>`).join('')}</div>
+          <p class="pbook-hint">Drag a corner or tap the edge of a page to turn it</p></div>
+        <div class="pspreads" id="bookSpreads" hidden>${spreads.join('')}</div>`;
+    }
+    function pageSound(){
+      if (!bookSound) return; const ctx = initSound(); if (!ctx) return;
+      const t = ctx.currentTime, len = Math.floor(ctx.sampleRate * .42), buf = ctx.createBuffer(1, len, ctx.sampleRate), d = buf.getChannelData(0);
+      // paper: soft noise that swells and dies away, with a few tiny crackles
+      for (let i = 0; i < len; i++) { const k = i / len, env = Math.pow(Math.sin(Math.PI * Math.min(1, k * 1.25)), 1.6) * (1 - k * .5); d[i] = (Math.random() * 2 - 1) * env * (Math.random() < .002 ? 3.2 : 1); }
+      const src = ctx.createBufferSource(); src.buffer = buf;
+      const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = .7; bp.frequency.setValueAtTime(900, t); bp.frequency.exponentialRampToValueAtTime(3200, t + .22); bp.frequency.exponentialRampToValueAtTime(1400, t + .42);
+      const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 300;
+      const g = ctx.createGain(); g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.16, t + .06); g.gain.exponentialRampToValueAtTime(.0001, t + .42);
+      src.connect(bp); bp.connect(hp); hp.connect(g); g.connect(ctx.destination); src.start(t); src.stop(t + .43);
+    }
+    function destroyBook(){ if (book) { try { book.destroy(); } catch (e) {} book = null; } if (bookResize) { window.removeEventListener('resize', bookResize); bookResize = null; } }
+    async function startBook(pages){
+      destroyBook();
+      const stage = $('#bookStage'), el = $('#bookEl'); if (!stage || !el) return;
+      try { if (!(window.St && St.PageFlip)) await loadScript('assets/vendor/page-flip.browser.js?v=1'); } catch (e) { stage.hidden = true; $('#bookSpreads').hidden = false; return; }
+      // page shape comes from the cover picture
+      const ratio = await new Promise(res => { const im = new Image(); im.onload = () => res(im.naturalWidth / im.naturalHeight || .71); im.onerror = () => res(.71); im.src = pages[0].src; });
+      const fit = () => {   // biggest book that fits the screen: two pages wide on computers, one on phones
+        const two = window.innerWidth > 800, maxW = Math.min(stage.parentElement.clientWidth, 1500), maxH = Math.max(320, window.innerHeight - (two ? 230 : 210));
+        let pw = two ? maxW / 2 : maxW, ph = pw / ratio; if (ph > maxH) { ph = maxH; pw = ph * ratio; }
+        stage.style.setProperty('--book-w', Math.floor(two ? pw * 2 : pw) + 'px'); stage.style.setProperty('--book-h', Math.floor(ph) + 'px');
+        return { pw: Math.floor(pw), ph: Math.floor(ph) };
+      };
+      const { pw, ph } = fit();
+      const twoUp = window.innerWidth > 800;
+      book = new St.PageFlip(el, { width: pw, height: ph, size: 'stretch', minWidth: twoUp ? 160 : Math.ceil(pw * .8), maxWidth: 2000, minHeight: 220, maxHeight: 2600,
+        showCover: true, usePortrait: true, mobileScrollSupport: false, flippingTime: 900, maxShadowOpacity: .45, drawShadow: true, startZIndex: 2, autoSize: true });
+      book.loadFromHTML(el.querySelectorAll('.pbook-page'));
+      const n = pages.length, label = () => {
+        const i = book.getCurrentPageIndex(), single = book.getOrientation && book.getOrientation() === 'portrait';
+        $('#bookCount').textContent = i === 0 ? `Cover · ${n} pages` : (single || i >= n - 1 ? `Page ${i + 1} of ${n}` : `Pages ${i + 1}–${i + 2} of ${n}`);
+        // a closed book sits in the middle: the cover (and a lone back page) slide to the centre of the stage
+        stage.classList.toggle('at-cover', !single && i === 0); stage.classList.toggle('at-back', !single && i > 0 && i >= n - 1 && n % 2 === 0);
+      };
+      let lastState = '';
+      book.on('changeState', e => { if (e.data === 'flipping' && lastState !== 'flipping') pageSound(); lastState = e.data; });
+      book.on('flip', label); label();
+      bookResize = () => fit(); window.addEventListener('resize', bookResize);
+    }
+    caseSections.addEventListener('click', e => {
+      const b = e.target.closest('[data-book]'); if (!b) return;
+      const act = b.dataset.book;
+      if (act === 'next' && book) book.flipNext(); if (act === 'prev' && book) book.flipPrev();
+      if (act === 'sound') { bookSound = !bookSound; b.textContent = bookSound ? 'Sound on' : 'Sound off'; b.setAttribute('aria-pressed', String(bookSound)); }
+      if (act === 'view') { const st = $('#bookStage'), sp = $('#bookSpreads'), showAll = sp.hidden; sp.hidden = !showAll; st.hidden = showAll; b.textContent = showAll ? 'Book view' : 'All pages'; $$('[data-book="prev"],[data-book="next"],#bookCount,[data-book="sound"],.pbook-sep').forEach(x => x.hidden = showAll); }
+    });
+
     function renderCategory(ci){
+      destroyBook();
       const cat = CATEGORIES[ci]; view = { t: 'cat', ci }; currentImages = [];
       applyPageBg(cat.bg); backBtn.hidden = true;
       mmeta.textContent = `${pad2(ci + 1)} / ${cat.title}`; caseTitle.textContent = cat.title;
@@ -748,6 +843,11 @@
             <span class="pcase-img"><img src="${esc(imgW(caseCover(s), 1400))}" alt="" loading="lazy"></span>
             <span class="pcase-meta"><span>${pad2(si + 1)}${s.locked ? ' · 🔒 Locked' : ''}</span><strong>${esc(s.title)}</strong>${s.tagline ? `<em>${esc(s.tagline)}</em>` : ''}<i>View case study ↗</i></span>
           </button>`).join('') : '<p class="pempty">Case studies are coming soon.</p>';
+      } else if (cat.layout === 'book') {
+        caseSections.className = 'pbook-wrap';
+        const pages = items.filter(b => b.type === 'image' && b.src), others = items.filter(b => !(b.type === 'image' && b.src));
+        caseSections.innerHTML = pages.length ? bookHTML(pages) + (others.length ? `<div class="pblocks gaps">${blocksHTML(others)}</div>` : '') : '<p class="pempty">Work is coming soon.</p>';
+        if (pages.length) setTimeout(() => startBook(pages), 30);
       } else {
         const cls = { stack: cat.tight ? 'pblocks' : 'pblocks gaps', natural: 'pblocks gaps natural', grid2: 'pgrid g2', grid3: 'pgrid g3' }[cat.layout] + (cat.tile && cat.layout.startsWith('grid') ? ' tile' : '');
         caseSections.className = cls;
@@ -759,6 +859,7 @@
       finish();
     }
     function renderCase(ci, si){
+      destroyBook();
       const cat = CATEGORIES[ci], cs = cat.items[si]; view = { t: 'case', ci, si }; currentImages = [];
       applyPageBg(cs.bg || cat.bg); backBtn.hidden = false; backBtn.textContent = '← ' + cat.title;
       mmeta.textContent = `${cat.title} / ${cs.title}`; caseTitle.textContent = cs.title;
@@ -766,14 +867,17 @@
       renderDetails(cs.details);
       caseSections.className = cs.tight !== false ? 'pblocks' : 'pblocks gaps';
       caseSections.innerHTML = blocksHTML(cs.blocks);
-      caseMore.innerHTML = moreHTML('More case studies', cat.items, 'case', si);
+      // every case study ends with a thank-you (admin → Content → Work / gallery)
+      const w = C.work || {};
+      const thanks = w.thanks ? `<div class="case-thanks reveal"><span class="case-thanks-dot" aria-hidden="true"></span><h2>${esc(w.thanks)}</h2>${(w.thanksNote || w.thanksCta) ? `<p>${esc(w.thanksNote || '')}${w.thanksCta ? ` <a href="contact.html">${esc(w.thanksCta)}</a>` : ''}</p>` : ''}</div>` : '';
+      caseMore.innerHTML = thanks + moreHTML('More case studies', cat.items, 'case', si);
       const nx = cat.items[(si + 1) % cat.items.length];
       caseNext.innerHTML = cat.items.length > 1 ? `<button class="case-next-btn" id="caseNextBtn" type="button"><span>Next case study</span><strong>${esc(nx.title)} →</strong></button>`
         : `<button class="case-next-btn" id="caseNextBtn" type="button"><span>That's all of them</span><strong>Back to ${esc(cat.title)} →</strong></button>`;
       finish();
     }
     function showModal(){ modal.classList.add('open'); updateScroll(); }
-    function closeModal(){ modal.classList.remove('open'); view = null; updateScroll(); }
+    function closeModal(){ destroyBook(); modal.classList.remove('open'); view = null; updateScroll(); }
     async function openCategory(id){
       const ci = CATEGORIES.findIndex(c => c.id === id); if (ci < 0) return;
       clickSound();
@@ -857,6 +961,7 @@
         if (e.key === 'ArrowLeft') showLb(lbIndex - 1);
       }
       if (modal.classList.contains('open') && !lightbox.classList.contains('open') && !pwDialog.classList.contains('open')) {
+        if (book && !$('#bookStage')?.hidden) { if (e.key === 'ArrowRight') book.flipNext(); if (e.key === 'ArrowLeft') book.flipPrev(); return; }
         if (e.key === 'ArrowRight') moveView(1);
         if (e.key === 'ArrowLeft') moveView(-1);
       }

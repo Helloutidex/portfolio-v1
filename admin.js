@@ -14,7 +14,10 @@ try {
   const REMOTE = (await fetchJSON('site-data.json')) || {};
   const LAST_PUB_KEY = 'ferricool-last-published';
   let LASTPUB = null; try { LASTPUB = JSON.parse(localStorage.getItem(LAST_PUB_KEY)); } catch (e) {}
-  const BASE = (LASTPUB && (!REMOTE.updatedAt || LASTPUB.updatedAt >= REMOTE.updatedAt)) ? LASTPUB : REMOTE;
+  // The editor starts from what is live on GitHub. Only if this browser published something NEWER that GitHub
+  // hasn't caught up with yet (the minute right after Publish) does it use its own copy instead.
+  const BASE = (LASTPUB && REMOTE.updatedAt && LASTPUB.updatedAt > REMOTE.updatedAt
+    && (Date.now() - Date.parse(LASTPUB.updatedAt)) < 15 * 60 * 1000) ? LASTPUB : (REMOTE.updatedAt ? REMOTE : (LASTPUB || REMOTE));
   const draftOf = key => { try { return JSON.parse(localStorage.getItem(key)); } catch (e) { return null; } };
   const $$ = s => [...document.querySelectorAll(s)];
   function esc(s){ return String(s==null?'':s).replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
@@ -143,7 +146,7 @@ try {
       { name: 'Atlas Creative', logo: '' }, { name: 'Orbit Media', logo: '' }, { name: 'Verde Foods', logo: '' },
     ]},
     logofolio: { label: 'Logofolio', heading: 'Marks & identities I have designed.', tiles: 'light', items: [] },
-    work: { label: 'Gallery / automatic', description: 'Selected work, continuously moving. Tap any frame to explore.', noteRight: 'Tap any frame to explore' },
+    work: { label: 'Gallery / automatic', description: 'Selected work, continuously moving. Tap any frame to explore.', noteRight: 'Tap any frame to explore', thanks: 'Thank you for viewing.', thanksNote: 'Have a project in mind?', thanksCta: "Let's talk ↗" },
     testimonials: { label: 'Praise', description: 'What collaborators say about working together.', items: [
       { quote: "Sam translated a vague brief into a brand system that felt inevitable — like it always should have looked that way.", name: 'Client name', role: 'Urban Food Fest' },
       { quote: "Fast, sharp, and genuinely collaborative. The kind of designer who makes the whole project easier.", name: 'Client name', role: 'Shop Soma' },
@@ -163,7 +166,8 @@ try {
     signature: { name: 'ADEDEJI SAMUEL', font: 'UnifrakturCook', nameColor: '#E8223E', bg: '#141211', textColor: '#faf6ee' },
     contact: { ctaLabel: "Let's talk ↗", pageHeading: "Let's talk.", subheading: 'Tell me about your project.', body: 'Share a little about what you have in mind — the goal, the timeline, anything that helps. I read every message and reply personally.', whatsappLabel: 'WhatsApp number (optional)', backLabel: '← Back home', small: 'Start a project', headingLines: ["LET'S MAKE","SOMETHING","WORTH SEEING."], available: 'Available for selected projects', emailText: 'samuel.s.adedeji@gmail.com ↗', emailHref: 'mailto:samuel.s.adedeji@gmail.com' },
     footer: { left: '© 2026 Adedeji Samuel', right: 'Designed with intention / Lagos' },
-    effects: { particles: true },
+    effects: { particles: true, intro: true },
+    games: { enabled: true, idleMinutes: 5, offline: true, title: 'Taking a break? Play a quick game.', odd: true, memory: true, sudoku: true, words: true },
   };
 
   function cloneDefaultContent(){ return JSON.parse(JSON.stringify(DEFAULT_CONTENT)); }
@@ -420,7 +424,7 @@ try {
     return JSON.parse(new TextDecoder().decode(plain));
   }
 
-  const LAYOUTS = ['cases', 'natural', 'grid2', 'grid3', 'stack'];
+  const LAYOUTS = ['cases', 'book', 'natural', 'grid2', 'grid3', 'stack'];
   const PHOTOS = [
     'https://images.unsplash.com/photo-1518005020951-eccb494ad742',
     'https://images.unsplash.com/photo-1504674900247-0877df9cc836',
@@ -480,14 +484,37 @@ try {
   const listEl = $('#adminList');
   const pad2 = n => String(n).padStart(2, '0');
   const isData = s => String(s || '').startsWith('data:');
-  const LAYOUT_LABELS = { cases: 'Case studies — a vertical list, each opens its own page', natural: 'Natural size — pictures and PDFs as uploaded', grid2: 'Grid, 2 columns (1 on phones) — good for social ads', grid3: 'Grid, 3 columns (2 on phones) — good for logos', stack: 'Stack — one under another' };
+  const LAYOUT_LABELS = { cases: 'Case studies — a vertical list, each opens its own page', book: 'Book — cover on its own, then pages side by side that flip like a real book (editorial / PDFs)', natural: 'Natural size — pictures and PDFs as uploaded', grid2: 'Grid, 2 columns (1 on phones) — good for social ads', grid3: 'Grid, 3 columns (2 on phones) — good for logos', stack: 'Stack — one under another' };
 
+  // PDF → page pictures (for Book sections). pdf.js is fetched from cdnjs only when first needed.
+  let pdfjsReady = null;
+  function loadPdfJs(){
+    if (window.pdfjsLib) return Promise.resolve(window.pdfjsLib);
+    if (!pdfjsReady) pdfjsReady = new Promise((res, rej) => {
+      const s = document.createElement('script'); s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+      s.onload = () => { window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'; res(window.pdfjsLib); };
+      s.onerror = () => { pdfjsReady = null; rej(new Error('could not load the PDF reader')); }; document.head.appendChild(s);
+    });
+    return pdfjsReady;
+  }
+  async function pdfToPages(file, progress){
+    const lib = await loadPdfJs(), doc = await lib.getDocument({ data: new Uint8Array(await file.arrayBuffer()) }).promise, out = [];
+    for (let i = 1; i <= doc.numPages; i++) {
+      progress && progress(i, doc.numPages);
+      const page = await doc.getPage(i), base = page.getViewport({ scale: 1 }), vp = page.getViewport({ scale: Math.min(3, 1600 / base.width) });
+      const cv = document.createElement('canvas'); cv.width = Math.round(vp.width); cv.height = Math.round(vp.height);
+      const g = cv.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, cv.width, cv.height);
+      await page.render({ canvasContext: g, viewport: vp }).promise; out.push(cv.toDataURL('image/jpeg', .86));
+    }
+    return out;
+  }
   function blockHTML(b, withCover){
     const acts = `<div class="admin-block-actions">${withCover && b.type === 'image' ? '<button type="button" data-set-cover>Use as cover</button>' : ''}<button type="button" data-b-move="-1" title="Move up">↑</button><button type="button" data-b-move="1" title="Move down">↓</button><button type="button" data-b-remove>Remove</button></div>`;
     const media = (kind, accept, thumb) => `<div class="admin-image-field">${thumb}
         <input type="text" data-bf="src" value="${isData(b.src) ? '' : esc(b.src || '')}" placeholder="${isData(b.src) ? 'Uploaded file' : 'URL or path'}">
         <input type="file" accept="${accept}" class="admin-upload-input" data-b-upload><button type="button" class="admin-upload-btn" data-b-upload-btn>${b.src ? 'Replace' : 'Upload'}</button></div>
-        <input data-bf="caption" placeholder="Caption (optional)" value="${esc(b.caption || '')}">`;
+        <input data-bf="captionTitle" placeholder="Caption heading (optional)" value="${esc(b.captionTitle || '')}">
+        <textarea data-bf="caption" placeholder="Caption text (optional) — shown under the picture">${esc(b.caption || '')}</textarea>`;
     if (b.type === 'image') return `<div class="admin-block"><div class="admin-block-head"><span>Image</span>${acts}</div>${media('image', 'image/*', b.src ? `<img src="${esc(b.src)}" alt="">` : '<span class="admin-thumb-empty">None</span>')}</div>`;
     if (b.type === 'pdf') return `<div class="admin-block"><div class="admin-block-head"><span>PDF</span>${acts}</div>${media('pdf', 'application/pdf,.pdf', `<span class="admin-thumb-empty">${b.src ? 'PDF' : 'None'}</span>`)}</div>`;
     if (b.type === 'video') return `<div class="admin-block"><div class="admin-block-head"><span>Video</span>${acts}</div>${media('video', 'video/*', `<span class="admin-thumb-empty">${b.src ? 'Video' : 'None'}</span>`)}</div>`;
@@ -512,7 +539,7 @@ try {
   }
   const unlockBox = () => `<div class="admin-lock-panel"><p class="admin-hint">This is locked and its content is hidden here. Enter its password to edit it.</p>
       <div class="admin-image-field"><input data-unlock-pw placeholder="Password" autocomplete="off"><button type="button" class="admin-upload-btn" data-unlock-btn>Unlock to edit</button></div><p class="admin-status" data-unlock-status></p></div>`;
-  const bgField = o => `<label class="admin-check"><input type="checkbox" data-bgon ${o.bg ? 'checked' : ''}> Custom page background <input type="color" data-bgcolor value="${o.bg || '#faf6ee'}" ${o.bg ? '' : 'disabled'}></label>`;
+  const bgField = o => `<label class="admin-check"><input type="checkbox" data-bgon ${o.bg ? 'checked' : ''}> Custom page background (light colours are skipped on the dark theme) <input type="color" data-bgcolor value="${o.bg || '#faf6ee'}" ${o.bg ? '' : 'disabled'}></label>`;
   const coverField = (src, label) => `<label>${label}
       <div class="admin-image-field">${src ? `<img src="${esc(src)}" alt="">` : '<span class="admin-thumb-empty">None</span>'}<input type="text" data-cover-text value="${isData(src) ? '' : esc(src || '')}" placeholder="${isData(src) ? 'Uploaded picture' : 'Picture URL, or upload'}">
         <input type="file" accept="image/*" class="admin-upload-input" data-cover-upload><button type="button" class="admin-upload-btn" data-cover-btn>Upload</button></div></label>`;
@@ -561,7 +588,7 @@ try {
         ${lockBox(c, 'this whole section')}
         ${needs ? unlockBox() : cases
           ? `<p class="admin-hint">Case studies — each opens its own page. Click Edit on one to change it.</p>${(c.items || []).map(caseHTML).join('')}<button type="button" class="admin-add-small" data-add-case>+ Add a case study</button>`
-          : blocksEditor(c.items, true, 'Pictures should be 1920 px wide, any height (PDFs are fine too). Pick many at once; they are added in file-name order.')}
+          : blocksEditor(c.items, true, c.layout === 'book' ? 'Book: the FIRST picture is the cover (shown on its own), then the pages follow in pairs, left and right. Upload a PDF and every page becomes a picture automatically, or upload page pictures (all the same size). Reorder with ↑ ↓.' : 'Pictures should be 1920 px wide, any height (PDFs are fine too). Pick many at once; they are added in file-name order.')}
       </div>`;
     return `<article class="admin-project${open ? ' is-open' : ''}" data-ci="${i}">${rowHead(i + 1, c.image || (cases ? ((c.items || []).map(s => s.cover || firstImg(s.blocks)).find(Boolean) || '') : firstImg(c.items)), c.title, c.locked, `<button type="button" data-cat-toggle>${open ? 'Close' : 'Edit'}</button>`)}${body}</article>`;
   }
@@ -624,8 +651,13 @@ try {
       const files = Array.from(t.files).sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
       setStatus('sectionsStatus', `Adding ${files.length} file${files.length > 1 ? 's' : ''}…`);
       const target = c.cs ? (c.cs.blocks = c.cs.blocks || []) : (c.cat.items = c.cat.items || []);
+      const asBook = !c.cs && c.cat.layout === 'book';
       for (const f of files) {
-        if (f.type === 'application/pdf') target.push({ type: 'pdf', src: await readFileAsDataURL(f) });
+        if (f.type === 'application/pdf' && asBook) {   // a PDF in a Book section becomes its pages, in order
+          try { for (const src of await pdfToPages(f, (i, n) => setStatus('sectionsStatus', `Turning "${f.name}" into pages… ${i} of ${n}`))) target.push({ type: 'image', src }); }
+          catch (err) { setStatus('sectionsStatus', 'Could not read that PDF here (it needs an internet connection the first time): ' + (err.message || err)); target.push({ type: 'pdf', src: await readFileAsDataURL(f) }); }
+        }
+        else if (f.type === 'application/pdf') target.push({ type: 'pdf', src: await readFileAsDataURL(f) });
         else target.push({ type: 'image', src: await readImageResized(f, 1920) });
       }
       setStatus('sectionsStatus', `Added ${files.length}. Reorder with the ↑ ↓ buttons, then Publish.`); renderCategories(); return;

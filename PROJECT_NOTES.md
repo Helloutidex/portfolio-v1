@@ -135,3 +135,14 @@ size, 2-col, 3-col, stack. Images are 1920px wide. Sections and cases can be pas
   favicon (assets/favicon.svg, override in Content → Header); published theme mode = System default;
   light theme: "Let's make something" block black, links + name band white (name red); contact page uses
   the site colours (black on dark, white on light) with a red Send button. CSS/JS tag ?v=20261109g.
+- 2026-11-09 (v11): readable captions (+ optional caption heading), long text blocks in 2 columns on
+  desktop; "Thank you for viewing." at the end of every case study (Content → Work / gallery); new
+  "Book" layout (Editorial uses it): cover alone, spreads, real page-turn (assets/vendor/page-flip, MIT),
+  paper sound, ← → keys, "All pages" view, single page on phones; admin turns an uploaded PDF into book
+  pages (pdf.js from cdnjs, admin only); break-time games (game.js: odd colour, memory, mini sudoku,
+  design words) after N idle minutes or when offline (Content → Break-time games); paper-plane opening
+  animation once per session (Content → Effects); dark theme skips light custom page backgrounds;
+  dark palette restored to #0c0c0d. IMPORTANT: whenever site-data.json is edited by hand, bump
+  updatedAt; admin now only prefers its local copy if it is strictly newer and < 15 min old.
+  The 21:52 Publish removed Swyftsend (locked case), the Kalvia campaign ad and the Conversation Circle
+  flyer from the data — recoverable from commit 91c39d1's site-data.json. CSS/JS tag ?v=20261109h.

@@ -201,7 +201,7 @@
       "name": "Adedeji Sunday Samuel",
       "font": "Grenze Gotisch",
       "nameColor": "#E8223E",
-      "bg": "#141211",
+      "bg": "#0c0c0d",
       "textColor": "#faf6ee"
     },
     "contact": {
@@ -244,15 +244,15 @@
       "tint2": "#ffffff"
     },
     "dark": {
-      "paper": "#000000",
-      "ink": "#faf6ee",
-      "muted": "#9a948b",
-      "line": "#2c2926",
+      "paper": "#0c0c0d",
+      "ink": "#f2f2f2",
+      "muted": "#a6a6a6",
+      "line": "#242426",
       "accent": "#e8223e",
       "contactBg": "#e8223e",
       "contactText": "#ffffff",
-      "tint1": "#000000",
-      "tint2": "#000000"
+      "tint1": "#0c0c0d",
+      "tint2": "#0c0c0d"
     }
   },
   "categories": [
@@ -380,7 +380,7 @@
     {
       "id": "cat-editorial",
       "title": "Editorial",
-      "layout": "natural",
+      "layout": "book",
       "image": "https://images.unsplash.com/photo-1483985988355-763728e1935b",
       "intro": "Pages, spreads and documents — shown at the size they were made.",
       "bg": "",
@@ -514,5 +514,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-11-09T20:52:43.541Z"
+  "updatedAt": "2026-11-09T21:03:23.000Z"
 }

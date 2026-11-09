@@ -6,8 +6,8 @@
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,500;1,500&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=UnifrakturCook:wght@700&display=swap">
-<link rel="stylesheet" href="style.css?v=20261109g">
-<link rel="stylesheet" href="admin.css?v=20261109g">
+<link rel="stylesheet" href="style.css?v=20261109h">
+<link rel="stylesheet" href="admin.css?v=20261109h">
 </head>
 <body class="admin-body">
 <section class="lock-screen" id="lockScreen">
@@ -158,6 +158,12 @@
         <label>Description<input data-path="work.description"></label>
       </div>
       <label>Note (bottom-right of the gallery)<input data-path="work.noteRight"></label>
+      <p class="admin-hint" style="margin-top:14px">The end of every case study</p>
+      <label>Thank-you line<input data-path="work.thanks" placeholder="Thank you for viewing."></label>
+      <div class="admin-row2">
+        <label>Small line under it<input data-path="work.thanksNote" placeholder="Have a project in mind?"></label>
+        <label>Link text (goes to the contact page)<input data-path="work.thanksCta" placeholder="Let's talk ↗"></label>
+      </div>
     </div>
 
     <div class="admin-group" data-group="experience">
@@ -231,6 +237,26 @@
     <div class="admin-group" data-group="effects">
       <h2>Effects</h2>
       <label class="admin-check"><input type="checkbox" data-path="effects.particles"> Soft particles that bloom where the cursor moves or lands</label>
+      <label class="admin-check"><input type="checkbox" data-path="effects.intro"> Opening animation (a red paper plane takes off and reveals the site — once per visit)</label>
+    </div>
+
+    <div class="admin-group" data-group="games">
+      <h2>Break-time games <span class="admin-hint">(a small game pops up when someone has been on the site without touching anything — and when they lose their connection)</span></h2>
+      <label class="admin-check"><input type="checkbox" data-path="games.enabled"> Turn the games on</label>
+      <div class="admin-row2">
+        <label>Minutes without any activity before it pops up<input type="number" min="1" max="60" data-path="games.idleMinutes"></label>
+        <label>Heading on the game window<input data-path="games.title"></label>
+      </div>
+      <label class="admin-check"><input type="checkbox" data-path="games.offline"> Also show it straight away if the visitor goes offline</label>
+      <p class="admin-hint" style="margin-top:12px">Which games to include</p>
+      <div class="admin-row2">
+        <label class="admin-check"><input type="checkbox" data-path="games.odd"> Odd colour out</label>
+        <label class="admin-check"><input type="checkbox" data-path="games.memory"> Memory (design tools)</label>
+      </div>
+      <div class="admin-row2">
+        <label class="admin-check"><input type="checkbox" data-path="games.sudoku"> Mini Sudoku</label>
+        <label class="admin-check"><input type="checkbox" data-path="games.words"> Design words</label>
+      </div>
     </div>
 
     <div class="admin-group" data-group="footer">
@@ -316,5 +342,5 @@
 </main>
 </div>
 
-<script src="admin.js?v=20261109g" defer></script>
+<script src="admin.js?v=20261109h" defer></script>
 </body></html>

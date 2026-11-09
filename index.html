@@ -7,11 +7,47 @@
 <link rel="icon" id="favicon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,500;1,500&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=UnifrakturCook:wght@700&display=swap">
-<link rel="stylesheet" href="style.css?v=20261109g">
+<link rel="stylesheet" href="style.css?v=20261109h">
 <script>/* paint the saved colours before anything shows, and hold the page until the real content is in (max 2.5s) */
-(function(){var d=document.documentElement;d.classList.add("is-loading");try{var t=JSON.parse(localStorage.getItem("ferricool-theme-cache")||"null"),m;if(t){m=t.mode==="system"?(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"):t.mode;var v=t[m];if(v)for(var k in v)d.style.setProperty(k,v[k])}else m=localStorage.getItem("ferricool-mode");if(m==="dark")d.classList.add("predark");var l=localStorage.getItem("ferricool-lens");if(l){var p=document.createElement("link");p.rel="preload";p.as="image";p.href=l;document.head.appendChild(p)}}catch(e){}setTimeout(function(){d.classList.remove("is-loading")},1500)})();</script>
+(function(){var d=document.documentElement;d.classList.add("is-loading");try{var t=JSON.parse(localStorage.getItem("ferricool-theme-cache")||"null"),m;if(t){m=t.mode==="system"?(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"):t.mode;var v=t[m];if(v)for(var k in v)d.style.setProperty(k,v[k])}else m=localStorage.getItem("ferricool-mode")||(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");if(m==="dark")d.classList.add("predark");var l=localStorage.getItem("ferricool-lens");if(l){var p=document.createElement("link");p.rel="preload";p.as="image";p.href=l;document.head.appendChild(p)}}catch(e){}setTimeout(function(){d.classList.remove("is-loading")},1500)})();</script>
 </head>
 <body>
+<!-- opening animation: a red paper plane takes off and reveals the site (first visit of a session; tap to skip) -->
+<div class="plane-intro" id="intro" aria-hidden="true" hidden>
+  <svg class="pi-trail" id="introTrail"><path id="introPath" d=""/></svg>
+  <div class="pi-plane" id="introPlane"><svg viewBox="0 0 64 64"><path d="M4 31 L60 6 L33 57 L27 38 Z" fill="#E8223E"/><path d="M27 38 L60 6 L22 47 Z" fill="#a8152b"/><path d="M27 38 L22 47 L33 57 Z" fill="#c81b33"/></svg></div>
+  <div class="pi-name" id="introName"></div>
+  <button class="pi-skip" type="button" id="introSkip">Skip</button>
+</div>
+<script>
+(function(){
+  var d=document.documentElement,el=document.getElementById('intro');
+  var on=true;try{on=localStorage.getItem('ferricool-intro')!=='off'&&!sessionStorage.getItem('intro-done')}catch(e){}
+  if(!on||(window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches)){el.remove();return}
+  try{sessionStorage.setItem('intro-done','1')}catch(e){}
+  d.classList.add('has-intro');el.hidden=false;
+  var name='';try{name=localStorage.getItem('ferricool-intro-name')||''}catch(e){}
+  document.getElementById('introName').textContent=name||'Adedeji Samuel';
+  var W=innerWidth,H=innerHeight,svg=document.getElementById('introTrail'),path=document.getElementById('introPath'),plane=document.getElementById('introPlane');
+  svg.setAttribute('viewBox','0 0 '+W+' '+H);
+  var sx=W*.12,sy=H*.72;
+  path.setAttribute('d','M'+sx+' '+sy+' C '+W*.34+' '+H*.74+', '+W*.5+' '+H*.58+', '+W*.62+' '+H*.42+' S '+W*.9+' '+H*.06+', '+(W+120)+' '+(-H*.12));
+  var len=path.getTotalLength();path.style.strokeDasharray=len;path.style.strokeDashoffset=len;
+  var t0=performance.now(),done=false,LIFT=380,FLY=1350,OUT=520;
+  function ease(p){return p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2}
+  function frame(now){
+    if(done)return;var t=now-t0;
+    if(t<LIFT){var k=t/LIFT;plane.style.opacity=k;plane.style.transform='translate('+(sx-28)+'px,'+(sy-28)+'px) rotate('+(-8+Math.sin(k*9)*6)+'deg) scale('+(.5+k*.5)+')'}
+    else{var p=Math.min(1,(t-LIFT)/FLY),e=ease(p),L=len*e,pt=path.getPointAtLength(L),pt2=path.getPointAtLength(Math.min(len,L+2)),a=Math.atan2(pt2.y-pt.y,pt2.x-pt.x)*180/Math.PI;
+      plane.style.opacity=1;plane.style.transform='translate('+(pt.x-28)+'px,'+(pt.y-28)+'px) rotate('+(a+18)+'deg) scale('+(1-e*.25)+')';path.style.strokeDashoffset=len-L;
+      if(p>=1){finish();return}}
+    requestAnimationFrame(frame)}
+  function finish(){if(done)return;done=true;el.classList.add('is-out');setTimeout(function(){el.remove();d.classList.remove('has-intro')},OUT)}
+  document.getElementById('introSkip').addEventListener('click',finish);el.addEventListener('pointerdown',function(e){if(e.target.id!=='introSkip')finish()});
+  addEventListener('keydown',function k(){finish();removeEventListener('keydown',k)});
+  requestAnimationFrame(frame);setTimeout(finish,3200);
+})();
+</script>
 <header class="sitebar" id="sitebar">
   <a class="sb-logo" href="#top" id="navLogo">ADEDEJI SAMUEL / DESIGN</a>
   <div class="sb-right">
@@ -164,5 +200,5 @@
   <span class="floating-badge-center"><b id="floatingBadgeInitials">SA</b><i>.</i></span>
 </a>
 
-<script src="script.js?v=20261109g" defer></script>
+<script src="script.js?v=20261109h" defer></script>
 </body></html>
