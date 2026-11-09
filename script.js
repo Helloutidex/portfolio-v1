@@ -159,7 +159,8 @@
     set('workLabel', c.work.label); set('workDescription', c.work.description); set('galleryNoteRight', c.work.noteRight);
     set('testimonialsLabel', c.testimonials.label); set('testimonialsDescription', c.testimonials.description);
     const tg = $('#testimonialGrid');
-    if (tg) tg.innerHTML = c.testimonials.items.map(t => `<article class="testimonial-card"><blockquote>${esc(t.quote)}</blockquote><cite><b>${esc(t.name)}</b>${esc(t.role)}</cite></article>`).join('');
+    const initials = n => String(n || '').trim().split(/\s+/).filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join('') || '“';
+    if (tg) tg.innerHTML = c.testimonials.items.map(t => `<article class="testimonial-card"><span class="tq" aria-hidden="true">“</span><blockquote>${esc(t.quote)}</blockquote><cite><span class="t-avatar" aria-hidden="true">${esc(initials(t.name))}</span><span class="t-who"><b>${esc(t.name)}</b>${esc(t.role)}</span></cite></article>`).join('');
     set('expHeadingLine1', c.experience.headingLine1); set('expHeadingLine2', c.experience.headingLine2);
     const expRows = $('#expRows'); if (expRows) expRows.innerHTML = c.experience.rows.map(r => `<div class="exp-row"><span>${esc(r.tag)}</span><strong>${esc(r.role)}</strong><span>${esc(r.meta)}</span></div>`).join('');
     set('linksLabel', c.links.label); set('linksDescription', c.links.description);
@@ -245,17 +246,54 @@
 
   // numbers in the social proof band count up once when they scroll into view ("80+" counts 0 → 80, keeps the "+")
   (function countUp(){
-    const els = $$('[data-count]'); if (!els.length) return;
-    const run = el => {
-      const m = String(el.dataset.count).match(/^(\D*)(\d+)(.*)$/); if (!m) return;
-      const end = Number(m[2]), t0 = performance.now(), dur = 1800;
-      const step = now => { const p = Math.min(1, (now - t0) / dur), v = Math.round(end * (1 - Math.pow(1 - p, 3))); el.textContent = m[1] + v + m[3]; if (p < 1) requestAnimationFrame(step); };
-      requestAnimationFrame(step);
+    // social proof: when the band scrolls into view the label, numbers and red lines come in one after another,
+    // and each number counts up over about 3 seconds — slow start, quicker middle, gentle landing ("80+", "5yrs+").
+    const band = $('#proof'), els = $$('[data-count]');
+    if (!band || !els.length) return;
+    const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!('IntersectionObserver' in window) || reduce) { band.classList.add('is-in'); return; }
+    const parts = el => String(el.dataset.count).match(/^(\D*)(\d+)(.*)$/);
+    els.forEach(el => { const m = parts(el); if (m) el.textContent = m[1] + '0' + m[3]; });
+    const ease = p => p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;   // slow start, quick middle, gentle landing
+    const run = (el, delay) => {
+      const m = parts(el); if (!m) return;
+      const end = Number(m[2]), dur = 2800 + Math.min(800, end * 4);
+      setTimeout(() => {
+        const t0 = performance.now();
+        const step = now => {
+          const p = Math.min(1, (now - t0) / dur);
+          el.textContent = m[1] + (p >= 1 ? end : Math.floor(end * ease(p))) + m[3];
+          if (p < 1) requestAnimationFrame(step); else el.classList.add('is-done');
+        };
+        requestAnimationFrame(step);
+      }, delay);
     };
-    if (!('IntersectionObserver' in window) || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
-    els.forEach(el => { const m = String(el.dataset.count).match(/^(\D*)(\d+)(.*)$/); if (m) el.textContent = m[1] + '0' + m[3]; });
-    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { run(e.target); io.unobserve(e.target); } }), { threshold: .5 });
-    els.forEach(el => io.observe(el));
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      if (!e.isIntersecting) return;
+      band.classList.add('is-in'); els.forEach((el, i) => run(el, 350 + i * 260)); io.disconnect();
+    }), { threshold: .35 });
+    io.observe(band);
+  })();
+
+  // testimonials: cards rise in one after another when scrolled to, and tilt toward the cursor on hover (computers only)
+  (function testimonialFx(){
+    const cards = $$('.testimonial-card'); if (!cards.length) return;
+    const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    cards.forEach((c, i) => c.style.setProperty('--i', i));
+    if (!('IntersectionObserver' in window) || reduce) cards.forEach(c => c.classList.add('is-in'));
+    else {
+      const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } }), { threshold: .2 });
+      cards.forEach(c => io.observe(c));
+    }
+    if (reduce || !(window.matchMedia && matchMedia('(hover: hover) and (pointer: fine)').matches)) return;
+    cards.forEach(c => {
+      c.addEventListener('pointermove', e => {
+        const r = c.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+        c.style.setProperty('--rx', ((.5 - y) * 6).toFixed(2) + 'deg'); c.style.setProperty('--ry', ((x - .5) * 8).toFixed(2) + 'deg');
+        c.style.setProperty('--mx', (x * 100).toFixed(1) + '%'); c.style.setProperty('--my', (y * 100).toFixed(1) + '%');
+      });
+      c.addEventListener('pointerleave', () => { c.style.setProperty('--rx', '0deg'); c.style.setProperty('--ry', '0deg'); });
+    });
   })();
 
   /* ============================================================

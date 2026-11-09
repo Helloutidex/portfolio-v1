@@ -110,3 +110,9 @@ size, 2-col, 3-col, stack. Images are 1920px wide. Sections and cases can be pas
   fitted to the screen (arrows / swipe / keys, tap for full width); speed: fonts via <link>, off-screen
   animations pause, no full-screen blur, lens image 2.2MB→0.95MB, two work PNGs converted to JPG
   (site-data.json now points to the .jpg), admin saves big opaque PNG uploads as JPG.
+- 2026-11-09 (v7, owner's second review): project/section pages centred (modal had 20px offset);
+  links band balanced under its heading; About portrait bigger with rounded corners (black stroke kept);
+  social proof restyled black/grey/red with a scroll-in sequence and a slower ~3s count-up; review cards
+  with red quote mark, initials avatar, rise-in on scroll and hover tilt/glow; phone project header one row.
+  CSS/JS version tag now ?v=20261109d. NOTE: GitHub Pages had not deployed v6 at 7:44 PM even though the
+  push succeeded — check the repo's Actions tab ("pages build and deployment") after each push.
