@@ -119,17 +119,17 @@
         },
         {
           "label": "Contact ↗",
-          "href": "#samuel.s.adedeji@gmail.com"
+          "href": "contact.html"
         }
       ]
     },
     "badge": {
       "initials": "AS",
-      "ringText": "Adedeji Sunday Samuel",
+      "ringText": "Adedeji Samuel",
       "href": "contact.html"
     },
     "signature": {
-      "name": "Adedeji Sunday Samuel"
+      "name": "Adedeji Samuel"
     },
     "contact": {
       "ctaLabel": "Let's talk ↗",
@@ -144,7 +144,7 @@
       "emailHref": "mailto:samuel.s.adedeji@gmail.com"
     },
     "footer": {
-      "left": "© 2026 Helloutidex",
+      "left": "© 2026 Adedeji Samuel",
       "right": "Designed with intention / Lagos"
     }
   },
@@ -283,5 +283,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-11-01T21:27:45.410Z"
+  "updatedAt": "2026-11-09T15:20:50.000Z"
 }

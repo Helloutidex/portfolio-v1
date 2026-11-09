@@ -107,7 +107,7 @@ try {
   ============================================================ */
   const CONTENT_STORAGE_KEY = 'ferricool-portfolio-content';
   const DEFAULT_CONTENT = {
-    nav: { logo: 'ADEDEJI SUNDAY / DESIGN', links: [{ label: 'About', href: '#about' }, { label: 'Work', href: '#work' }], ctaLabel: "Let's talk", ctaHref: 'contact.html' },
+    nav: { logo: 'ADEDEJI SAMUEL / DESIGN', links: [{ label: 'About', href: '#about' }, { label: 'Work', href: '#work' }], ctaLabel: "Let's talk", ctaHref: 'contact.html' },
     hero: {
       eyebrow: 'Independent designer · Lagos, Nigeria',
       titlePre: 'Designing ', titleEm: "what's", titlePost: ' next.',
@@ -133,6 +133,12 @@ try {
       { name:'Shop Soma', logo:'' },
       { name:'Independent Collaborations', logo:'' },
     ]},
+    proof: { label: 'Social proof', heading: '', monoLogos: true, stats: [
+      { value: '80+', label: 'Satisfied Clients.' },
+      { value: '120+', label: 'Completed Projects.' },
+      { value: '5yrs+', label: 'Design Experience.' },
+    ]},
+    logofolio: { label: 'Logofolio', heading: 'Marks & identities I have designed.', tiles: 'light', items: [] },
     work: { label: 'Gallery / automatic', description: 'Selected work, continuously moving. Tap any frame to explore.', noteRight: 'Tap any frame to explore' },
     testimonials: { label: 'Praise', description: 'What collaborators say about working together.', items: [
       { quote: "Sam translated a vague brief into a brand system that felt inevitable — like it always should have looked that way.", name: 'Client name', role: 'Urban Food Fest' },
@@ -149,10 +155,10 @@ try {
     links: { label: 'Links', description: 'Find the work, the process, or start a conversation.', items: [
       { label: 'Work ↗', href: '#work' }, { label: 'About ↗', href: '#about' }, { label: 'Contact ↗', href: '#contact' },
     ]},
-    badge: { initials: 'AS', ringText: 'ADEDEJI SUNDAY SAMUEL', ringImage: '', size: 96, href: 'contact.html' },
-    signature: { name: 'ADEDEJI SUNDAY SAMUEL', font: 'UnifrakturCook', nameColor: '#E8223E', bg: '#141211', textColor: '#faf6ee' },
-    contact: { ctaLabel: "Let's talk ↗", pageHeading: "Let's talk.", subheading: 'Tell me about your project.', body: 'Share a little about what you have in mind — the goal, the timeline, anything that helps. I read every message and reply personally.', whatsappLabel: 'WhatsApp number (optional)', backLabel: '← Back home', small: 'Start a project', headingLines: ["LET'S MAKE","SOMETHING","WORTH SEEING."], available: 'Available for selected projects', emailText: 'hello@example.com ↗', emailHref: 'mailto:hello@example.com' },
-    footer: { left: '© 2026 Adedeji Sunday Samuel', right: 'Designed with intention / Lagos' },
+    badge: { initials: 'AS', ringText: 'ADEDEJI SAMUEL', ringImage: '', size: 96, href: 'contact.html' },
+    signature: { name: 'ADEDEJI SAMUEL', font: 'UnifrakturCook', nameColor: '#E8223E', bg: '#141211', textColor: '#faf6ee' },
+    contact: { ctaLabel: "Let's talk ↗", pageHeading: "Let's talk.", subheading: 'Tell me about your project.', body: 'Share a little about what you have in mind — the goal, the timeline, anything that helps. I read every message and reply personally.', whatsappLabel: 'WhatsApp number (optional)', backLabel: '← Back home', small: 'Start a project', headingLines: ["LET'S MAKE","SOMETHING","WORTH SEEING."], available: 'Available for selected projects', emailText: 'samuel.s.adedeji@gmail.com ↗', emailHref: 'mailto:samuel.s.adedeji@gmail.com' },
+    footer: { left: '© 2026 Adedeji Samuel', right: 'Designed with intention / Lagos' },
     effects: { particles: true },
   };
 
@@ -220,6 +226,22 @@ try {
         <button class="admin-mini-remove" type="button" data-collab-remove="${i}">Remove</button>
       </div>`).join('');
   }
+  function renderStats(){
+    content.proof.stats = content.proof.stats || [];
+    $('#statsEditor').innerHTML = content.proof.stats.map((st, i) => listRow(i, `
+        <label>Number<input data-stat-field="value" value="${esc(st.value)}" placeholder="80+"></label>
+        <label>Label<input data-stat-field="label" value="${esc(st.label)}" placeholder="Satisfied Clients."></label><span></span>`, 'data-stat-remove')).join('');
+  }
+  function renderLogofolio(){
+    content.logofolio.items = content.logofolio.items || [];
+    const items = content.logofolio.items;
+    $('#logofolioEditor').innerHTML = items.length ? `<div class="admin-logo-grid">${items.map((it, i) => `
+      <div class="admin-logo-tile" data-index="${i}">
+        ${it.logo ? `<img src="${esc(it.logo)}" alt="">` : '<span class="admin-thumb-empty">No logo</span>'}
+        <input data-lf-field="name" value="${esc(it.name || '')}" placeholder="Name (for screen readers)">
+        <div class="admin-logo-actions"><button type="button" data-lf-move="-1" title="Move earlier">←</button><button type="button" data-lf-move="1" title="Move later">→</button><button type="button" data-lf-remove="${i}">Remove</button></div>
+      </div>`).join('')}</div>` : '<p class="admin-hint">No logos yet.</p>';
+  }
   function renderTestimonials(){
     $('#testimonialsEditor').innerHTML = content.testimonials.items.map((t, i) => `
       <div class="admin-mini-row admin-testimonial-row" data-index="${i}">
@@ -250,7 +272,7 @@ try {
       else if (el.dataset.list === 'lines') el.value = Array.isArray(val) ? val.join('\n') : '';
       else el.value = val == null ? '' : val;
     });
-    renderFileFields(); renderNavLinks(); renderExpRows(); renderLinks(); renderCollabs(); renderTestimonials();
+    renderFileFields(); renderNavLinks(); renderExpRows(); renderLinks(); renderCollabs(); renderTestimonials(); renderStats(); renderLogofolio();
   }
   fillContentForm();
 
@@ -270,6 +292,8 @@ try {
     if (el.dataset.linkField) content.links.items[idx][el.dataset.linkField] = el.value;
     if (el.dataset.collabField) content.social.items[idx][el.dataset.collabField] = el.value;
     if (el.dataset.testimonialField) content.testimonials.items[idx][el.dataset.testimonialField] = el.value;
+    if (el.dataset.statField) content.proof.stats[idx][el.dataset.statField] = el.value;
+    if (el.dataset.lfField) { const tile = el.closest('.admin-logo-tile'); content.logofolio.items[Number(tile.dataset.index)][el.dataset.lfField] = el.value; }
   });
   contentPanel.addEventListener('click', e => {
     let m; const t = e.target;
@@ -278,6 +302,12 @@ try {
     if ((m = t.closest('[data-link-remove]'))) { content.links.items.splice(Number(m.dataset.linkRemove), 1); renderLinks(); }
     if ((m = t.closest('[data-collab-remove]'))) { content.social.items.splice(Number(m.dataset.collabRemove), 1); renderCollabs(); }
     if ((m = t.closest('[data-testimonial-remove]'))) { content.testimonials.items.splice(Number(m.dataset.testimonialRemove), 1); renderTestimonials(); }
+    if ((m = t.closest('[data-stat-remove]'))) { content.proof.stats.splice(Number(m.dataset.statRemove), 1); renderStats(); }
+    if ((m = t.closest('[data-lf-remove]'))) { content.logofolio.items.splice(Number(m.dataset.lfRemove), 1); renderLogofolio(); }
+    if ((m = t.closest('[data-lf-move]'))) {
+      const arr = content.logofolio.items, i = Number(m.closest('.admin-logo-tile').dataset.index), j = i + Number(m.dataset.lfMove);
+      if (j >= 0 && j < arr.length) { [arr[i], arr[j]] = [arr[j], arr[i]]; renderLogofolio(); }
+    }
     if ((m = t.closest('[data-collab-upload-btn]'))) $(`[data-collab-upload="${m.dataset.collabUploadBtn}"]`)?.click();
     if ((m = t.closest('[data-file-upload-btn]'))) m.parentElement.querySelector('input[type=file]')?.click();
     if ((m = t.closest('[data-file-clear]'))) { setPath(content, m.dataset.fileClear, ''); renderFileFields(); }
@@ -285,6 +315,14 @@ try {
   contentPanel.addEventListener('change', async e => {
     const t = e.target;
     if (t.dataset.fileText) renderFileFields();
+    if ((t.id === 'logofolioBulk' || t.id === 'collabBulk') && t.files.length) {
+      const files = Array.from(t.files).sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
+      const target = t.id === 'logofolioBulk' ? content.logofolio.items : content.social.items;
+      for (const f of files) target.push({ name: f.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' '), logo: await readImageResized(f, 600) });
+      t.value = ''; t.id === 'logofolioBulk' ? renderLogofolio() : renderCollabs();
+      setStatus('contentStatus', `Added ${files.length} logo${files.length > 1 ? 's' : ''}. Save, then Publish.`);
+      return;
+    }
     if (t.matches('[data-collab-upload]') && t.files[0]) { content.social.items[Number(t.dataset.collabUpload)].logo = await readImageResized(t.files[0], 600); renderCollabs(); }
     if (t.matches('[data-file-upload]') && t.files[0]) {
       const kind = t.parentElement.dataset.kind || 'image';
@@ -296,6 +334,7 @@ try {
   $('#addExpRow').addEventListener('click', () => { content.experience.rows.push({ tag: '', role: '', meta: '' }); renderExpRows(); });
   $('#addLink').addEventListener('click', () => { content.links.items.push({ label: '', href: '#' }); renderLinks(); });
   $('#addCollab').addEventListener('click', () => { content.social.items.push({ name: 'New collaborator', logo: '' }); renderCollabs(); });
+  $('#addStat').addEventListener('click', () => { content.proof.stats.push({ value: '', label: '' }); renderStats(); });
   $('#addTestimonial').addEventListener('click', () => { content.testimonials.items.push({ quote: '', name: '', role: '' }); renderTestimonials(); });
 
   function saveDraft(key, value, statusId){
@@ -314,7 +353,7 @@ try {
   const THEME_STORAGE_KEY = 'ferricool-portfolio-theme';
   const DEFAULT_THEME = {
     mode: 'light', scale: 1,
-    light: { paper: '#faf6ee', ink: '#141211', muted: '#747474', line: '#e2ddd2', accent: '#E8223E', contactBg: '#E8223E', contactText: '#ffffff', tint1: '#f7d6c6', tint2: '#f5e3a3' },
+    light: { paper: '#ffffff', ink: '#141211', muted: '#6b6b6b', line: '#ececec', accent: '#E8223E', contactBg: '#E8223E', contactText: '#ffffff', tint1: '#ffffff', tint2: '#ffffff' },
     dark:  { paper: '#141211', ink: '#faf6ee', muted: '#9a948b', line: '#2c2926', accent: '#ff4d63', contactBg: '#E8223E', contactText: '#ffffff', tint1: '#2d211d', tint2: '#2b2618' },
   };
   function migrateTheme(saved){
@@ -386,6 +425,7 @@ try {
     let blocks = s.blocks;
     if (!Array.isArray(blocks)) { const w = s.works && s.works[0] && s.works[0].blocks; blocks = Array.isArray(w) ? w : ((s.locked && s.enc) ? undefined : []); }
     if (blocks) out.blocks = blocks;
+    if (Array.isArray(s.details)) out.details = s.details.map(d => ({ label: String(d.label || ''), value: String(d.value || '') }));
     return Object.assign(out, lockFields(s));
   }
   function makeDefaultCategories(){
@@ -472,12 +512,26 @@ try {
       <div class="admin-project-actions"><button type="button" data-move="-1" title="Move up">↑</button><button type="button" data-move="1" title="Move down">↓</button>${extra}<button type="button" data-remove>Remove</button></div></header>`;
   const firstImg = list => { const b = (list || []).find(x => x.type === 'image' && x.src); return b ? b.src : ''; };
 
+  // "Client / Industry / Country / Year / Director / Project Scope" rows at the top of a case study
+  const STD_DETAILS = ['Client', 'Industry', 'Country', 'Year', 'Director', 'Project Scope'];
+  function detailsEditor(cs){
+    const rows = cs.details || [];
+    return `<div class="admin-details"><p class="admin-hint"><b>Project details</b> — shown under the title (e.g. Client: Aimford). Rename, add or remove rows; rows with no value are hidden on the site.</p>
+      ${rows.map((d, di) => `<div class="admin-mini-row" data-di="${di}">
+        <label>Label<input data-df="label" value="${esc(d.label)}" placeholder="Client"></label>
+        <label>Value<input data-df="value" value="${esc(d.value)}" placeholder="Aimford"></label>
+        <button type="button" class="admin-mini-remove" data-d-move="-1" title="Move up">↑</button><button type="button" class="admin-mini-remove" data-d-move="1" title="Move down">↓</button>
+        <button type="button" class="admin-mini-remove" data-d-remove>Remove</button></div>`).join('')}
+      <div class="admin-block-add"><button type="button" class="admin-add-small" data-d-add>+ Add a row</button>
+      ${rows.length ? '' : `<button type="button" class="admin-add-small" data-d-std>+ Add ${STD_DETAILS.join(', ')}</button>`}</div></div>`;
+  }
   function caseHTML(cs, si){
     const open = openCase === si, needs = cs.locked && cs.enc && !Array.isArray(cs.blocks);
     return `<article class="admin-case${open ? ' is-open' : ''}" data-si="${si}">
       ${rowHead(si + 1, cs.cover || firstImg(cs.blocks), cs.title, cs.locked, `<button type="button" data-case-toggle>${open ? 'Close' : 'Edit'}</button>`)}
       ${open ? `<div class="admin-project-body">
         <div class="admin-row2"><label>Title<input data-sf="title" value="${esc(cs.title || '')}"></label><label>Short line under the title (optional)<input data-sf="tagline" value="${esc(cs.tagline || '')}"></label></div>
+        ${needs ? '' : detailsEditor(cs)}
         ${coverField(cs.cover, 'Cover picture (shown in the list) — or click "Use as cover" on any picture below')}
         <div class="admin-row2"><label class="admin-check"><input type="checkbox" data-sf="tight" ${cs.tight !== false ? 'checked' : ''}> No gaps between pictures (edge to edge)</label>${bgField(cs)}</div>
         ${lockBox(cs, 'this case study')}
@@ -528,6 +582,7 @@ try {
     if (t.matches('[data-lock-toggle]')) { c.owner.locked = t.checked; if (!t.checked) { delete c.owner.password; delete c.owner.enc; } renderCategories(); return; }
     if (t.dataset.lk) { c.owner[t.dataset.lk] = t.value; return; }
     if (t.matches('[data-cover-text]')) { if (c.cs) c.cs.cover = t.value; else c.cat.image = t.value; return; }
+    if (t.dataset.df && c.cs) { const di = Number(t.closest('[data-di]').dataset.di); c.cs.details[di][t.dataset.df] = t.value; return; }
     if (t.dataset.sf) { c.cs[t.dataset.sf] = t.type === 'checkbox' ? t.checked : t.value; if (t.dataset.sf === 'title') c.caseEl.querySelector('[data-title-label]').textContent = (t.value || 'Untitled') + (c.cs.locked ? ' 🔒' : ''); return; }
     if (t.dataset.cf === 'layout') {
       const old = c.cat.layout, neu = t.value, had = (c.cat.items || []).length;
@@ -571,6 +626,13 @@ try {
     const t = e.target, c = ctx(t); if (!c) return; let m;
     if (t.closest('[data-cat-toggle]')) { openCat = openCat === c.ci ? -1 : c.ci; openCase = -1; renderCategories(); return; }
     if (t.closest('[data-case-toggle]')) { openCase = openCase === c.si ? -1 : c.si; renderCategories(); return; }
+    if (c.cs && t.closest('[data-d-add]')) { (c.cs.details = c.cs.details || []).push({ label: '', value: '' }); renderCategories(); return; }
+    if (c.cs && t.closest('[data-d-std]')) { c.cs.details = STD_DETAILS.map(label => ({ label, value: '' })); renderCategories(); return; }
+    if (c.cs && t.closest('[data-d-remove]')) { c.cs.details.splice(Number(t.closest('[data-di]').dataset.di), 1); renderCategories(); return; }
+    if (c.cs && (m = t.closest('[data-d-move]'))) {
+      const arr = c.cs.details, i = Number(m.closest('[data-di]').dataset.di), j = i + Number(m.dataset.dMove);
+      if (j >= 0 && j < arr.length) { [arr[i], arr[j]] = [arr[j], arr[i]]; renderCategories(); } return;
+    }
     if ((m = t.closest('[data-move]')) && !c.blockEl_) {
       const inCase = !!c.caseEl, list = inCase ? c.cat.items : categories, idx = inCase ? c.si : c.ci, j = idx + Number(m.dataset.move);
       if (j >= 0 && j < list.length) {
@@ -597,7 +659,7 @@ try {
     }
     if (t.closest('[data-add-case]')) {
       c.cat.items = c.cat.items || [];
-      c.cat.items.push({ id: 'case-' + Date.now(), title: 'Case study ' + (c.cat.items.length + 1), cover: '', tagline: '', bg: '', tight: true, blocks: [] });
+      c.cat.items.push({ id: 'case-' + Date.now(), title: 'Case study ' + (c.cat.items.length + 1), cover: '', tagline: '', bg: '', tight: true, details: STD_DETAILS.map(label => ({ label, value: '' })), blocks: [] });
       openCase = c.cat.items.length - 1; renderCategories(); return;
     }
     if (t.closest('[data-unlock-btn]')) {
@@ -605,7 +667,7 @@ try {
       if (!(window.crypto && crypto.subtle)) { st.textContent = 'This browser cannot unlock here (needs https).'; return; }
       try {
         const d = await decryptJSON(c.owner.enc, pw);
-        if (c.cs) c.cs.blocks = d.blocks || []; else c.cat.items = (d.items || []).map((x, i) => c.cat.layout === 'cases' ? migrateCase(x, i) : x);
+        if (c.cs) { c.cs.blocks = d.blocks || []; if (Array.isArray(d.details)) c.cs.details = d.details; } else c.cat.items = (d.items || []).map((x, i) => c.cat.layout === 'cases' ? migrateCase(x, i) : x);
         c.owner.password = pw; delete c.owner.enc; renderCategories();
       } catch (err) { st.textContent = 'Wrong password'; }
     }
@@ -704,8 +766,8 @@ try {
       // What goes online: locked sections / case studies are encrypted with their password; the password itself is never sent.
       const pubCase = async s => {
         const { password, ...rest } = s;
-        if (s.locked && Array.isArray(s.blocks)) { const { blocks, ...pub } = rest; return { ...pub, locked: true, enc: await encryptJSON({ blocks }, password) }; }
-        if (s.locked && s.enc) { const { blocks, ...pub } = rest; return { ...pub, locked: true }; }
+        if (s.locked && Array.isArray(s.blocks)) { const { blocks, details, ...pub } = rest; return { ...pub, locked: true, enc: await encryptJSON({ blocks, details: details || [] }, password) }; }
+        if (s.locked && s.enc) { const { blocks, details, ...pub } = rest; return { ...pub, locked: true }; }
         const { enc, locked, lockNote, ...pub } = rest; return pub;
       };
       const published = { ...clean, categories: [] };

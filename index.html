@@ -2,13 +2,14 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Designing What's Next — Portfolio</title>
+<title>Adedeji Samuel — Designing What's Next</title>
 <link rel="stylesheet" href="style.css">
-<script>try{if(localStorage.getItem("ferricool-mode")==="dark")document.documentElement.classList.add("predark")}catch(e){}</script>
+<script>/* paint the saved colours before anything shows, and hold the page until the real content is in (max 2.5s) */
+(function(){var d=document.documentElement;d.classList.add("is-loading");try{if(localStorage.getItem("ferricool-mode")==="dark")d.classList.add("predark");var v=JSON.parse(localStorage.getItem("ferricool-theme-vars")||"null");if(v)for(var k in v)d.style.setProperty(k,v[k])}catch(e){}setTimeout(function(){d.classList.remove("is-loading")},2500)})();</script>
 </head>
 <body>
 <header class="sitebar" id="sitebar">
-  <a class="sb-logo" href="#top" id="navLogo">ADEDEJI SUNDAY / DESIGN</a>
+  <a class="sb-logo" href="#top" id="navLogo">ADEDEJI SAMUEL / DESIGN</a>
   <div class="sb-right">
     <nav class="sb-links" id="navLinks" aria-label="Main"></nav>
     <a class="sb-cta" id="navCta" href="contact.html">Let's talk</a>
@@ -46,7 +47,7 @@
       <div class="about-label" id="aboutLabel">About me</div>
       <div class="cv-cta"><a href="#" id="viewCV">View CV ↗</a><button id="downloadCV" type="button">Download CV ↓</button></div>
       <div class="portrait" tabindex="0" role="button" aria-label="Reveal portrait in colour">
-        <div class="portrait-frame"><img id="portraitImg" src="assets/portrait.jpg" alt="Portrait of Adedeji Sunday Samuel"></div>
+        <div class="portrait-frame"><img id="portraitImg" src="assets/portrait.jpg" alt="Portrait of Adedeji Samuel"></div>
         <span id="portraitCaption">Portrait · tap for colour</span>
       </div>
       <h2><span id="aboutHeadingPre">I design for the space between an </span><em id="aboutHeadingEm">idea</em><span id="aboutHeadingPost"> and what it can become.</span></h2>
@@ -59,15 +60,26 @@
   </div>
 </section>
 
-<section class="social-proof" aria-label="Selected clients and collaborations">
-  <div class="social-proof-head"><span id="socialLabel">Selected collaborators</span><span id="socialCount">01 — 05</span></div>
-  <div class="logo-marquee"><div class="logo-track" id="logoTrack"></div></div>
+<section class="proof" id="proof" aria-label="Social proof">
+  <div class="proof-inner">
+    <div class="proof-head"><span class="label" id="proofLabel">Social proof</span><p id="proofHeading" hidden></p></div>
+    <div class="proof-stats" id="proofStats"></div>
+  </div>
+  <div class="proof-logos" id="proofLogos">
+    <span class="proof-logos-label" id="socialLabel">Selected collaborators</span>
+    <div class="logo-marquee"><div class="logo-track" id="logoTrack"></div></div>
+  </div>
 </section>
 
 <section class="work" id="work">
   <div class="section-top"><span id="workLabel">Gallery / automatic</span><p id="workDescription">Selected work, continuously moving. Tap any frame to explore.</p></div>
   <div class="auto-gallery" id="autoGallery" aria-label="Selected work gallery"></div>
   <div class="gallery-note"><span id="galleryNoteRight">Tap any frame to explore</span></div>
+</section>
+
+<section class="logofolio" id="logofolio" hidden>
+  <div class="section-top"><span id="logofolioLabel">Logofolio</span><p id="logofolioHeading"></p></div>
+  <div class="logo-grid" id="logoGrid"></div>
 </section>
 
 <section class="testimonials" id="testimonials">
@@ -93,7 +105,7 @@
   <h2 id="contactHeading">LET'S MAKE<br>SOMETHING<br>WORTH SEEING.</h2>
   <a class="contact-cta-btn" id="contactCtaBtn" href="contact.html">Let's talk ↗</a>
 </section>
-<footer class="footer"><span id="footerLeft">© 2026 Adedeji Sunday Samuel</span><span id="footerRight">Designed with intention / Lagos</span></footer>
+<footer class="footer"><span id="footerLeft">© 2026 Adedeji Samuel</span><span id="footerRight">Designed with intention / Lagos</span></footer>
 
 <div class="modal" id="modal">
   <div class="modal-box">
@@ -109,6 +121,7 @@
     <div class="modal-body" id="modalBody">
       <h1 class="ptitle" id="caseTitle"></h1>
       <p class="case-tagline reveal" id="caseTagline"></p>
+      <dl class="case-details reveal" id="caseDetails" hidden></dl>
       <div id="caseSections"></div>
       <div id="caseMore"></div>
       <div class="case-next reveal" id="caseNext"></div>

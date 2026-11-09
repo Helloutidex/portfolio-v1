@@ -41,7 +41,15 @@ The admin's **Save changes** buttons only keep a draft in your own browser. To p
 
 Because the admin now commits to the repo, **run `git pull` before you push code changes from your computer**, otherwise git will reject the push. And never copy a `site-data.json` from an old zip over the live one — it holds your published edits.
 
-## Latest changes
+## Latest changes (v5 — clean polish)
+- Cleaner landing page: the rings, crosshair and side notes around the lens are gone; no divider lines between sections; one spacing scale everywhere.
+- **No more colour flash** on load: the last colours are painted before anything shows, and the page waits (max 2.5s) for your published content.
+- **Social proof band**: numbers that count up + your client logos. Edit in admin → Content → Social proof.
+- **Logofolio**: a grid of logos you've designed. Admin → Content → Logofolio (hidden until you add one).
+- **Project details** (Client, Industry, Country, Year, Director, Project Scope) on every case study. Admin → Sections → Case study → Edit a case.
+- Campaign ads lay out as a masonry grid; Editorial pages sit centred with a soft shadow; empty sections show a clean "Coming soon" card.
+
+## Earlier changes
 - **Tap to reveal** — the lens no longer needs scrolling or dragging. Tap it (or press Enter) and every project card appears; tap it again, tap empty space, or press Escape to tuck them away.
 - **Contact is its own page** (`contact.html`). The homepage keeps a big "Let's talk" button that leads there; the nav's Contact link and the floating badge go straight to it. The form posts through FormSubmit.co to the email set in admin → Content → Contact. The first message ever sent triggers a one-time activation email from FormSubmit — click it, or messages won't arrive.
 - **Palette**: black `#141211`, red `#E8223E`, cream instead of white, grey body copy. These are the defaults in `DEFAULT_THEME` in `script.js`.

@@ -26,7 +26,7 @@
   ============================================================ */
   const CONTENT_STORAGE_KEY = 'ferricool-portfolio-content';
   const DEFAULT_CONTENT = {
-    nav: { logo: 'ADEDEJI SUNDAY / DESIGN', links: [{ label: 'About', href: '#about' }, { label: 'Work', href: '#work' }], ctaLabel: "Let's talk", ctaHref: 'contact.html' },
+    nav: { logo: 'ADEDEJI SAMUEL / DESIGN', links: [{ label: 'About', href: '#about' }, { label: 'Work', href: '#work' }], ctaLabel: "Let's talk", ctaHref: 'contact.html' },
     hero: {
       eyebrow: 'Independent designer · Lagos, Nigeria',
       titlePre: 'Designing ', titleEm: "what's", titlePost: ' next.',
@@ -52,6 +52,12 @@
       { name:'Shop Soma', logo:'' },
       { name:'Independent Collaborations', logo:'' },
     ]},
+    proof: { label: 'Social proof', heading: '', monoLogos: true, stats: [
+      { value: '80+', label: 'Satisfied Clients.' },
+      { value: '120+', label: 'Completed Projects.' },
+      { value: '5yrs+', label: 'Design Experience.' },
+    ]},
+    logofolio: { label: 'Logofolio', heading: 'Marks & identities I have designed.', tiles: 'light', items: [] },
     work: { label: 'Gallery / automatic', description: 'Selected work, continuously moving. Tap any frame to explore.', noteRight: 'Tap any frame to explore' },
     testimonials: { label: 'Praise', description: 'What collaborators say about working together.', items: [
       { quote: "Sam translated a vague brief into a brand system that felt inevitable — like it always should have looked that way.", name: 'Client name', role: 'Urban Food Fest' },
@@ -68,10 +74,10 @@
     links: { label: 'Links', description: 'Find the work, the process, or start a conversation.', items: [
       { label: 'Work ↗', href: '#work' }, { label: 'About ↗', href: '#about' }, { label: 'Contact ↗', href: '#contact' },
     ]},
-    badge: { initials: 'AS', ringText: 'ADEDEJI SUNDAY SAMUEL', ringImage: '', size: 96, href: 'contact.html' },
-    signature: { name: 'ADEDEJI SUNDAY SAMUEL', font: 'UnifrakturCook', nameColor: '#E8223E', bg: '#141211', textColor: '#faf6ee' },
-    contact: { ctaLabel: "Let's talk ↗", pageHeading: "Let's talk.", subheading: 'Tell me about your project.', body: 'Share a little about what you have in mind — the goal, the timeline, anything that helps. I read every message and reply personally.', whatsappLabel: 'WhatsApp number (optional)', backLabel: '← Back home', small: 'Start a project', headingLines: ["LET'S MAKE","SOMETHING","WORTH SEEING."], available: 'Available for selected projects', emailText: 'hello@example.com ↗', emailHref: 'mailto:hello@example.com' },
-    footer: { left: '© 2026 Adedeji Sunday Samuel', right: 'Designed with intention / Lagos' },
+    badge: { initials: 'AS', ringText: 'ADEDEJI SAMUEL', ringImage: '', size: 96, href: 'contact.html' },
+    signature: { name: 'ADEDEJI SAMUEL', font: 'UnifrakturCook', nameColor: '#E8223E', bg: '#141211', textColor: '#faf6ee' },
+    contact: { ctaLabel: "Let's talk ↗", pageHeading: "Let's talk.", subheading: 'Tell me about your project.', body: 'Share a little about what you have in mind — the goal, the timeline, anything that helps. I read every message and reply personally.', whatsappLabel: 'WhatsApp number (optional)', backLabel: '← Back home', small: 'Start a project', headingLines: ["LET'S MAKE","SOMETHING","WORTH SEEING."], available: 'Available for selected projects', emailText: 'samuel.s.adedeji@gmail.com ↗', emailHref: 'mailto:samuel.s.adedeji@gmail.com' },
+    footer: { left: '© 2026 Adedeji Samuel', right: 'Designed with intention / Lagos' },
     effects: { particles: true },
   };
 
@@ -138,7 +144,20 @@
       let repeats = Math.max(2, Math.ceil((window.innerWidth * 2.2) / Math.max(1, c.social.items.length * 200)));
       if (repeats % 2 !== 0) repeats++;
       logoTrack.innerHTML = oneSet.repeat(repeats);
+      const pl = $('#proofLogos'); if (pl) pl.hidden = !c.social.items.length;
     }
+    // social proof: the numbers band (logos above come from "Client logos")
+    const pr = c.proof || {};
+    set('proofLabel', pr.label || '');
+    const ph = $('#proofHeading'); if (ph) { ph.textContent = pr.heading || ''; ph.hidden = !pr.heading; }
+    const proofEl = $('#proof'); if (proofEl) proofEl.classList.toggle('mono-logos', pr.monoLogos !== false);
+    const ps = $('#proofStats');
+    if (ps) ps.innerHTML = (pr.stats || []).filter(s => s.value || s.label).map(s => `<div class="stat"><strong data-count="${esc(s.value)}">${esc(s.value)}</strong><i aria-hidden="true"></i><span>${esc(s.label)}</span></div>`).join('');
+    // logofolio: the logos you've designed, icons only
+    const lf = c.logofolio || {}, lfItems = (lf.items || []).filter(it => it.logo);
+    const lfEl = $('#logofolio'); if (lfEl) { lfEl.hidden = !lfItems.length; lfEl.classList.toggle('dark-tiles', lf.tiles === 'dark'); }
+    set('logofolioLabel', lf.label || ''); set('logofolioHeading', lf.heading || '');
+    const lg2 = $('#logoGrid'); if (lg2) lg2.innerHTML = lfItems.map(it => `<figure class="logo-tile" title="${esc(it.name || '')}"><img src="${esc(it.logo)}" alt="${esc(it.name || 'Logo')}" loading="lazy"></figure>`).join('');
     set('workLabel', c.work.label); set('workDescription', c.work.description); set('galleryNoteRight', c.work.noteRight);
     set('testimonialsLabel', c.testimonials.label); set('testimonialsDescription', c.testimonials.description);
     const tg = $('#testimonialGrid');
@@ -180,7 +199,7 @@
       const ringPath = $('#badgeCircleText');
       if (ringPath && ring) {
         const unit = ring + ' · ';
-        ringPath.textContent = unit.repeat(Math.max(1, Math.round(57 / unit.length))).trim() + ' ·';
+        ringPath.textContent = unit.repeat(Math.max(1, Math.round(57 / unit.length))).trim();
         ringPath.setAttribute('textLength', '312'); ringPath.setAttribute('lengthAdjust', 'spacing');
       } else if (ringPath) ringPath.textContent = '';
     }
@@ -192,7 +211,7 @@
   const THEME_STORAGE_KEY = 'ferricool-portfolio-theme';
   const DEFAULT_THEME = {
     mode: 'light', scale: 1,
-    light: { paper: '#faf6ee', ink: '#141211', muted: '#747474', line: '#e2ddd2', accent: '#E8223E', contactBg: '#E8223E', contactText: '#ffffff', tint1: '#f7d6c6', tint2: '#f5e3a3' },
+    light: { paper: '#ffffff', ink: '#141211', muted: '#6b6b6b', line: '#ececec', accent: '#E8223E', contactBg: '#E8223E', contactText: '#ffffff', tint1: '#ffffff', tint2: '#ffffff' },
     dark:  { paper: '#141211', ink: '#faf6ee', muted: '#9a948b', line: '#2c2926', accent: '#ff4d63', contactBg: '#E8223E', contactText: '#ffffff', tint1: '#2d211d', tint2: '#2b2618' },
   };
   function migrateTheme(saved){
@@ -212,9 +231,27 @@
     r.setProperty('--surface', pal.paper); r.setProperty('--contact-bg', pal.contactBg); r.setProperty('--contact-text', pal.contactText); r.setProperty('--scale', t.scale);
     document.body.classList.toggle('dark', t.mode === 'dark');
     document.documentElement.classList.remove('predark');
-    try { localStorage.setItem('ferricool-mode', t.mode); } catch (e) {}
+    // remember these colours so the next visit paints them before anything else (no flash of old colours)
+    const vars = {}; ['paper', 'ink', 'muted', 'line', 'accent', 'tint1', 'tint2'].forEach(k => vars['--' + k] = pal[k]);
+    Object.assign(vars, { '--surface': pal.paper, '--contact-bg': pal.contactBg, '--contact-text': pal.contactText, '--scale': String(t.scale) });
+    try { localStorage.setItem('ferricool-mode', t.mode); localStorage.setItem('ferricool-theme-vars', JSON.stringify(vars)); } catch (e) {}
   }
   applyTheme(migrateTheme(draftOf(THEME_STORAGE_KEY) || REMOTE.theme));
+  requestAnimationFrame(() => document.documentElement.classList.remove('is-loading'));
+
+  // numbers in the social proof band count up once when they scroll into view ("80+" counts 0 → 80, keeps the "+")
+  (function countUp(){
+    const els = $$('[data-count]'); if (!els.length) return;
+    const run = el => {
+      const m = String(el.dataset.count).match(/^(\D*)(\d+)(.*)$/); if (!m) return;
+      const end = Number(m[2]), t0 = performance.now(), dur = 1400;
+      const step = now => { const p = Math.min(1, (now - t0) / dur), v = Math.round(end * (1 - Math.pow(1 - p, 3))); el.textContent = m[1] + v + m[3]; if (p < 1) requestAnimationFrame(step); };
+      requestAnimationFrame(step);
+    };
+    if (!('IntersectionObserver' in window) || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { run(e.target); io.unobserve(e.target); } }), { threshold: .6 });
+    els.forEach(el => io.observe(el));
+  })();
 
   /* ============================================================
      SECTIONS — each one is a floating card around the lens, a frame in the moving
@@ -262,6 +299,7 @@
     let blocks = s.blocks;
     if (!Array.isArray(blocks)) { const w = s.works && s.works[0] && s.works[0].blocks; blocks = Array.isArray(w) ? w : ((s.locked && s.enc) ? undefined : []); }
     if (blocks) out.blocks = blocks;
+    if (Array.isArray(s.details)) out.details = s.details.map(d => ({ label: String(d.label || ''), value: String(d.value || '') }));
     return Object.assign(out, lockFields(s));
   }
   function makeDefaultCategories(){
@@ -381,12 +419,17 @@
     const caseCover = s => s.cover || firstImage(s.blocks);
     const catCover = c => c.image || (c.layout === 'cases' ? ((c.items || []).map(caseCover).find(Boolean) || '') : firstImage(c.items));
     const flag = c => c.locked ? '🔒 Locked' : 'Open ↗';
+    // empty sections (nothing uploaded yet) show their title card, not a leftover stock photo
+    const isEmpty = c => !c.locked && Array.isArray(c.items) && !c.items.length;
+    // a section with no pictures yet gets a clean title card instead of a grey box
+    const titleCard = t => 'data:image/svg+xml;utf8,' + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="800" height="600" viewBox="0 0 800 600"><rect width="800" height="600" fill="#f2f2f2"/><circle cx="400" cy="240" r="7" fill="#E8223E"/><text x="400" y="330" text-anchor="middle" font-family="Manrope,Arial,sans-serif" font-weight="700" font-size="56" letter-spacing="-2" fill="#141211">${esc(t || '')}</text><text x="400" y="384" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" letter-spacing="3" fill="#8a8a8a">COMING SOON</text></svg>`);
+    const coverOf = c => (isEmpty(c) ? '' : catCover(c)) || titleCard(c.title);
 
     /* ---------- floating cards: the first five sections (drag them around; click to open) ---------- */
     const featured = CATEGORIES.slice(0, 5);
     $('#cards').innerHTML = featured.map((c, i) => `
-      <article class="card slot${i}" data-id="${esc(c.id)}">
-        <img src="${esc(imgW(catCover(c), 480))}" alt="${esc(c.title)}" draggable="false">
+      <article class="card slot${i}${isEmpty(c) ? ' is-empty' : ''}" data-id="${esc(c.id)}">
+        <img src="${esc(imgW(coverOf(c), 480))}" alt="${esc(c.title)}" draggable="false">
         <div class="card-meta"><span>${pad2(i + 1)}</span><span>${flag(c)}</span></div>
         <div class="card-title">${esc(c.title)}</div>
       </article>`).join('');
@@ -409,8 +452,8 @@
     const galleryEl = $('#autoGallery');
     const oneSet = Array.from({ length: Math.max(1, Math.ceil(6 / CATEGORIES.length)) }, () => CATEGORIES).flat();
     const frame = c => `
-      <article class="gallery-frame" data-id="${esc(c.id)}">
-        <img src="${esc(imgW(catCover(c), 700, 85))}" alt="${esc(c.title)}" loading="lazy">
+      <article class="gallery-frame${isEmpty(c) ? ' is-empty' : ''}" data-id="${esc(c.id)}">
+        <img src="${esc(imgW(coverOf(c), 700, 85))}" alt="${esc(c.title)}" loading="lazy">
         <div class="gf-cap"><span>${pad2(CATEGORIES.indexOf(c) + 1)}${c.locked ? ' · 🔒' : ''}</span><strong>${esc(c.title)}</strong></div>
       </article>`;
     galleryEl.innerHTML =
@@ -517,7 +560,7 @@
     }
     function applyDecrypted(node, field, data){
       if (field === 'items') node.items = (Array.isArray(data.items) ? data.items : []).map((x, i) => node.layout === 'cases' ? migrateCase(x, i) : x);
-      else node.blocks = Array.isArray(data.blocks) ? data.blocks : [];
+      else { node.blocks = Array.isArray(data.blocks) ? data.blocks : []; if (Array.isArray(data.details)) node.details = data.details; }
       node._unlocked = true;
     }
     pwForm.addEventListener('submit', async e => {
@@ -542,6 +585,13 @@
 
     /* ---------- section pages and case-study pages ---------- */
     const mmeta = $('#mmeta'), modalBody = $('#modalBody'), caseTitle = $('#caseTitle'), caseTagline = $('#caseTagline');
+    const caseDetails = $('#caseDetails');
+    // the "Client / Industry / Country / Year …" block at the top of a case study; empty rows are skipped
+    function renderDetails(list){
+      const rows = (list || []).filter(d => String(d.label || '').trim() && String(d.value || '').trim());
+      caseDetails.innerHTML = rows.map(d => `<div><dt>${esc(d.label)}${/[:：]$/.test(d.label.trim()) ? '' : ':'}</dt><dd>${esc(d.value)}</dd></div>`).join('');
+      caseDetails.hidden = !rows.length;
+    }
     const caseSections = $('#caseSections'), caseMore = $('#caseMore'), caseNext = $('#caseNext'), backBtn = $('#backProject');
     let view = null, revealObserver = null, currentImages = [];
 
@@ -579,7 +629,7 @@
       const others = list.map((x, i) => ({ x, i })).filter(o => o.i !== skip);
       if (!others.length) return '';
       return `<div class="pmore reveal"><h4>${esc(title)}</h4><div class="pmore-grid">${others.slice(0, 8).map(o => `
-        <button class="pmore-card" type="button" data-kind="${kind}" data-i="${o.i}"><img src="${esc(imgW(kind === 'cat' ? catCover(o.x) : caseCover(o.x), 600))}" alt=""><span>${esc(o.x.title)}${o.x.locked ? ' 🔒' : ''}</span></button>`).join('')}</div></div>`;
+        <button class="pmore-card" type="button" data-kind="${kind}" data-i="${o.i}"><img src="${esc(imgW(kind === 'cat' ? coverOf(o.x) : caseCover(o.x), 600))}" alt=""><span>${esc(o.x.title)}${o.x.locked ? ' 🔒' : ''}</span></button>`).join('')}</div></div>`;
     }
     function finish(){ modalBody.scrollTop = 0; armReveals(modalBody); fillPdfs(); }
 
@@ -588,6 +638,7 @@
       applyPageBg(cat.bg); backBtn.hidden = true;
       mmeta.textContent = `${pad2(ci + 1)} / ${cat.title}`; caseTitle.textContent = cat.title;
       if (cat.intro) { caseTagline.textContent = cat.intro; caseTagline.hidden = false; } else caseTagline.hidden = true;
+      renderDetails(null);
       const items = cat.items || [];
       if (cat.layout === 'cases') {
         caseSections.className = 'pcases';
@@ -611,6 +662,7 @@
       applyPageBg(cs.bg || cat.bg); backBtn.hidden = false; backBtn.textContent = '← ' + cat.title;
       mmeta.textContent = `${cat.title} / ${cs.title}`; caseTitle.textContent = cs.title;
       if (cs.tagline) { caseTagline.textContent = cs.tagline; caseTagline.hidden = false; } else caseTagline.hidden = true;
+      renderDetails(cs.details);
       caseSections.className = cs.tight !== false ? 'pblocks' : 'pblocks gaps';
       caseSections.innerHTML = blocksHTML(cs.blocks);
       caseMore.innerHTML = moreHTML('More case studies', cat.items, 'case', si);
@@ -698,7 +750,7 @@
       e.preventDefault();
       const statusEl = $('#contactFormStatus');
       const submitBtn = contactForm.querySelector('.contact-submit');
-      const emailHref = $('#contactEmail')?.getAttribute('href') || 'mailto:hello@example.com';
+      const emailHref = $('#contactEmail')?.getAttribute('href') || 'mailto:samuel.s.adedeji@gmail.com';
       const targetEmail = emailHref.replace(/^mailto:/,'').split('?')[0];
       const data = Object.fromEntries(new FormData(contactForm).entries());
       submitBtn.disabled = true;

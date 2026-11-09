@@ -23,7 +23,7 @@
 
 <div id="appContent" hidden>
 <nav class="nav">
-  <a class="logo" href="index.html">ADEDEJI SUNDAY / DESIGN</a>
+  <a class="logo" href="index.html">ADEDEJI SAMUEL / DESIGN</a>
   <div class="navlinks">
     <a href="index.html">← Back to site</a>
     <button class="modal-nav" id="lockOut" type="button">Lock</button>
@@ -75,12 +75,7 @@
         <label>Hero button goes to<input data-path="hero.ctaHref" placeholder="#work, contact.html, or any link"></label>
       </div>
       <label>Picture inside the lens (empty = Project 1's cover)<div class="admin-image-field" data-image-path="hero.lensImage"></div></label>
-      <label>Lens label (small text on the lens)<input data-path="hero.lensLabel"></label>
-      <label>Text under the lens<input data-path="hero.opticNote"></label>
-      <div class="admin-row2">
-        <label>Bottom-left note<input data-path="hero.note"></label>
-        <label>Bottom-right instruction<input data-path="hero.zoomInstruction"></label>
-      </div>
+      <label>Text under the lens<input data-path="hero.lensLabel"></label>
     </div>
 
     <div class="admin-group" data-group="about">
@@ -105,14 +100,37 @@
       <label>Skills (comma-separated)<input data-path="about.skills" data-list="comma"></label>
     </div>
 
-    <div class="admin-group" data-group="social">
-      <h2>Collaborators strip <span class="admin-hint">(real logos — a placeholder mark shows until you add one)</span></h2>
+    <div class="admin-group" data-group="proof">
+      <h2>Social proof <span class="admin-hint">(the dark band with your numbers and client logos)</span></h2>
       <div class="admin-row2">
-        <label>Label<input data-path="social.label"></label>
-        <label>Count text<input data-path="social.count"></label>
+        <label>Small label<input data-path="proof.label"></label>
+        <label>Heading (optional)<input data-path="proof.heading" placeholder="e.g. Trusted by brands across Africa and beyond"></label>
       </div>
+      <p class="admin-hint">Numbers — the number counts up when visitors scroll to it. Keep the "+" or "yrs+" in the number box.</p>
+      <div id="statsEditor"></div>
+      <button class="admin-add-small" type="button" id="addStat">+ Add a number</button>
+      <h3 class="admin-sub">Client logos</h3>
+      <label>Label above the logos<input data-path="social.label"></label>
+      <label class="admin-check"><input type="checkbox" data-path="proof.monoLogos"> Show every logo in one soft white (cleanest look — turn off to show their own colours)</label>
+      <p class="admin-hint">Transparent PNG or SVG logos work best. A placeholder mark shows until you upload one.</p>
       <div id="collabEditor"></div>
-      <button class="admin-add-small" type="button" id="addCollab">+ Add a collaborator</button>
+      <div class="admin-block-add">
+        <button class="admin-add-small" type="button" id="addCollab">+ Add a client</button>
+        <label class="admin-add-small admin-upload-label">+ Upload many logos<input type="file" accept="image/*" multiple class="admin-upload-input" id="collabBulk"></label>
+      </div>
+    </div>
+
+    <div class="admin-group" data-group="logofolio">
+      <h2>Logofolio <span class="admin-hint">(logos you've designed, shown as icons in a grid — the section hides itself until you add one)</span></h2>
+      <div class="admin-row2">
+        <label>Small label<input data-path="logofolio.label"></label>
+        <label>Heading<input data-path="logofolio.heading"></label>
+      </div>
+      <label>Tile colour<select data-path="logofolio.tiles"><option value="light">Light tiles (for dark / colour logos)</option><option value="dark">Dark tiles (for white logos)</option></select></label>
+      <div id="logofolioEditor"></div>
+      <div class="admin-block-add">
+        <label class="admin-add-small admin-upload-label">+ Upload logos (many at once)<input type="file" accept="image/*" multiple class="admin-upload-input" id="logofolioBulk"></label>
+      </div>
     </div>
 
     <div class="admin-group" data-group="testimonials">

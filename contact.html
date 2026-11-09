@@ -4,11 +4,12 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Contact — Designing What's Next</title>
 <link rel="stylesheet" href="style.css">
-<script>try{if(localStorage.getItem("ferricool-mode")==="dark")document.documentElement.classList.add("predark")}catch(e){}</script>
+<script>/* paint the saved colours before anything shows, and hold the page until the real content is in (max 2.5s) */
+(function(){var d=document.documentElement;d.classList.add("is-loading");try{if(localStorage.getItem("ferricool-mode")==="dark")d.classList.add("predark");var v=JSON.parse(localStorage.getItem("ferricool-theme-vars")||"null");if(v)for(var k in v)d.style.setProperty(k,v[k])}catch(e){}setTimeout(function(){d.classList.remove("is-loading")},2500)})();</script>
 </head>
 <body>
 <header class="sitebar" id="sitebar">
-  <a class="sb-logo" href="index.html" id="navLogo">ADEDEJI SUNDAY / DESIGN</a>
+  <a class="sb-logo" href="index.html" id="navLogo">ADEDEJI SAMUEL / DESIGN</a>
   <div class="sb-right">
     <nav class="sb-links" id="navLinks" aria-label="Main"></nav>
     <a class="sb-cta" id="navCta" href="contact.html">Let's talk</a>
@@ -24,10 +25,10 @@
       <h1 id="contactPageHeading">Let's talk.</h1>
       <h2 id="contactSub">Tell me about your project.</h2>
       <p id="contactBody">Share a little about what you have in mind.</p>
-      <div class="contact-info"><span id="contactAvailable">Available for selected projects</span><a class="email" id="contactEmail" href="mailto:hello@example.com">hello@example.com ↗</a></div>
+      <div class="contact-info"><span id="contactAvailable">Available for selected projects</span><a class="email" id="contactEmail" href="mailto:samuel.s.adedeji@gmail.com">samuel.s.adedeji@gmail.com ↗</a></div>
     </div>
     <div class="contact-card">
-      <form class="contact-form" id="contactForm" action="https://formsubmit.co/hello@example.com" method="POST">
+      <form class="contact-form" id="contactForm" action="https://formsubmit.co/samuel.s.adedeji@gmail.com" method="POST">
         <input type="hidden" name="_subject" value="New message from your portfolio">
         <input type="hidden" name="_captcha" value="false">
         <div class="contact-form-row">
@@ -42,7 +43,7 @@
     </div>
   </div>
 </main>
-<footer class="footer"><span id="footerLeft">© 2026 Adedeji Sunday Samuel</span><span id="footerRight">Designed with intention / Lagos</span></footer>
+<footer class="footer"><span id="footerLeft">© 2026 Adedeji Samuel</span><span id="footerRight">Designed with intention / Lagos</span></footer>
 
 <a class="floating-badge" id="floatingBadge" href="contact.html" aria-label="Go to contact page">
   <img class="floating-badge-img" id="floatingBadgeImg" alt="" hidden>

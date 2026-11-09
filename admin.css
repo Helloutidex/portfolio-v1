@@ -129,3 +129,14 @@
 .admin-case .admin-project-body{border-top:1px dashed var(--line)}
 /* the admin has its own light/dark switch (separate from the public site's mode) */
 body.admin-body.dark{--paper:#141211;--ink:#faf6ee;--muted:#9a948b;--line:#2c2926;--surface:#141211}
+
+/* v5: social proof + logofolio editors */
+.admin-sub{margin:26px 0 10px;font-size:15px;letter-spacing:-.01em}
+.admin-logo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:12px}
+.admin-logo-tile{display:flex;flex-direction:column;gap:8px;padding:10px;border:1px solid var(--line);border-radius:12px}
+.admin-logo-tile img,.admin-logo-tile .admin-thumb-empty{width:100%;aspect-ratio:1;object-fit:contain;background:color-mix(in srgb,var(--ink) 4%,transparent);border-radius:8px;padding:14%;box-sizing:border-box;display:grid;place-items:center}
+.admin-logo-tile input{font-size:12px;padding:6px 8px}
+.admin-logo-actions{display:flex;gap:4px}
+.admin-logo-actions button{flex:1;font-size:11px;padding:5px 4px;border:1px solid var(--line);background:none;color:inherit;border-radius:6px;cursor:pointer}
+.admin-details{margin:14px 0;padding:12px;border:1px solid var(--line);border-radius:10px}
+.admin-details .admin-mini-row{grid-template-columns:1fr 2fr auto auto auto}
