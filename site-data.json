@@ -390,6 +390,30 @@
         {
           "type": "image",
           "src": "assets/uploads/mw9qbf39-0.jpg"
+        },
+        {
+          "type": "image",
+          "src": "assets/uploads/mw9qlnk5-0.jpg"
+        },
+        {
+          "type": "image",
+          "src": "assets/uploads/mw9qlts0-1.jpg"
+        },
+        {
+          "type": "image",
+          "src": "assets/uploads/mw9qm3cf-2.jpg"
+        },
+        {
+          "type": "image",
+          "src": "assets/uploads/mw9qm8jv-3.jpg"
+        },
+        {
+          "type": "image",
+          "src": "assets/uploads/mw9qmbw0-4.jpg"
+        },
+        {
+          "type": "image",
+          "src": "assets/uploads/mw9qmgjf-5.jpg"
         }
       ]
     },
@@ -490,5 +514,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-11-09T20:44:11.208Z"
+  "updatedAt": "2026-11-09T20:52:43.541Z"
 }
