@@ -3,8 +3,10 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Portfolio Admin — Designing What's Next</title>
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="admin.css">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,500;1,500&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=UnifrakturCook:wght@700&display=swap">
+<link rel="stylesheet" href="style.css?v=20261109c">
+<link rel="stylesheet" href="admin.css?v=20261109c">
 </head>
 <body class="admin-body">
 <section class="lock-screen" id="lockScreen">
@@ -101,23 +103,24 @@
     </div>
 
     <div class="admin-group" data-group="proof">
-      <h2>Social proof <span class="admin-hint">(the dark band with your numbers and client logos)</span></h2>
+      <h2>Social proof <span class="admin-hint">(the dark band of numbers above About me — each number counts up when visitors scroll to it)</span></h2>
       <div class="admin-row2">
         <label>Small label<input data-path="proof.label"></label>
-        <label>Heading (optional)<input data-path="proof.heading" placeholder="e.g. Trusted by brands across Africa and beyond"></label>
+        <label>Heading (optional)<input data-path="proof.heading" placeholder="Leave empty for no heading"></label>
       </div>
-      <p class="admin-hint">Numbers — the number counts up when visitors scroll to it. Keep the "+" or "yrs+" in the number box.</p>
+      <p class="admin-hint">Keep the "+" or "yrs+" in the number box — only the digits count up.</p>
       <div id="statsEditor"></div>
       <button class="admin-add-small" type="button" id="addStat">+ Add a number</button>
-      <h3 class="admin-sub">Client logos</h3>
-      <label>Label above the logos<input data-path="social.label"></label>
-      <label class="admin-check"><input type="checkbox" data-path="proof.monoLogos"> Show every logo in one soft white (cleanest look — turn off to show their own colours)</label>
-      <p class="admin-hint">Transparent PNG or SVG logos work best. A placeholder mark shows until you upload one.</p>
-      <div id="collabEditor"></div>
-      <div class="admin-block-add">
-        <button class="admin-add-small" type="button" id="addCollab">+ Add a client</button>
-        <label class="admin-add-small admin-upload-label">+ Upload many logos<input type="file" accept="image/*" multiple class="admin-upload-input" id="collabBulk"></label>
+    </div>
+
+    <div class="admin-group" data-group="social">
+      <h2>Collaborators strip <span class="admin-hint">(real logos — a placeholder mark shows until you add one)</span></h2>
+      <div class="admin-row2">
+        <label>Label<input data-path="social.label"></label>
+        <label>Count text<input data-path="social.count"></label>
       </div>
+      <div id="collabEditor"></div>
+      <button class="admin-add-small" type="button" id="addCollab">+ Add a collaborator</button>
     </div>
 
     <div class="admin-group" data-group="logofolio">
@@ -308,5 +311,5 @@
 </main>
 </div>
 
-<script src="admin.js" defer></script>
+<script src="admin.js?v=20261109c" defer></script>
 </body></html>

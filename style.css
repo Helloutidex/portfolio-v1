@@ -1,4 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,500;1,500&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=UnifrakturCook:wght@700&display=swap');
 
 /* ---------- tokens ---------- */
 :root{
@@ -607,18 +606,9 @@ html.predark body{--paper:#141211;--ink:#faf6ee;--muted:#9a948b;--line:#2c2926}
 html.is-loading body{opacity:0}
 body{transition:opacity .35s ease}
 
-/* ---- hero: just the headline and the lens ---- */
-.ring-mark,.zoom-readout,.optic-note,.hero-bottom,.focus-dot{display:none}
-.lens:before{display:none}
-.lens:after{inset:6px;border:1px solid color-mix(in srgb,var(--ink) 10%,transparent);box-shadow:none}
-.lens{box-shadow:0 30px 80px -20px rgba(20,18,17,.28)}
-.glass{inset:clamp(10px,1.2vw,16px);box-shadow:inset 0 0 40px rgba(0,0,0,.45)}
-.glass img{opacity:.95}
-.lens-label{bottom:-44px;opacity:.7;letter-spacing:.14em}
-.hero{justify-content:center;padding-bottom:var(--section-y)}
-.card{border:0;box-shadow:0 24px 60px -18px rgba(20,18,17,.32)}
-.card-meta{display:none}
-.card-title{padding:10px 4px 4px}
+/* ---- hero, lens and floating cards: exactly as before (rings, dots, plus sign, notes) ---- */
+/* the picture inside the lens stays still — it no longer zooms or moves when tapped */
+.glass img{transition:none}
 
 /* ---- section headings: label + big line, no rules ---- */
 .section-top{border-top:0;padding-top:0;display:grid;grid-template-columns:minmax(150px,1fr) 3fr;align-items:baseline;gap:clamp(16px,4vw,60px);margin-bottom:clamp(32px,4vw,56px)}
@@ -628,31 +618,18 @@ body{transition:opacity .35s ease}
 /* ---- about ---- */
 .about{min-height:0;padding:var(--section-y) var(--edge);background:var(--paper)}
 .about-grid>div:first-child{min-height:0}
-.portrait-frame{border:0;padding:0;border-radius:14px;box-shadow:0 22px 50px -16px rgba(20,18,17,.35)}
-.portrait-frame:hover{box-shadow:0 30px 60px -16px rgba(20,18,17,.42)}
-.portrait>span{letter-spacing:.1em}
 .skill{border:0;background:var(--soft);border-radius:999px;padding:9px 14px;font:600 11px Manrope,Arial,sans-serif;letter-spacing:.02em;text-transform:none}
 .cv-cta a,.cv-cta button{border:1px solid color-mix(in srgb,var(--ink) 14%,transparent);font:600 11px Manrope,Arial,sans-serif;letter-spacing:.02em;text-transform:none;padding:10px 16px}
 
-/* ---- social proof band ---- */
-.proof{background:#111214;color:#f4f4f4;padding:var(--section-y) 0 calc(var(--section-y) * .7);overflow:hidden}
+/* ---- social proof band (numbers) — sits between the hero and About me ---- */
+.proof{background:var(--band-bg,#141211);color:#faf6ee;padding:var(--section-y) 0;overflow:hidden}
 .proof-inner{padding:0 var(--edge);max-width:1400px;margin:0 auto}
 .proof-head{text-align:center}
 .proof-head p{margin:14px auto 0;max-width:22ch;font-size:calc(var(--scale)*clamp(26px,3.4vw,46px));line-height:1.05;letter-spacing:-.04em;font-weight:600}
-.proof-stats{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:clamp(16px,4vw,64px);margin-top:clamp(36px,5vw,64px);text-align:center}
-.stat strong{display:block;font:500 calc(var(--scale)*clamp(44px,8.4vw,128px))/1 Manrope,Arial,sans-serif;letter-spacing:-.045em;color:#9a9a9a;font-variant-numeric:tabular-nums}
-.stat i{display:block;width:clamp(44px,5vw,88px);height:3px;background:var(--accent);margin:clamp(14px,2vw,26px) auto}
-.stat span{display:block;max-width:11ch;margin:0 auto;font-size:clamp(14px,1.6vw,26px);line-height:1.2;color:#d6d6d6;font-weight:500}
-.proof-logos{margin-top:clamp(56px,8vw,112px)}
-.proof-logos-label{display:block;text-align:center;font:600 11px Manrope,Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#7a7a7a;margin-bottom:26px}
-.proof .logo-marquee{-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
-.proof .logo-track{gap:clamp(40px,6vw,88px);animation-duration:34s}
-.proof .logo-mark{height:clamp(26px,3vw,38px)}
-.proof .logo-mark img{max-width:170px;filter:grayscale(1) opacity(.75)}
-.proof.mono-logos .logo-mark img{filter:brightness(0) invert(1) opacity(.42)}
-.proof .logo-mark:hover img,.proof.mono-logos .logo-mark:hover img{filter:brightness(0) invert(1) opacity(.95)}
-.proof .logo-mark svg{color:#6f6f6f}
-.proof .logo-marquee:hover .logo-track{animation-play-state:paused}
+.proof-stats{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:clamp(16px,4vw,64px);margin-top:clamp(32px,5vw,60px);text-align:center}
+.stat strong{display:block;font:500 calc(var(--scale)*clamp(44px,8.4vw,128px))/1 Manrope,Arial,sans-serif;letter-spacing:-.045em;color:rgba(250,246,238,.58);font-variant-numeric:tabular-nums}
+.stat i{display:block;width:clamp(44px,5vw,88px);height:3px;background:var(--accent);margin:clamp(14px,2vw,26px) auto;border-radius:2px}
+.stat span{display:block;max-width:11ch;margin:0 auto;font-size:clamp(14px,1.6vw,26px);line-height:1.2;color:rgba(250,246,238,.88);font-weight:500}
 
 /* ---- work gallery ---- */
 .work{padding:var(--section-y) var(--edge)}
@@ -696,11 +673,6 @@ body{transition:opacity .35s ease}
 /* ---- section pages: calmer, and grids that fit mixed sizes ---- */
 .modal-head{border-bottom-color:color-mix(in srgb,var(--ink) 7%,transparent);font:600 11px Manrope,Arial,sans-serif;letter-spacing:.06em}
 .modal-nav{font:600 11px Manrope,Arial,sans-serif;letter-spacing:.02em;text-transform:none;padding:8px 14px}
-/* campaign ads (2 columns) / 3 columns: masonry, so tall and short creatives sit together with no holes */
-.pgrid.g2:not(.tile),.pgrid.g3:not(.tile){display:block;columns:2;column-gap:var(--gap)}
-.pgrid.g3:not(.tile){columns:3}
-.pgrid.g2:not(.tile)>*,.pgrid.g3:not(.tile)>*{break-inside:avoid;margin-bottom:var(--gap)}
-.pgrid:not(.tile) .ptext,.pgrid:not(.tile) .ppdf,.pgrid:not(.tile) .pvideo{column-span:all}
 .pgrid .pimg img{border-radius:14px}
 /* editorial (natural size): pages sit centred like paper, with room between them */
 .pblocks.natural .pimg{max-width:1280px;margin:0 auto clamp(20px,3vw,40px);padding:0 var(--edge)}
@@ -712,7 +684,6 @@ body{transition:opacity .35s ease}
 
 .gallery-frame.is-empty .gf-cap{display:none}
 @media(max-width:800px){
-  .hero{padding-bottom:40px;justify-content:flex-start}
   /* about on phones: label → heading → CV buttons, portrait on its own above */
   .about-label{order:0}.about h2{order:1}.cv-cta{order:2;margin:26px 0 0}
   .about .portrait>span{display:none}
@@ -724,13 +695,55 @@ body{transition:opacity .35s ease}
   .logo-grid{grid-template-columns:repeat(auto-fill,minmax(104px,1fr))}
   .logo-tile{border-radius:14px}
   .case-details>div{grid-template-columns:104px 1fr;gap:12px}
-  .pgrid.g2:not(.tile){columns:1}
-  .pgrid.g3:not(.tile){columns:2}
   .footer{display:flex;flex-direction:column;gap:6px}.footer span{margin:0}
 }
-@media(min-width:801px) and (max-width:1100px){
-  .pgrid.g3:not(.tile){columns:2}
-}
-.card,.slot0,.slot1,.slot2,.slot3,.slot4{--ct:var(--paper)}
 .card.is-empty .card-title{display:none}
 .email{font-family:Manrope,Arial,sans-serif}
+
+/* =====================================================================
+   v6 — requested fixes (2026-11-09)
+   ===================================================================== */
+/* floating cards: the top two always clear the header bar, whatever the screen height */
+@media(min-width:801px){
+  .slot0{--y:max(clamp(-300px,-34vh,-215px), calc(205px - 50vh))}
+  .slot1{--y:max(clamp(-300px,-34vh,-215px), calc(205px - 50vh))}
+}
+
+/* side breathing room: grows with the screen — 24px on phones, ~46px tablets, ~86px laptops, up to 140px on big screens */
+:root{--edge:clamp(24px,6vw,140px)}
+
+/* campaign ads & other grids: even tiles sized for 4:5 and 1:1 creatives — the whole creative always shows, nothing is cropped */
+.pgrid:not(.tile){grid-template-columns:repeat(var(--cols,2),minmax(0,1fr));gap:var(--gap);max-width:1600px}
+.pgrid.g2{--cols:2}.pgrid.g3{--cols:3}
+.pgrid:not(.tile) .pimg{position:relative;aspect-ratio:4/5;background:var(--soft);border-radius:14px;overflow:hidden;cursor:zoom-in}
+.pgrid:not(.tile) .pimg img{width:100%;height:100%;object-fit:contain;border-radius:0;transition:transform .5s cubic-bezier(.16,1,.3,1)}
+.pgrid:not(.tile) .pimg:hover img{transform:scale(1.025)}
+.pgrid:not(.tile) .pimg figcaption{position:absolute;left:0;right:0;bottom:0;padding:10px 12px;background:linear-gradient(transparent,rgba(0,0,0,.55));color:#fff}
+@media(min-width:1500px){.pgrid.g2:not(.tile){--cols:3}}
+@media(max-width:1000px){.pgrid.g3:not(.tile){--cols:2}}
+@media(max-width:560px){.pgrid.g2:not(.tile){--cols:1}.pgrid.g3:not(.tile){--cols:2}}
+
+/* picture viewer: one picture at a time, always fitted to the screen — no scrolling to see the whole creative.
+   Tap the picture to see it at full width (for long pages), tap again to fit. ← → keys, swipe, or the arrows. */
+.lightbox{background:rgba(14,13,12,.96)}
+.lightbox-body{position:relative;flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:0 clamp(8px,6vw,96px) 18px}
+.lb-stage{margin:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.lb-stage img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;margin:0;border-radius:6px;object-fit:contain;cursor:zoom-in;user-select:none;-webkit-user-drag:none;animation:lbIn .35s cubic-bezier(.16,1,.3,1)}
+.lb-stage.is-full{overflow-y:auto;align-items:flex-start}
+.lb-stage.is-full img{max-height:none;width:min(100%,1600px);cursor:zoom-out}
+@keyframes lbIn{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:none}}
+.lb-arrow{position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:48px;height:48px;border-radius:50%;border:1px solid rgba(250,246,238,.3);background:rgba(20,18,17,.55);color:#faf6ee;font-size:22px;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:background .2s ease}
+.lb-arrow:hover{background:var(--accent);border-color:var(--accent)}
+.lb-prev{left:clamp(6px,2vw,28px)}.lb-next{right:clamp(6px,2vw,28px)}
+.lb-arrow[hidden]{display:none}
+@media(max-width:800px){.lb-arrow{width:40px;height:40px;font-size:18px;top:auto;bottom:22px;transform:none}.lightbox-body{padding:0 8px 76px}}
+
+/* ---- speed ---- */
+/* the floating cards bob with a transform instead of moving their margin (no page re-layout every frame) */
+@keyframes cardFloat{0%,100%{translate:0 0}50%{translate:0 -9px}}
+/* the full-screen page needs no blur behind it (blur over the whole screen is expensive) */
+.modal{backdrop-filter:none;-webkit-backdrop-filter:none}
+/* anything animating that is off screen stops until you scroll back to it */
+.is-paused,.is-paused *{animation-play-state:paused!important}
+.logo-track,.name-track,.gallery-row{will-change:transform}
+.gallery-frame{contain:layout paint}

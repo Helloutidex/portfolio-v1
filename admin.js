@@ -133,7 +133,7 @@ try {
       { name:'Shop Soma', logo:'' },
       { name:'Independent Collaborations', logo:'' },
     ]},
-    proof: { label: 'Social proof', heading: '', monoLogos: true, stats: [
+    proof: { label: 'Social proof', heading: '', stats: [
       { value: '80+', label: 'Satisfied Clients.' },
       { value: '120+', label: 'Completed Projects.' },
       { value: '5yrs+', label: 'Design Experience.' },
@@ -189,12 +189,22 @@ try {
         const i = new Image(); const t = setTimeout(() => rej(new Error('timeout')), 4000);
         i.onload = () => { clearTimeout(t); res(i); }; i.onerror = () => { clearTimeout(t); rej(new Error('bad image')); }; i.src = url;
       });
-      if (img.width <= maxW) return url;
-      const h = Math.round(img.height * (maxW / img.width));
-      if (maxW * h > 16000000) return url;
-      const c = document.createElement('canvas'); c.width = maxW; c.height = h;
-      c.getContext('2d').drawImage(img, 0, 0, maxW, h);
-      const out = c.toDataURL(file.type, 0.88);
+      // speed: a big PNG with no see-through parts (a photo / flyer) is saved as a JPEG — looks the same, a fraction of the size.
+      // Logos and anything with transparency stay PNG.
+      let type = file.type;
+      if (type === 'image/png' && file.size > 300000) {
+        const t = document.createElement('canvas'); t.width = 64; t.height = 64; const tg = t.getContext('2d');
+        tg.drawImage(img, 0, 0, 64, 64); const px = tg.getImageData(0, 0, 64, 64).data; let opaque = true;
+        for (let i = 3; i < px.length; i += 4) if (px[i] < 255) { opaque = false; break; }
+        if (opaque) type = 'image/jpeg';
+      }
+      if (img.width <= maxW && type === file.type) return url;
+      const w = Math.min(maxW, img.width), h = Math.round(img.height * (w / img.width));
+      if (w * h > 16000000) return url;
+      const c = document.createElement('canvas'); c.width = w; c.height = h;
+      const g = c.getContext('2d'); if (type === 'image/jpeg') { g.fillStyle = '#fff'; g.fillRect(0, 0, w, h); }
+      g.drawImage(img, 0, 0, w, h);
+      const out = c.toDataURL(type, 0.88);
       return out.startsWith('data:image') ? out : url;
     } catch (e) { return url; }
   }
@@ -315,7 +325,7 @@ try {
   contentPanel.addEventListener('change', async e => {
     const t = e.target;
     if (t.dataset.fileText) renderFileFields();
-    if ((t.id === 'logofolioBulk' || t.id === 'collabBulk') && t.files.length) {
+    if ((t.id === 'logofolioBulk') && t.files.length) {
       const files = Array.from(t.files).sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
       const target = t.id === 'logofolioBulk' ? content.logofolio.items : content.social.items;
       for (const f of files) target.push({ name: f.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' '), logo: await readImageResized(f, 600) });

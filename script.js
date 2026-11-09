@@ -9,7 +9,7 @@
   // changes" in this same browser still wins, so you can preview before publishing.
   const fetchJSON = async url => {
     try {
-      const c = new AbortController(); const t = setTimeout(() => c.abort(), 4000);
+      const c = new AbortController(); const t = setTimeout(() => c.abort(), 2500);
       const r = await fetch(url, { cache: 'no-cache', signal: c.signal }); clearTimeout(t);
       return r.ok ? await r.json() : null;
     } catch (e) { return null; }
@@ -52,7 +52,7 @@
       { name:'Shop Soma', logo:'' },
       { name:'Independent Collaborations', logo:'' },
     ]},
-    proof: { label: 'Social proof', heading: '', monoLogos: true, stats: [
+    proof: { label: 'Social proof', heading: '', stats: [
       { value: '80+', label: 'Satisfied Clients.' },
       { value: '120+', label: 'Completed Projects.' },
       { value: '5yrs+', label: 'Design Experience.' },
@@ -144,13 +144,11 @@
       let repeats = Math.max(2, Math.ceil((window.innerWidth * 2.2) / Math.max(1, c.social.items.length * 200)));
       if (repeats % 2 !== 0) repeats++;
       logoTrack.innerHTML = oneSet.repeat(repeats);
-      const pl = $('#proofLogos'); if (pl) pl.hidden = !c.social.items.length;
     }
     // social proof: the numbers band (logos above come from "Client logos")
     const pr = c.proof || {};
     set('proofLabel', pr.label || '');
     const ph = $('#proofHeading'); if (ph) { ph.textContent = pr.heading || ''; ph.hidden = !pr.heading; }
-    const proofEl = $('#proof'); if (proofEl) proofEl.classList.toggle('mono-logos', pr.monoLogos !== false);
     const ps = $('#proofStats');
     if (ps) ps.innerHTML = (pr.stats || []).filter(s => s.value || s.label).map(s => `<div class="stat"><strong data-count="${esc(s.value)}">${esc(s.value)}</strong><i aria-hidden="true"></i><span>${esc(s.label)}</span></div>`).join('');
     // logofolio: the logos you've designed, icons only
@@ -171,7 +169,7 @@
     const nt = $('#nameTrack');
     if (nt) { nt.innerHTML = [sg.name, sg.name].map(n => `<span>${esc(n)}</span>`).join(''); nt.style.fontFamily = `'${sg.font || 'UnifrakturCook'}', cursive`; }
     loadFont(sg.font);
-    $$('.links-section, .signature').forEach(el => {
+    $$('.links-section, .signature, .proof').forEach(el => {
       el.style.setProperty('--band-bg', sg.bg || '#141211'); el.style.setProperty('--band-text', sg.textColor || '#faf6ee'); el.style.setProperty('--band-name', sg.nameColor || '#E8223E');
     });
     // contact: homepage call-to-action + the contact page
@@ -239,17 +237,24 @@
   applyTheme(migrateTheme(draftOf(THEME_STORAGE_KEY) || REMOTE.theme));
   requestAnimationFrame(() => document.documentElement.classList.remove('is-loading'));
 
+  // speed: marquees, the moving gallery, the lens rings and the signature only animate while on screen
+  if ('IntersectionObserver' in window) {
+    const pauser = new IntersectionObserver(es => es.forEach(e => e.target.classList.toggle('is-paused', !e.isIntersecting)), { rootMargin: '120px 0px' });
+    $$('.hero, .social-proof, .work, .signature, .links-section').forEach(el => pauser.observe(el));
+  }
+
   // numbers in the social proof band count up once when they scroll into view ("80+" counts 0 → 80, keeps the "+")
   (function countUp(){
     const els = $$('[data-count]'); if (!els.length) return;
     const run = el => {
       const m = String(el.dataset.count).match(/^(\D*)(\d+)(.*)$/); if (!m) return;
-      const end = Number(m[2]), t0 = performance.now(), dur = 1400;
+      const end = Number(m[2]), t0 = performance.now(), dur = 1800;
       const step = now => { const p = Math.min(1, (now - t0) / dur), v = Math.round(end * (1 - Math.pow(1 - p, 3))); el.textContent = m[1] + v + m[3]; if (p < 1) requestAnimationFrame(step); };
       requestAnimationFrame(step);
     };
     if (!('IntersectionObserver' in window) || (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches)) return;
-    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { run(e.target); io.unobserve(e.target); } }), { threshold: .6 });
+    els.forEach(el => { const m = String(el.dataset.count).match(/^(\D*)(\d+)(.*)$/); if (m) el.textContent = m[1] + '0' + m[3]; });
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { run(e.target); io.unobserve(e.target); } }), { threshold: .5 });
     els.forEach(el => io.observe(el));
   })();
 
@@ -417,7 +422,10 @@
     const imgW = (src, w, q = 85) => (src && /^https?:\/\/images\.unsplash\.com/.test(src)) ? `${src}${src.includes('?') ? '&' : '?'}auto=format&fit=crop&w=${w}&q=${q}` : (src || BLANK);
     const firstImage = list => { const b = (list || []).find(x => x.type === 'image' && x.src); return b ? b.src : ''; };
     const caseCover = s => s.cover || firstImage(s.blocks);
-    const catCover = c => c.image || (c.layout === 'cases' ? ((c.items || []).map(caseCover).find(Boolean) || '') : firstImage(c.items));
+    // a section's own first picture beats a leftover stock placeholder photo as its card / gallery cover
+    const isStock = u => /images\.unsplash\.com/.test(u || '');
+    const ownCover = c => c.layout === 'cases' ? ((c.items || []).map(caseCover).find(Boolean) || '') : firstImage(c.items);
+    const catCover = c => (c.image && !isStock(c.image)) ? c.image : (ownCover(c) || c.image || '');
     const flag = c => c.locked ? '🔒 Locked' : 'Open ↗';
     // empty sections (nothing uploaded yet) show their title card, not a leftover stock photo
     const isEmpty = c => !c.locked && Array.isArray(c.items) && !c.items.length;
@@ -453,7 +461,7 @@
     const oneSet = Array.from({ length: Math.max(1, Math.ceil(6 / CATEGORIES.length)) }, () => CATEGORIES).flat();
     const frame = c => `
       <article class="gallery-frame${isEmpty(c) ? ' is-empty' : ''}" data-id="${esc(c.id)}">
-        <img src="${esc(imgW(coverOf(c), 700, 85))}" alt="${esc(c.title)}" loading="lazy">
+        <img src="${esc(imgW(coverOf(c), 700, 85))}" alt="${esc(c.title)}" loading="lazy" decoding="async">
         <div class="gf-cap"><span>${pad2(CATEGORIES.indexOf(c) + 1)}${c.locked ? ' · 🔒' : ''}</span><strong>${esc(c.title)}</strong></div>
       </article>`;
     galleryEl.innerHTML =
@@ -514,8 +522,6 @@
     function setZoom(next){
       const prev = zoom; zoom = Math.max(0, Math.min(5, next));
       const eased = zoom / 5;
-      lensImg.style.transform = 'scale(' + (1.08 + eased * 1.45) + ')';
-      lensImg.style.filter = `saturate(${.8 + eased * .2}) contrast(${1.04 + eased * .1})`;
       zoomValue.textContent = pad2(Math.min(5, Math.max(1, Math.floor(zoom) + 1)));
       hero.classList.toggle('is-zooming', zoom > .08);
       cards.forEach((card, i) => card.classList.toggle('show', zoom >= (i + 1) * .82));
@@ -711,18 +717,38 @@
       else if (view) openCase(view.ci, i);
     });
 
-    /* ---------- click a picture: pop-up viewer that scrolls vertically; collapse any time ---------- */
+    /* ---------- click a picture: viewer shows ONE picture fitted to the screen ----------
+       ← → keys, swipe or the arrows move between pictures; tap the picture for full width (long pages). */
     const lbBody = $('#lbBody');
+    let lbIndex = 0;
+    lbBody.innerHTML = `<button class="lb-arrow lb-prev" type="button" aria-label="Previous picture">←</button><figure class="lb-stage" id="lbStage"></figure><button class="lb-arrow lb-next" type="button" aria-label="Next picture">→</button>`;
+    const lbStage = $('#lbStage'), lbPrev = $('.lb-prev'), lbNext = $('.lb-next');
+    function showLb(i){
+      const n = currentImages.length; if (!n) return;
+      lbIndex = (i + n) % n;
+      lbStage.classList.remove('is-full'); lbStage.scrollTop = 0;
+      lbStage.innerHTML = `<img src="${esc(currentImages[lbIndex])}" alt="" decoding="async">`;
+      $('#lbCount').textContent = `${caseTitle.textContent}${n > 1 ? `  ·  ${lbIndex + 1} / ${n}` : ''}`;
+      lbPrev.hidden = lbNext.hidden = n < 2;
+      [lbIndex + 1, lbIndex - 1].forEach(k => { const im = new Image(); im.src = currentImages[(k + n) % n]; });   // next ones ready instantly
+    }
     function openLightbox(start){
       if (!currentImages.length) return;
-      lbBody.innerHTML = currentImages.map((s, i) => `<img src="${esc(s)}" alt="">`).join('');
-      $('#lbCount').textContent = caseTitle.textContent;
       lightbox.classList.add('open'); lightbox.setAttribute('aria-hidden', 'false'); updateScroll();
-      const t = lbBody.children[start]; if (t && t.scrollIntoView) t.scrollIntoView({ block: 'start' });
+      showLb(start || 0);
     }
-    function closeLightbox(){ lightbox.classList.remove('open'); lightbox.setAttribute('aria-hidden', 'true'); lbBody.innerHTML = ''; updateScroll(); }
+    function closeLightbox(){ lightbox.classList.remove('open'); lightbox.setAttribute('aria-hidden', 'true'); lbStage.innerHTML = ''; updateScroll(); }
     $('#lbClose').addEventListener('click', closeLightbox);
+    lbPrev.addEventListener('click', e => { e.stopPropagation(); showLb(lbIndex - 1); });
+    lbNext.addEventListener('click', e => { e.stopPropagation(); showLb(lbIndex + 1); });
+    lbStage.addEventListener('click', e => { if (e.target.tagName === 'IMG') lbStage.classList.toggle('is-full'); else closeLightbox(); });
     lightbox.addEventListener('click', e => { if (e.target === lightbox || e.target === lbBody) closeLightbox(); });
+    let swipeX = null, swipeY = null;
+    lbBody.addEventListener('touchstart', e => { swipeX = e.touches[0].clientX; swipeY = e.touches[0].clientY; }, { passive: true });
+    lbBody.addEventListener('touchend', e => {
+      if (swipeX == null) return; const dx = e.changedTouches[0].clientX - swipeX, dy = e.changedTouches[0].clientY - swipeY; swipeX = null;
+      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.4) showLb(lbIndex + (dx < 0 ? 1 : -1));
+    }, { passive: true });
 
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') {
@@ -730,6 +756,10 @@
         else if (lightbox.classList.contains('open')) closeLightbox();
         else if (modal.classList.contains('open')) closeModal();
         else if (revealed) setRevealed(false);
+      }
+      if (lightbox.classList.contains('open')) {
+        if (e.key === 'ArrowRight') showLb(lbIndex + 1);
+        if (e.key === 'ArrowLeft') showLb(lbIndex - 1);
       }
       if (modal.classList.contains('open') && !lightbox.classList.contains('open') && !pwDialog.classList.contains('open')) {
         if (e.key === 'ArrowRight') moveView(1);

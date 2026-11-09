@@ -43,13 +43,16 @@ script.js migrates it to sections on load.
 ## Design system
 - Palette: black `#141211`, red `#E8223E`, white paper, grey body copy, soft grey tiles. Dark bands:
   social proof (#111214), links/signature (black), red contact block.
-- Clean look (v5, 2026-11-09): no rings/crosshair/side text around the lens, no divider rules between
-  sections, soft cards instead of boxed borders. One spacing scale: `--section-y` in style.css.
+- DO NOT CHANGE without the owner's OK: the lens (rings, dashed ring + red dot, plus-sign crosshair,
+  "Focus 01/05", notes under it), the floating cards' look, the portrait's black offset stroke, and the
+  collaborators logo strip (real logos in grayscale, own colour on hover — never flattened to one colour).
+  Only change what the owner explicitly asks for.
+- Side padding `--edge: clamp(24px,6vw,140px)`; section rhythm `--section-y`.
 - Big tight sans headlines with red italic serif accent words ("what's", "idea").
 - Small uppercase mono labels. Dark mode toggle stored as localStorage `ferricool-mode`.
 
 ## Homepage order
-Hero (lens) → About → Social proof (numbers + client logos marquee) → Work gallery → Logofolio (hidden
+Hero (lens) → Social proof (numbers band) → About → Collaborators logo strip → Work gallery → Logofolio (hidden
 until logos are added) → Testimonials → Experience → Links + signature → Contact block → Footer.
 
 ## Admin fields added in v5
@@ -95,7 +98,15 @@ size, 2-col, 3-col, stack. Images are 1920px wide. Sections and cases can be pas
   fallbacks in the HTML/JS to samuel.s.adedeji@gmail.com; fixed the doubled "· ·" at the end of the badge
   ring text. Files: site-data.json, index.html, contact.html, script.js, admin.js. site-data.json
   updatedAt was bumped so the admin editor picks up these edits.
+- 2026-11-09: CSS/JS links now carry ?v=<version> to beat browser/GitHub caching. Bump it on every style.css / script.js / admin.* change.
 - 2026-11-09 (v5 polish): clean/modern pass, social proof band, logofolio, case-study details,
   colour-flash fix, masonry Campaign grid, editorial page styling, "coming soon" cards for empty
   sections, phone About order fix. Shrunk 3 oversized client logo PNGs in assets/uploads (same names).
   Files: index.html, contact.html, style.css, script.js, admin.html, admin.js, admin.css, 3 logos.
+- 2026-11-09 (v6, owner's review): restored lens rings/dots/plus sign, portrait stroke, cards and the
+  original collaborators strip; lens picture no longer zooms on tap; top floating cards stay below the
+  header; social proof (numbers only) moved above About; wider responsive side padding; Campaign ads =
+  even 4:5 tiles (2 per row, 3 on very wide screens, 1 on phones); picture viewer shows one picture
+  fitted to the screen (arrows / swipe / keys, tap for full width); speed: fonts via <link>, off-screen
+  animations pause, no full-screen blur, lens image 2.2MB→0.95MB, two work PNGs converted to JPG
+  (site-data.json now points to the .jpg), admin saves big opaque PNG uploads as JPG.
