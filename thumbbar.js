@@ -12,7 +12,7 @@
   let lastY = scrollY, shown = false, enabled = true;
   function fill() {
     const c = window.PORTFOLIO_CONTENT || {}, nav = c.nav || {};
-    enabled = nav.thumbBar !== false;
+    enabled = nav.thumbBar !== false; document.documentElement.classList.toggle('has-tb', enabled);
     const hire = document.getElementById('heroHire'), cta = nav.ctaHref || 'contact.html';
     bar.innerHTML =
       `<a class="tb-btn" href="#work">${grid}<span>Work</span></a>` +

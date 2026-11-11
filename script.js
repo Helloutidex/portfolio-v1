@@ -39,7 +39,7 @@
   ============================================================ */
   const CONTENT_STORAGE_KEY = 'ferricool-portfolio-content';
   const DEFAULT_CONTENT = {
-    nav: { logo: 'ADEDEJI SAMUEL / DESIGN', logoImage: '', logoStyle: 'mark', favicon: '', thumbBar: true, links: [{ label: 'About', href: '#about' }, { label: 'Work', href: '#work' }], ctaLabel: "Let's talk", ctaHref: 'contact.html' },
+    nav: { logo: 'SAMUEL ADEDEJI / DESIGN', logoImage: '', logoStyle: 'center', favicon: '', thumbBar: true, links: [{ label: 'About', href: '#about' }, { label: 'Work', href: '#work' }], ctaLabel: "Let's talk", ctaHref: 'contact.html' },
     hero: {
       eyebrow: 'Independent designer · Lagos, Nigeria',
       titlePre: 'Designing ', titleEm: "what's", titlePost: ' next.',
@@ -171,7 +171,11 @@
       else if (c.nav.logoStyle === 'text') { navLogo.textContent = c.nav.logo; navLogo.classList.remove('has-img', 'has-mark'); }
       else {   // built-in SA. mark (letters follow the theme, the dot stays red) + optional name
         navLogo.classList.add('has-mark'); navLogo.classList.remove('has-img');
-        navLogo.innerHTML = `<svg class="sb-mark" viewBox="0 0 422 144" role="img" aria-label="${esc(c.nav.logo || 'SA')}"><use href="assets/brand.svg#sa-letters"/><use class="mark-dot" href="assets/brand.svg#sa-dot"/></svg>${c.nav.logoStyle !== 'mark-label' ? '' : `<span class="sb-name">${esc(c.nav.logo || '')}</span>`}`;
+        const ls = ['mark-only', 'mark-label'].includes(c.nav.logoStyle) ? c.nav.logoStyle : 'center';   // 'center' = name on the left, SA. mark in the middle (older values map here)
+        const nm = String(c.nav.logo || '').replace(/^ADEDEJI SAMUEL\b/i, 'SAMUEL ADEDEJI');
+        const mark = `<svg class="sb-mark" viewBox="0 0 422 144" role="img" aria-label="${esc(nm || 'SA')}"><use href="assets/brand.svg#sa-letters"/><use class="mark-dot" href="assets/brand.svg#sa-dot"/></svg>`;
+        navLogo.classList.toggle('is-center', ls === 'center');
+        navLogo.innerHTML = ls === 'center' ? `<span class="sb-name">${esc(nm).replace(/\s*\/\s*/, '<i> / </i>')}</span>${mark}` : mark + (ls === 'mark-label' ? `<span class="sb-name">${esc(nm)}</span>` : '');
       }
     }
     renderNav(c);

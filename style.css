@@ -1764,3 +1764,25 @@ body:not(.dark) .contact-cta h2 .hd-dot{color:var(--accent)}
   html.tb-on .floating-badge{transform:translateY(calc(-64px - env(safe-area-inset-bottom,0px)));transition:transform .45s cubic-bezier(.16,1,.3,1)}
   .floating-badge{transition:transform .45s cubic-bezier(.16,1,.3,1)}
 }
+/* social proof on phones: same layout as desktop — three numbers side by side, two-line labels */
+@media(max-width:560px){
+  .proof-stats{grid-auto-flow:column;grid-auto-columns:1fr;grid-template-columns:none;gap:8px;margin-top:28px}
+  .stat strong{font-size:calc(var(--scale,1)*9.2vw);letter-spacing:-.05em}
+  .stat i{width:34px;margin:12px auto}
+  .stat span{font-size:13px;max-width:11ch;line-height:1.25}
+}
+/* header: name on the left, a smaller SA. mark in the middle */
+.sb-logo.is-center .sb-name{padding-left:0;border-left:0;font:700 11px/1.15 'DM Mono',monospace;letter-spacing:.06em;display:block}
+.sb-logo.is-center .sb-name i{font-style:normal;opacity:.55}
+.sb-logo.is-center .sb-mark{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);height:clamp(16px,1.45vw,20px)}
+@media(max-width:560px){
+  .sb-logo.is-center .sb-name{display:block;font-size:10px;line-height:1.25;max-width:16ch;white-space:normal}
+  .sb-logo.is-center .sb-name i{display:block;font-size:0;line-height:0}
+  .sb-logo.is-center .sb-mark{height:15px}
+}
+/* phones: smaller floating badge */
+@media(max-width:760px){.floating-badge,.floating-badge.is-brand{width:58px;height:58px}}
+/* phones: the thumb bar never covers the footer */
+@media(max-width:760px){html.has-tb .site-foot{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}}
+/* tablets: room for the centred mark — the About / Work text links tuck away (the hero buttons and thumb bar cover them) */
+@media(min-width:801px) and (max-width:1040px){.sitebar:has(.sb-logo.is-center) .sb-links{display:none}}
