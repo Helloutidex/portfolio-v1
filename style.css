@@ -1786,3 +1786,32 @@ body:not(.dark) .contact-cta h2 .hd-dot{color:var(--accent)}
 @media(max-width:760px){html.has-tb .site-foot{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}}
 /* tablets: room for the centred mark — the About / Work text links tuck away (the hero buttons and thumb bar cover them) */
 @media(min-width:801px) and (max-width:1040px){.sitebar:has(.sb-logo.is-center) .sb-links{display:none}}
+/* ===== Pop Parade gallery ===== */
+.auto-gallery.pp-stage{height:clamp(420px,46vw,640px);padding:0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent);mask-image:linear-gradient(90deg,transparent,#000 7%,#000 93%,transparent)}
+.pp-layer,.pp-row{position:absolute;inset:0}
+.pp-row{will-change:transform}
+.pp-card{position:absolute;padding:0;border:0;margin:0;border-radius:clamp(14px,1.6vw,22px);overflow:hidden;cursor:pointer;background:color-mix(in srgb,var(--ink) 10%,var(--paper));box-shadow:0 22px 50px -18px rgba(0,0,0,.55);will-change:transform;transform-origin:50% 50%}
+.pp-card>img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .6s ease}
+.pp-inner{position:absolute;inset:0;overflow:hidden;border-radius:22%;transform:scale(0);box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.pp-inner img{width:100%;height:100%;object-fit:cover;display:block}
+.pp-cap{position:absolute;left:12px;right:12px;bottom:10px;color:#fff;font:700 clamp(12px,1.1vw,15px) Manrope,Arial,sans-serif;letter-spacing:-.02em;text-align:left;text-shadow:0 2px 12px rgba(0,0,0,.6);opacity:0;transform:translateY(6px);transition:opacity .3s ease,transform .3s ease;pointer-events:none}
+.pp-card:hover .pp-cap,.pp-card:focus-visible .pp-cap{opacity:1;transform:none}
+.pp-card:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.pp-zoom .pp-cap{display:none}
+.pp-card.is-ghost{background:color-mix(in srgb,var(--ink) 34%,var(--paper));box-shadow:none;pointer-events:none;transition:background .6s ease}
+.pp-card.is-ghost>img{opacity:0}
+.pp-card.is-ghost .pp-cap{display:none}
+.pp-ghost{position:absolute;border-radius:clamp(14px,1.6vw,22px);background:color-mix(in srgb,var(--ink) calc(30% + var(--gl,0%)),var(--paper));pointer-events:none}
+@media(max-width:700px){.auto-gallery.pp-stage{height:clamp(360px,100vw,460px)}.pp-cap{opacity:1;transform:none}}
+/* Pop Parade v2: endless, draggable strip */
+.auto-gallery.pp-stage{touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none;outline:none}
+.auto-gallery.pp-stage.is-dragging{cursor:grabbing}
+.auto-gallery.pp-stage:focus-visible{box-shadow:inset 0 0 0 2px var(--accent)}
+.pp-card,.pp-ghost{left:0;top:0;transform-origin:50% 50%}
+.pp-card{background:color-mix(in srgb,var(--ink) calc(12% + 22% * var(--g,0)),var(--paper))}
+.pp-card>img{opacity:calc(1 - var(--g,0));transition:none}
+.pp-card .pp-inner{opacity:calc(1 - var(--g,0))}
+.pp-card.is-ghost{pointer-events:none}
+.pp-ghost{background:color-mix(in srgb,var(--ink) 28%,var(--paper))}
+.pp-stage.is-dragging .pp-card{pointer-events:none}
+.pp-card img{pointer-events:none;-webkit-user-drag:none}

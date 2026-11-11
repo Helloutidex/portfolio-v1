@@ -74,7 +74,7 @@
       { value: '5yrs+', label: 'Design Experience.' },
     ]},
     logofolio: { label: 'Logofolio', heading: 'Marks & identities I have designed.', tiles: 'light', items: [] },
-    work: { label: 'Gallery / automatic', description: 'Selected work, continuously moving. Tap any frame to explore.', noteRight: 'Tap any frame to explore', thanks: 'Thank you for viewing.', thanksNote: 'Have a project in mind?', thanksCta: "Let's talk ↗" },
+    work: { galleryStyle: 'parade', gallerySpeed: 1, label: 'Gallery / automatic', description: 'Selected work, continuously moving. Tap any frame to explore.', noteRight: 'Drag to explore · tap a picture to open it', thanks: 'Thank you for viewing.', thanksNote: 'Have a project in mind?', thanksCta: "Let's talk ↗" },
     testimonials: { label: 'Praise', description: 'What collaborators say about working together.', items: [
       { quote: "Sam translated a vague brief into a brand system that felt inevitable — like it always should have looked that way.", name: 'Client name', role: 'Urban Food Fest' },
       { quote: "Fast, sharp, and genuinely collaborative. The kind of designer who makes the whole project easier.", name: 'Client name', role: 'Shop Soma' },
@@ -762,7 +762,14 @@
       `<div class="gallery-row row-a">${[...oneSet, ...oneSet].map(frame).join('')}</div>` +
       `<div class="gallery-row row-b">${[...oneSet.slice().reverse(), ...oneSet.slice().reverse()].map(frame).join('')}</div>` +
       `<div class="gallery-cursor" id="galleryCursor" aria-hidden="true"><span>View</span></div>`;
-    galleryEl.addEventListener('click', e => { const f = e.target.closest('.gallery-frame'); if (f) openCategory(f.dataset.id); });
+    galleryEl.addEventListener('click', e => { const f = e.target.closest('.gallery-frame, .pp-card'); if (f) openCategory(f.dataset.id); });
+    // Pop Parade (default) — the gallery as a looping motion piece; 'marquee' keeps the two moving rows
+    if ((C.work || {}).galleryStyle !== 'marquee' && window.PopParade) {
+      const withPics = CATEGORIES.filter(x => !isEmpty(x)), list = withPics.length >= 3 ? withPics : CATEGORIES;
+      const cur = galleryEl.querySelector('#galleryCursor');
+      window.PopParade(galleryEl, list.map(x => ({ id: x.id, title: x.title, src: imgW(coverOf(x), 700, 85) })), { rate: (v => v > 3 ? ({ 16: .7, 28: 1, 42: 1.25, 60: 1.5 }[v] || 1) : (v || 1))(Number((C.work || {}).gallerySpeed)) });
+      if (cur) galleryEl.appendChild(cur);
+    }
     const galleryCursor = $('#galleryCursor');
     const supportsHover = typeof window.matchMedia === 'function' && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
     if (galleryCursor && supportsHover) {
