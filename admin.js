@@ -158,7 +158,7 @@ try {
       { value: '5yrs+', label: 'Design Experience.' },
     ]},
     logofolio: { label: 'Logofolio', heading: 'Marks & identities I have designed.', tiles: 'light', items: [] },
-    work: { galleryStyle: 'parade', gallerySpeed: 1, label: 'Gallery / automatic', description: 'Selected work, continuously moving. Tap any frame to explore.', noteRight: 'Drag to explore · tap a picture to open it', thanks: 'Thank you for viewing.', thanksNote: 'Have a project in mind?', thanksCta: "Let's talk ↗" },
+    work: { galleryStyle: 'globe', globeHint: 'Drag to spin · double-tap to scatter', gallerySpeed: 1, label: 'Gallery / automatic', description: 'Selected work, continuously moving. Tap any frame to explore.', noteRight: 'Drag to explore · tap a picture to open it', thanks: 'Thank you for viewing.', thanksNote: 'Have a project in mind?', thanksCta: "Let's talk ↗" },
     testimonials: { label: 'Praise', description: 'What collaborators say about working together.', items: [
       { quote: "Sam translated a vague brief into a brand system that felt inevitable — like it always should have looked that way.", name: 'Client name', role: 'Urban Food Fest' },
       { quote: "Fast, sharp, and genuinely collaborative. The kind of designer who makes the whole project easier.", name: 'Client name', role: 'Shop Soma' },

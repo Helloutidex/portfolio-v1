@@ -6,8 +6,8 @@
 <link rel="icon" href="assets/favicon.svg?v=2" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,500;1,500&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=UnifrakturCook:wght@700&display=swap">
-<link rel="stylesheet" href="style.css?v=20261111n">
-<link rel="stylesheet" href="admin.css?v=20261111n">
+<link rel="stylesheet" href="style.css?v=20261111q">
+<link rel="stylesheet" href="admin.css?v=20261111q">
 </head>
 <body class="admin-body">
 <section class="lock-screen" id="lockScreen">
@@ -182,7 +182,8 @@
         <label>Label<input data-path="work.label"></label>
         <label>Description<input data-path="work.description"></label>
       </div>
-      <label>Gallery animation<select data-path="work.galleryStyle"><option value="parade">Pop parade — like the reference, endless and draggable</option><option value="marquee">Two moving rows of tilted cards</option></select></label>
+      <label>Gallery animation<select data-path="work.galleryStyle"><option value="globe">Orbit globe — spin it in 3D, scatter and gather (default)</option><option value="parade">Pop parade — like the reference, endless and draggable</option><option value="marquee">Two moving rows of tilted cards</option></select></label>
+      <label>Globe hint text<input data-path="work.globeHint" placeholder="Drag to spin · double-tap to scatter"></label>
       <label>Gallery speed (visitors can always drag it)<select data-path="work.gallerySpeed"><option value="0.7">Slower</option><option value="1">Calm — a little slower than the reference (default)</option><option value="1.25">Close to the reference</option><option value="1.5">Lively</option></select></label>
       <label>Note (bottom-right of the gallery)<input data-path="work.noteRight"></label>
       <p class="admin-hint" style="margin-top:14px">The end of every case study</p>
@@ -409,5 +410,5 @@
 </main>
 </div>
 
-<script src="admin.js?v=20261111n" defer></script>
+<script src="admin.js?v=20261111q" defer></script>
 </body></html>

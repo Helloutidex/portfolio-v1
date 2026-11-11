@@ -74,7 +74,7 @@
       { value: '5yrs+', label: 'Design Experience.' },
     ]},
     logofolio: { label: 'Logofolio', heading: 'Marks & identities I have designed.', tiles: 'light', items: [] },
-    work: { galleryStyle: 'parade', gallerySpeed: 1, label: 'Gallery / automatic', description: 'Selected work, continuously moving. Tap any frame to explore.', noteRight: 'Drag to explore · tap a picture to open it', thanks: 'Thank you for viewing.', thanksNote: 'Have a project in mind?', thanksCta: "Let's talk ↗" },
+    work: { galleryStyle: 'globe', globeHint: 'Drag to spin · double-tap to scatter', gallerySpeed: 1, label: 'Gallery / automatic', description: 'Selected work, continuously moving. Tap any frame to explore.', noteRight: 'Drag to explore · tap a picture to open it', thanks: 'Thank you for viewing.', thanksNote: 'Have a project in mind?', thanksCta: "Let's talk ↗" },
     testimonials: { label: 'Praise', description: 'What collaborators say about working together.', items: [
       { quote: "Sam translated a vague brief into a brand system that felt inevitable — like it always should have looked that way.", name: 'Client name', role: 'Urban Food Fest' },
       { quote: "Fast, sharp, and genuinely collaborative. The kind of designer who makes the whole project easier.", name: 'Client name', role: 'Shop Soma' },
@@ -637,6 +637,18 @@
     return makeDefaultCategories();
   }
   const CATEGORIES = loadCategories();
+  // the live site never shows the stock placeholder photos — only pictures you uploaded.
+  // (your saved content is untouched; admin still lists everything)
+  (function dropStock(){
+    const stock = u => /images\.unsplash\.com/.test(u || '');
+    const clean = list => (list || []).filter(b => !(b && b.type === 'image' && stock(b.src)));
+    CATEGORIES.forEach(c => {
+      if (stock(c.image)) c.image = '';
+      if (!Array.isArray(c.items)) return;
+      if (c.layout === 'cases' || c.layout === 'books') c.items.forEach(s => { if (stock(s.cover)) s.cover = ''; if (Array.isArray(s.blocks)) s.blocks = clean(s.blocks); });
+      else c.items = clean(c.items);
+    });
+  })();
   /* ---------- every page: header, portrait, CV, soft particles ---------- */
   const bar = $('#sitebar');
   if (bar) {
@@ -714,10 +726,10 @@
     const BLANK = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="4" height="3"><rect width="4" height="3" fill="#d9d4ca"/></svg>');
     const imgW = (src, w, q = 85) => (src && /^https?:\/\/images\.unsplash\.com/.test(src)) ? `${src}${src.includes('?') ? '&' : '?'}auto=format&fit=crop&w=${w}&q=${q}` : (src || BLANK);
     const firstImage = list => { const b = (list || []).find(x => x.type === 'image' && x.src); return b ? b.src : ''; };
-    const caseCover = s => s.cover || firstImage(s.blocks);
+    const caseCover = s => s.cover || firstImage(s.blocks) || titleCard(s.title);
     // a section's own first picture beats a leftover stock placeholder photo as its card / gallery cover
     const isStock = u => /images\.unsplash\.com/.test(u || '');
-    const ownCover = c => (c.layout === 'cases' || c.layout === 'books') ? ((c.items || []).map(caseCover).find(Boolean) || '') : firstImage(c.items);
+    const ownCover = c => (c.layout === 'cases' || c.layout === 'books') ? ((c.items || []).map(s => s.cover || firstImage(s.blocks)).find(Boolean) || '') : firstImage(c.items);
     const catCover = c => (c.image && !isStock(c.image)) ? c.image : (ownCover(c) || c.image || '');
     const flag = c => c.locked ? '🔒 Locked' : 'Open ↗';
     // empty sections (nothing uploaded yet) show their title card, not a leftover stock photo
@@ -762,9 +774,23 @@
       `<div class="gallery-row row-a">${[...oneSet, ...oneSet].map(frame).join('')}</div>` +
       `<div class="gallery-row row-b">${[...oneSet.slice().reverse(), ...oneSet.slice().reverse()].map(frame).join('')}</div>` +
       `<div class="gallery-cursor" id="galleryCursor" aria-hidden="true"><span>View</span></div>`;
-    galleryEl.addEventListener('click', e => { const f = e.target.closest('.gallery-frame, .pp-card'); if (f) openCategory(f.dataset.id); });
+    galleryEl.addEventListener('click', e => { const f = e.target.closest('.gallery-frame, .pp-card, .og-card'); if (f) openCategory(f.dataset.id); });
     // Pop Parade (default) — the gallery as a looping motion piece; 'marquee' keeps the two moving rows
-    if ((C.work || {}).galleryStyle !== 'marquee' && window.PopParade) {
+    const gStyle = (C.work || {}).galleryStyle || 'globe';
+    if (gStyle === 'globe' && window.OrbitGlobe) {
+      const withPics = CATEGORIES.filter(x => !isEmpty(x)), list = withPics.length >= 3 ? withPics : CATEGORIES;
+      const cur = galleryEl.querySelector('#galleryCursor');
+      // only your own uploaded pictures — no stock placeholders, nothing from locked sections
+      const ownPics = cat => { const out = []; const walk = (o, k) => {
+        if (Array.isArray(o)) o.forEach(v => walk(v, k));
+        else if (o && typeof o === 'object') Object.keys(o).forEach(kk => walk(o[kk], kk));
+        else if (typeof o === 'string' && /^(src|cover|image|pages|poster)$/.test(k || '') && o && !isStock(o) && !/^data:/.test(o) && !/\.(mp4|mov|webm|m4v|pdf)(\?|$)/i.test(o) && !out.includes(o)) out.push(o);
+      }; walk(cat); return out; };
+      let pics = CATEGORIES.filter(x => !x.locked).flatMap(x => ownPics(x).map(src => ({ id: x.id, title: x.title, src })));
+      if (!pics.length) pics = list.filter(x => !x.locked).map(x => ({ id: x.id, title: x.title, src: titleCard(x.title) }));   // nothing uploaded yet: clean title cards
+      window.OrbitGlobe(galleryEl, pics, { hint: (C.work || {}).globeHint });
+      if (cur) galleryEl.appendChild(cur);
+    } else if (gStyle === 'parade' && window.PopParade) {
       const withPics = CATEGORIES.filter(x => !isEmpty(x)), list = withPics.length >= 3 ? withPics : CATEGORIES;
       const cur = galleryEl.querySelector('#galleryCursor');
       window.PopParade(galleryEl, list.map(x => ({ id: x.id, title: x.title, src: imgW(coverOf(x), 700, 85) })), { rate: (v => v > 3 ? ({ 16: .7, 28: 1, 42: 1.25, 60: 1.5 }[v] || 1) : (v || 1))(Number((C.work || {}).gallerySpeed)) });

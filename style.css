@@ -1815,3 +1815,35 @@ body:not(.dark) .contact-cta h2 .hd-dot{color:var(--accent)}
 .pp-ghost{background:color-mix(in srgb,var(--ink) 28%,var(--paper))}
 .pp-stage.is-dragging .pp-card{pointer-events:none}
 .pp-card img{pointer-events:none;-webkit-user-drag:none}
+/* ===== Orbit Globe gallery ===== */
+.auto-gallery.og-stage{position:relative;height:clamp(460px,58vw,760px);padding:0;-webkit-mask-image:none;mask-image:none;touch-action:pan-y;cursor:grab;user-select:none;-webkit-user-select:none;outline:none;overflow:hidden}
+.auto-gallery.og-stage.is-dragging{cursor:grabbing}
+.auto-gallery.og-stage:focus-visible{box-shadow:inset 0 0 0 2px var(--accent)}
+.og-layer{position:absolute;inset:0}
+.og-card{position:absolute;left:0;top:0;padding:0;border:0;margin:0;border-radius:clamp(6px,.7vw,10px);overflow:hidden;cursor:pointer;background:color-mix(in srgb,var(--ink) 12%,var(--paper));transform-origin:50% 50%;will-change:transform;box-shadow:0 14px 34px -14px rgba(0,0,0,.55);filter:brightness(calc(.45 + .55 * var(--d,1)))}
+.og-card img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;-webkit-user-drag:none}
+.og-card.is-back{pointer-events:none}
+.og-cap{position:absolute;left:8px;right:8px;bottom:7px;color:#fff;font:700 12px/1.15 Manrope,Arial,sans-serif;letter-spacing:-.01em;text-align:left;text-shadow:0 2px 10px rgba(0,0,0,.7);opacity:0;transition:opacity .25s ease;pointer-events:none}
+.og-card:hover .og-cap,.og-card:focus-visible .og-cap{opacity:1}
+.og-card:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.og-stage.is-dragging .og-card{pointer-events:none}
+body:not(.dark) .og-card{filter:brightness(calc(.62 + .38 * var(--d,1))) saturate(calc(.6 + .4 * var(--d,1)))}
+.og-scatter{position:absolute;right:clamp(14px,2vw,28px);bottom:clamp(14px,2vw,26px);z-index:999;display:inline-flex;align-items:center;gap:8px;padding:11px 18px 11px 14px;border-radius:999px;border:1px solid color-mix(in srgb,var(--ink) 18%,transparent);background:color-mix(in srgb,var(--paper) 80%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);color:var(--ink);font:700 13px Manrope,Arial,sans-serif;cursor:pointer;transition:background .25s ease,color .25s ease,transform .3s cubic-bezier(.16,1,.3,1)}
+.og-scatter svg{width:17px;height:17px;fill:var(--accent);transition:transform .5s cubic-bezier(.16,1,.3,1)}
+.og-scatter:hover{transform:translateY(-2px)}
+.og-stage.is-scattered .og-scatter{background:var(--accent);color:#fff;border-color:var(--accent)}
+.og-stage.is-scattered .og-scatter svg{fill:#fff;transform:rotate(180deg) scale(.85)}
+.og-hint{position:absolute;left:50%;bottom:clamp(18px,2.4vw,30px);transform:translateX(-50%);z-index:998;font:600 11px Manrope,Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);pointer-events:none;transition:opacity .6s ease;white-space:nowrap}
+.og-hint.is-gone{opacity:0}
+@media(max-width:700px){
+  .auto-gallery.og-stage{height:clamp(420px,118vw,560px)}
+  .og-hint{bottom:auto;top:14px}
+  .og-cap{font-size:10px;opacity:1}
+  .og-card.is-back .og-cap{opacity:0}
+}
+/* globe controls sit bottom-left, clear of the floating badge */
+.og-scatter{right:auto;left:clamp(14px,2vw,28px)}
+.og-hint{left:auto;right:clamp(110px,10vw,150px);transform:none}
+@media(max-width:700px){.og-hint{left:50%;right:auto;transform:translateX(-50%)}}
+/* globe: let the work speak — no labels over the pictures on phones (tap to open still works) */
+@media(max-width:700px){.og-cap{display:none}}
