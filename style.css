@@ -1847,3 +1847,7 @@ body:not(.dark) .og-card{filter:brightness(calc(.62 + .38 * var(--d,1))) saturat
 @media(max-width:700px){.og-hint{left:50%;right:auto;transform:translateX(-50%)}}
 /* globe: let the work speak — no labels over the pictures on phones (tap to open still works) */
 @media(max-width:700px){.og-cap{display:none}}
+/* badge ring follows the scroll (no constant spin) */
+.floating-badge.spin-scroll .fb-ring,.floating-badge.spin-scroll .floating-badge-ring,.floating-badge.spin-scroll .floating-badge-img{animation:none}
+.floating-badge.spin-scroll .floating-badge-ring,.floating-badge.spin-scroll .floating-badge-img{transform-origin:50% 50%}
+.floating-badge.spin-scroll .fb-ring{transform-box:view-box;transform-origin:265.5px 265.5px}
