@@ -3,7 +3,9 @@
     "nav": {
       "logo": "ADEDEJI SAMUEL / DESIGN",
       "logoImage": "",
+      "logoStyle": "mark-label",
       "favicon": "",
+      "thumbBar": true,
       "links": [
         {
           "label": "About",
@@ -29,7 +31,11 @@
       "zoomInstruction": "Tap to explore",
       "lensImage": "assets/uploads/mvybotwj-0.png",
       "ctaLabel": "View my work ↗",
-      "ctaHref": "#work"
+      "ctaHref": "#work",
+      "available": "Available for hire",
+      "hireLabel": "Hire me",
+      "whatsapp": "2348065925091",
+      "hireMessage": "Hi Samuel, I saw your portfolio and I'd like to hire you for a project."
     },
     "about": {
       "label": "About me",
@@ -43,6 +49,7 @@
       "headingPost": " and what it can become.",
       "paragraph1": "I'm a multidisciplinary designer working across brand identity, digital design, campaigns and AI / generative visuals.",
       "paragraph2": "I'm interested in clear ideas, strong visual systems and work that can live beyond a single screen.",
+      "signImage": "",
       "skills": [
         "Brand identity",
         "Art direction",
@@ -86,41 +93,12 @@
           "label": "Satisfied Clients."
         },
         {
-          "value": "120+",
+          "value": "140+",
           "label": "Completed Projects."
         },
         {
-          "value": "5yrs+",
+          "value": "6yrs+",
           "label": "Design Experience."
-        }
-      ]
-    },
-    "collaborators": {
-      "label": "Collaborators",
-      "items": [
-        {
-          "name": "Northwind Studio",
-          "logo": ""
-        },
-        {
-          "name": "Kora Labs",
-          "logo": ""
-        },
-        {
-          "name": "Lumen & Co",
-          "logo": ""
-        },
-        {
-          "name": "Atlas Creative",
-          "logo": ""
-        },
-        {
-          "name": "Orbit Media",
-          "logo": ""
-        },
-        {
-          "name": "Verde Foods",
-          "logo": ""
         }
       ]
     },
@@ -133,7 +111,10 @@
     "work": {
       "label": "utidex Gallery",
       "description": "Selected work, tap any frame to explore.",
-      "noteRight": "Tap any frame to explore"
+      "noteRight": "Tap any frame to explore",
+      "thanks": "Thank you for viewing.",
+      "thanksNote": "Have a project in mind?",
+      "thanksCta": "Let's talk ↗"
     },
     "testimonials": {
       "label": "What people are saying about Sam",
@@ -172,6 +153,83 @@
         }
       ]
     },
+    "process": {
+      "label": "My process",
+      "heading": "How an idea becomes the work.",
+      "steps": [
+        {
+          "title": "Ideate",
+          "text": "Listen, ask questions and find the real problem."
+        },
+        {
+          "title": "Think",
+          "text": "Shape the strategy before a single pixel."
+        },
+        {
+          "title": "Explore",
+          "text": "Sketch wide and test bold directions."
+        },
+        {
+          "title": "Design",
+          "text": "Craft the system and polish every detail."
+        }
+      ]
+    },
+    "resources": {
+      "label": "Resources",
+      "heading": "Books, channels and programs that shaped how I design.",
+      "items": [
+        {
+          "title": "Incubator",
+          "by": "Design programme",
+          "kind": "Program",
+          "image": "assets/resources/incubator.jpg",
+          "url": ""
+        },
+        {
+          "title": "Logo Design Love",
+          "by": "David Airey",
+          "kind": "Book",
+          "image": "assets/resources/logo-design-love.jpg",
+          "url": ""
+        },
+        {
+          "title": "Satori Graphics",
+          "by": "YouTube channel",
+          "kind": "YouTube",
+          "image": "assets/resources/satori-graphics.jpg",
+          "url": "https://www.youtube.com/@SatoriGraphics"
+        },
+        {
+          "title": "The Brand Gap",
+          "by": "Marty Neumeier",
+          "kind": "Book",
+          "image": "assets/resources/the-brand-gap.jpg",
+          "url": ""
+        },
+        {
+          "title": "The Advertising Concept Book",
+          "by": "Pete Barry",
+          "kind": "Book",
+          "image": "assets/resources/advertising-concept-book.jpg",
+          "url": ""
+        },
+        {
+          "title": "Designing Brand Identity",
+          "by": "Alina Wheeler",
+          "kind": "Book",
+          "image": "assets/resources/designing-brand-identity.jpg",
+          "url": ""
+        },
+        {
+          "title": "The Futur",
+          "by": "YouTube channel",
+          "kind": "YouTube",
+          "image": "assets/resources/the-futur.jpg",
+          "url": "https://www.youtube.com/@thefutur"
+        }
+      ]
+    },
     "links": {
       "label": "Links",
       "description": "Find the work, the process, or start a conversation.",
@@ -191,6 +249,7 @@
       ]
     },
     "badge": {
+      "style": "brand",
       "initials": "AS",
       "ringText": "Adedeji Sunday Samuel",
       "ringImage": "",
@@ -221,12 +280,94 @@
       "emailText": "samuel.s.adedeji@gmail.com ↗",
       "emailHref": "mailto:samuel.s.adedeji@gmail.com"
     },
+    "notes": {
+      "enabled": true,
+      "label": "Say hello",
+      "heading": "A few notes pinned for you.",
+      "feel": "How are you feeling today? One word.",
+      "build": "What are you building next?",
+      "spark": "Need a spark?"
+    },
+    "socials": [
+      {
+        "kind": "instagram",
+        "label": "Instagram",
+        "url": "https://www.instagram.com/helloutidex",
+        "icon": ""
+      },
+      {
+        "kind": "x",
+        "label": "X (Twitter)",
+        "url": "https://x.com/helloutidex",
+        "icon": ""
+      },
+      {
+        "kind": "linkedin",
+        "label": "LinkedIn",
+        "url": "https://www.linkedin.com/search/results/people/?keywords=Adedeji%20Samuel",
+        "icon": ""
+      },
+      {
+        "kind": "link",
+        "label": "",
+        "url": "",
+        "icon": ""
+      }
+    ],
     "footer": {
+      "copyright": "© 2026 Helloutidex.",
       "left": "© 2026 Helloutidex",
-      "right": "Designed with intention / Lagos"
+      "right": "Designed with intention / Lagos",
+      "brand": "Helloutidex",
+      "name": "SAMUEL ADEDEJI"
     },
     "effects": {
-      "particles": true
+      "particles": true,
+      "ctaPuzzle": true,
+      "intro": true,
+      "introStyle": "poster"
+    },
+    "poster": {
+      "head": "Every project is a\nconversation, this is\nwhere yours begins.",
+      "btn": "Book a Call",
+      "tag": "What are you waiting for, let's build bold brands.",
+      "sign": "Helloutidex",
+      "signImage": "",
+      "image": "assets/portrait-cutout.webp",
+      "mark": "SA",
+      "hold": 8.4,
+      "socials": [
+        {
+          "label": "Instagram",
+          "url": ""
+        },
+        {
+          "label": "LinkedIn",
+          "url": ""
+        },
+        {
+          "label": "Linktree",
+          "url": ""
+        }
+      ],
+      "headLines": [
+        "Every project is a",
+        "conversation, this is",
+        "where yours begins."
+      ]
+    },
+    "games": {
+      "enabled": true,
+      "idleMinutes": 2,
+      "button": "Play a game",
+      "offline": true,
+      "title": "Taking a break? Play a quick game.",
+      "quiz": true,
+      "fonts": true,
+      "odd": true,
+      "memory": true,
+      "sudoku": true,
+      "words": true
     }
   },
   "theme": {
@@ -234,12 +375,12 @@
     "scale": 1,
     "light": {
       "paper": "#ffffff",
-      "ink": "#747474",
+      "ink": "#141211",
       "muted": "#747474",
       "line": "#e2ddd2",
       "accent": "#e8223e",
-      "contactBg": "#ffffff",
-      "contactText": "#747474",
+      "contactBg": "#E8223E",
+      "contactText": "#ffffff",
       "tint1": "#ffffff",
       "tint2": "#ffffff"
     },
@@ -265,6 +406,7 @@
       "bg": "",
       "tight": true,
       "tile": false,
+      "brief": "",
       "items": [
         {
           "id": "case-1",
@@ -386,6 +528,7 @@
       "bg": "",
       "tight": false,
       "tile": false,
+      "brief": "",
       "items": [
         {
           "type": "image",
@@ -406,6 +549,7 @@
       "bg": "",
       "tight": false,
       "tile": false,
+      "brief": "",
       "items": [
         {
           "type": "image",
@@ -458,6 +602,7 @@
       "bg": "",
       "tight": false,
       "tile": true,
+      "brief": "",
       "items": [
         {
           "type": "image",
@@ -494,6 +639,7 @@
       "bg": "",
       "tight": true,
       "tile": false,
+      "brief": "",
       "items": [
         {
           "type": "image",
@@ -510,5 +656,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-11-10T08:43:06.359Z"
+  "updatedAt": "2026-11-11T05:34:11.315Z"
 }
