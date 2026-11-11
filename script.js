@@ -110,7 +110,7 @@
     effects: { particles: true, intro: true, introStyle: 'poster' },
     poster: { head: "Every project is a\nconversation, this is\nwhere yours begins.", btn: 'Book a Call', tag: "What are you waiting for, let's build bold brands.", sign: 'Adedeji Samuel', signImage: '', image: 'assets/portrait-cutout.webp', mark: 'SA', hold: 8.4,
       socials: [{ label: 'Instagram', url: '' }, { label: 'LinkedIn', url: '' }, { label: 'Linktree', url: '' }] },
-    games: { enabled: true, idleMinutes: 2, button: 'Play a game', offline: true, title: 'Taking a break? Play a quick game.', odd: true, memory: true, sudoku: true, words: true },
+    games: { enabled: true, idleMinutes: 2, button: 'Play a game', offline: true, title: 'Taking a break? Play a quick game.', quiz: true, fonts: true, odd: true, memory: true, sudoku: true, words: true },
   };
 
   const cloneDefaultContent = () => JSON.parse(JSON.stringify(DEFAULT_CONTENT));
@@ -291,6 +291,7 @@
     }
   }
   const C = loadContent();
+  window.PORTFOLIO_CONTENT = C;
   applyContent(C);
   // the opening animation reads these on the next visit (it runs before the site data has loaded)
   try {
@@ -376,9 +377,9 @@
   // game.js is fetched quietly once the page has settled, so the games still work if the connection drops.
   (function breakGames(){
     const g = C.games || {}; if (g.enabled === false) return;
-    const list = ['odd', 'memory', 'sudoku', 'words'].filter(k => g[k] !== false); if (!list.length) return;
+    const list = ['quiz', 'fonts', 'odd', 'memory', 'sudoku', 'words'].filter(k => g[k] !== false); if (!list.length) return;
     let ready = null;
-    const load = () => ready || (ready = new Promise((res, rej) => { if (window.PortfolioGames) return res(); const s = document.createElement('script'); s.src = 'game.js?v=1'; s.onload = res; s.onerror = () => { ready = null; rej(); }; document.head.appendChild(s); }));
+    const load = () => ready || (ready = new Promise((res, rej) => { if (window.PortfolioGames) return res(); const s = document.createElement('script'); s.src = 'game.js?v=3'; s.onload = res; s.onerror = () => { ready = null; rej(); }; document.head.appendChild(s); }));
     (window.requestIdleCallback || (f => setTimeout(f, 2500)))(() => load().catch(() => {}));
     const wait = Math.max(1, Number(g.idleMinutes) || 5) * 60 * 1000;
     let t = null;
@@ -423,6 +424,53 @@
   (function(){ const el = $('#aboutSign'); if (!el) return;
     if (!('IntersectionObserver' in window)) { el.classList.add('is-in'); return; }
     const io = new IntersectionObserver(es => { if (es[0].isIntersecting) { el.classList.add('is-in'); io.disconnect(); } }, { threshold: .6 }); io.observe(el); })();
+
+  // ---- scroll motion ----
+  // 1) as a section scrolls away it gently shrinks, rounds its corners and dims, so the next one seems to slide over it
+  // 2) testimonials are a deck: each card sticks, and the ones underneath shrink back as the next card covers them
+  // 3) big section headings reveal word by word
+  (function scrollMotion(){
+    const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) return;
+    const stackSecs = $$('#proof, .about, #process, .social-proof, .work, #logofolio, .testimonials, .experience, #resources').filter(el => !el.hidden);
+    stackSecs.forEach(el => el.classList.add('stack-sec'));
+    const deck = $$('.testimonial-card');
+    const grid = $('#testimonialGrid'); if (grid && deck.length) grid.classList.add('is-deck');
+    deck.forEach((c, i) => c.style.setProperty('--n', i));
+    $$('.section-top p, .about h2').forEach(h => {
+      if (h.dataset.split) return; h.dataset.split = '1';
+      const walk = node => [...node.childNodes].forEach(ch => {
+        if (ch.nodeType === 3) { const frag = document.createDocumentFragment(); ch.textContent.split(/(\s+)/).forEach(w => { if (!w) return; if (/^\s+$/.test(w)) frag.appendChild(document.createTextNode(w)); else { const sp = document.createElement('span'); sp.className = 'wd'; sp.textContent = w; frag.appendChild(sp); } }); ch.replaceWith(frag); }
+        else if (ch.nodeType === 1 && !ch.classList.contains('wd')) walk(ch);
+      });
+      walk(h); $$('.wd', h).forEach((w, i) => w.style.setProperty('--w', i)); h.classList.add('words');
+    });
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('words-in'); io.unobserve(e.target); } }), { threshold: .4 });
+      $$('.words').forEach(h => io.observe(h));
+    }
+    let ticking = false;
+    const update = () => {
+      ticking = false; const vh = window.innerHeight;
+      if (document.querySelector('.modal.open')) return;
+      stackSecs.forEach(el => {
+        const r = el.getBoundingClientRect();
+        // starts when the section's bottom is in the top 60% of the screen, finishes as it leaves
+        const p = Math.min(1, Math.max(0, (vh * .6 - r.bottom) / (vh * .6)));
+        el.style.setProperty('--out', p.toFixed(3));
+      });
+      if (grid && deck.length > 1) {
+        const top = parseFloat(getComputedStyle(grid).getPropertyValue('--deck-top')) || 110;
+        deck.forEach((c, i) => {
+          const next = deck[i + 1]; if (!next) { c.style.setProperty('--cover', 0); return; }
+          const d = next.getBoundingClientRect().top - (top + (i + 1) * 14), h = c.offsetHeight || 1;
+          c.style.setProperty('--cover', Math.min(1, Math.max(0, 1 - d / h)).toFixed(3));
+        });
+      }
+    };
+    const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+    window.addEventListener('scroll', onScroll, { passive: true }); window.addEventListener('resize', onScroll); update();
+  })();
 
   // testimonials: cards rise in one after another when scrolled to, and tilt toward the cursor on hover (computers only)
   (function testimonialFx(){
@@ -510,7 +558,7 @@
   function migrateCategories(list){
     return list.map((c, i) => {
       const layout = LAYOUTS.includes(c.layout) ? c.layout : 'stack';
-      const out = { id: c.id || ('cat-' + (i + 1)), title: c.title || ('Section ' + (i + 1)), layout, image: c.image || '', intro: c.intro || '', bg: c.bg || '', tight: c.tight !== false, tile: !!c.tile };
+      const out = { id: c.id || ('cat-' + (i + 1)), title: c.title || ('Section ' + (i + 1)), layout, image: c.image || '', intro: c.intro || '', bg: c.bg || '', tight: c.tight !== false, tile: !!c.tile, brief: c.brief || '' };
       let items = c.items;
       if (!Array.isArray(items)) items = (c.locked && c.enc) ? undefined : [];
       if (items) out.items = (layout === 'cases' || layout === 'books') ? items.map(migrateCase) : items;
@@ -829,11 +877,24 @@
       for (const f of $$('iframe[data-pdf]', caseSections)) { const u = f.dataset.pdf; f.src = u.startsWith('data:') ? await fileUrlFor(u) : u + '#view=FitH'; }
       for (const a of $$('a[data-pdf-link]', caseSections)) { const u = a.dataset.pdfLink; if (u.startsWith('data:')) a.href = await fileUrlFor(u); }
     }
+    // which questionnaire fits a section (admin can pick one; otherwise guessed from the section name)
+    const BRIEF_LABEL = { branding: 'brand identity', logo: 'logo', editorial: 'editorial', events: 'event branding', eventdesign: 'event design', campaign: 'campaign' };
+    function briefFor(cat){
+      if (cat.brief === 'none') return '';
+      if (cat.brief && BRIEF_LABEL[cat.brief]) return cat.brief;
+      const t = String(cat.title || '').toLowerCase();
+      return /logo/.test(t) ? 'logo' : /editor|magazine|book/.test(t) ? 'editorial' : /campaign|ad|social/.test(t) ? 'campaign' : /event/.test(t) ? (/design|flyer/.test(t) ? 'eventdesign' : 'events') : /case|brand/.test(t) ? 'branding' : '';
+    }
+    function briefCTA(cat){
+      const k = briefFor(cat); if (!k) return '';
+      return `<a class="brief-cta reveal" href="brief.html?type=${k}"><span><small>Want something like this?</small><strong>Start your ${BRIEF_LABEL[k]} questionnaire</strong></span><i aria-hidden="true">→</i></a>`;
+    }
+    // a quiet "more work" row: small thumbnails, clearly labelled, so it doesn't look like part of the project
     function moreHTML(title, list, kind, skip){
       const others = list.map((x, i) => ({ x, i })).filter(o => o.i !== skip);
       if (!others.length) return '';
-      return `<div class="pmore reveal"><h4>${esc(title)}</h4><div class="pmore-grid">${others.slice(0, 8).map(o => `
-        <button class="pmore-card" type="button" data-kind="${kind}" data-i="${o.i}"><img src="${esc(imgW(kind === 'cat' ? coverOf(o.x) : caseCover(o.x), 600))}" alt=""><span>${esc(o.x.title)}${o.x.locked ? ' 🔒' : ''}</span></button>`).join('')}</div></div>`;
+      return `<div class="pmore reveal"><div class="pmore-head"><span class="pmore-rule"></span><h4>${esc(title)}</h4><span class="pmore-rule"></span></div><div class="pmore-row">${others.slice(0, 6).map(o => `
+        <button class="pmore-card" type="button" data-kind="${kind}" data-i="${o.i}"><img src="${esc(imgW(kind === 'cat' ? coverOf(o.x) : caseCover(o.x), 360))}" alt="" loading="lazy"><span>${esc(o.x.title)}${o.x.locked ? ' 🔒' : ''}</span></button>`).join('')}</div></div>`;
     }
     function finish(){ modalBody.scrollTop = 0; armReveals(modalBody); fillPdfs(); }
 
@@ -947,9 +1008,9 @@
         caseSections.className = cls;
         caseSections.innerHTML = items.length ? blocksHTML(items) : '<p class="pempty">Work is coming soon.</p>';
       }
-      caseMore.innerHTML = moreHTML('More work', CATEGORIES, 'cat', ci);
+      caseMore.innerHTML = briefCTA(cat) + moreHTML('Explore other work', CATEGORIES, 'cat', ci);
       const nx = CATEGORIES[(ci + 1) % CATEGORIES.length];
-      caseNext.innerHTML = CATEGORIES.length > 1 ? `<button class="case-next-btn" id="caseNextBtn" type="button"><span>Next section</span><strong>${esc(nx.title)} →</strong></button>` : '';
+      caseNext.innerHTML = CATEGORIES.length > 1 ? `<button class="case-next-btn" id="caseNextBtn" type="button"><img src="${esc(imgW(coverOf(nx), 300))}" alt=""><span><small>Next section</small><strong>${esc(nx.title)}</strong></span><i aria-hidden="true">→</i></button>` : '';
       finish();
     }
     function renderCase(ci, si){
@@ -971,10 +1032,10 @@
       // every case study ends with a thank-you (admin → Content → Work / gallery)
       const w = C.work || {};
       const thanks = w.thanks ? `<div class="case-thanks reveal"><span class="case-thanks-dot" aria-hidden="true"></span><h2>${esc(w.thanks)}</h2>${(w.thanksNote || w.thanksCta) ? `<p>${esc(w.thanksNote || '')}${w.thanksCta ? ` <a href="contact.html">${esc(w.thanksCta)}</a>` : ''}</p>` : ''}</div>` : '';
-      caseMore.innerHTML = thanks + moreHTML('More case studies', cat.items, 'case', si);
+      caseMore.innerHTML = thanks + briefCTA(cat) + moreHTML(cat.layout === 'books' ? 'More editorials' : 'Other projects', cat.items, 'case', si);
       const nx = cat.items[(si + 1) % cat.items.length];
-      caseNext.innerHTML = cat.items.length > 1 ? `<button class="case-next-btn" id="caseNextBtn" type="button"><span>Next case study</span><strong>${esc(nx.title)} →</strong></button>`
-        : `<button class="case-next-btn" id="caseNextBtn" type="button"><span>That's all of them</span><strong>Back to ${esc(cat.title)} →</strong></button>`;
+      caseNext.innerHTML = cat.items.length > 1 ? `<button class="case-next-btn" id="caseNextBtn" type="button"><img src="${esc(imgW(caseCover(nx), 300))}" alt=""><span><small>${cat.layout === 'books' ? 'Next editorial' : 'Next project'}</small><strong>${esc(nx.title)}</strong></span><i aria-hidden="true">→</i></button>`
+        : `<button class="case-next-btn" id="caseNextBtn" type="button"><span><small>That's all of them</small><strong>Back to ${esc(cat.title)}</strong></span><i aria-hidden="true">←</i></button>`;
       finish();
     }
     function showModal(){ modal.classList.add('open'); updateScroll(); }

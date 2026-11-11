@@ -186,3 +186,10 @@ size, 2-col, 3-col, stack. Images are 1920px wide. Sections and cases can be pas
   swash, writes itself on scroll). Poster sequence: only the portrait is sketched (0–3s); then panel, red
   shapes, headline lines, button, signature and tag animate in one after another. Outline-drawing of text
   and shapes removed. CSS/JS ?v=20261109p.
+- 2026-11-11 (v18): scroll motion — main sections shrink/round/dim as they leave (stack-sec, --out), section
+  headings rise word by word, testimonials are a sticky stacking deck (add as many as you like in admin);
+  6 project questionnaires on brief.html (brief.js: branding, logo, editorial, event branding, event designs,
+  campaign) — sends to the contact email via FormSubmit and/or WhatsApp; each section/project page shows
+  "Start your … questionnaire" (admin: Sections → "Questionnaire button"); contact page links to it.
+  Quieter project ending: compact "Other projects" thumbnail row + slim "Next project" card. Games: Quiz
+  ladder (12 steps, 50:50, skip, walk away) and Font spotter (study 4 fonts, type text, guess). ?v=20261111a.

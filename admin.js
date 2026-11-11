@@ -194,7 +194,7 @@ try {
     effects: { particles: true, intro: true, introStyle: 'poster' },
     poster: { head: "Every project is a\nconversation, this is\nwhere yours begins.", btn: 'Book a Call', tag: "What are you waiting for, let's build bold brands.", sign: 'Adedeji Samuel', signImage: '', image: 'assets/portrait-cutout.webp', mark: 'SA', hold: 8.4,
       socials: [{ label: 'Instagram', url: '' }, { label: 'LinkedIn', url: '' }, { label: 'Linktree', url: '' }] },
-    games: { enabled: true, idleMinutes: 2, button: 'Play a game', offline: true, title: 'Taking a break? Play a quick game.', odd: true, memory: true, sudoku: true, words: true },
+    games: { enabled: true, idleMinutes: 2, button: 'Play a game', offline: true, title: 'Taking a break? Play a quick game.', quiz: true, fonts: true, odd: true, memory: true, sudoku: true, words: true },
   };
 
   function cloneDefaultContent(){ return JSON.parse(JSON.stringify(DEFAULT_CONTENT)); }
@@ -552,7 +552,7 @@ try {
   function migrateCategories(list){
     return list.map((c, i) => {
       const layout = LAYOUTS.includes(c.layout) ? c.layout : 'stack';
-      const out = { id: c.id || ('cat-' + (i + 1)), title: c.title || ('Section ' + (i + 1)), layout, image: c.image || '', intro: c.intro || '', bg: c.bg || '', tight: c.tight !== false, tile: !!c.tile };
+      const out = { id: c.id || ('cat-' + (i + 1)), title: c.title || ('Section ' + (i + 1)), layout, image: c.image || '', intro: c.intro || '', bg: c.bg || '', tight: c.tight !== false, tile: !!c.tile, brief: c.brief || '' };
       let items = c.items;
       if (!Array.isArray(items)) items = (c.locked && c.enc) ? undefined : [];
       if (items) out.items = (layout === 'cases' || layout === 'books') ? items.map(migrateCase) : items;
@@ -675,6 +675,7 @@ try {
         <div class="admin-row2"><label>Name (also on its floating card)<input data-cf="title" value="${esc(c.title || '')}"></label>
           <label>How its page is laid out<select data-cf="layout">${LAYOUTS.map(l => `<option value="${l}" ${c.layout === l ? 'selected' : ''}>${esc(LAYOUT_LABELS[l])}</option>`).join('')}</select></label></div>
         <label>Short intro on its page (optional)<input data-cf="intro" value="${esc(c.intro || '')}"></label>
+        <label>Questionnaire button on its page<select data-cf="brief">${[['', 'Automatic (from the section name)'], ['branding', 'Brand identity'], ['logo', 'Logo design'], ['editorial', 'Editorial / publication'], ['events', 'Event branding'], ['eventdesign', 'Event designs'], ['campaign', 'Campaign / social ads'], ['none', 'No button']].map(([v, l]) => `<option value="${v}" ${(c.brief || '') === v ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
         ${coverField(c.image, 'Card picture (floating card + gallery) — empty = its first picture')}
         <div class="admin-row2">${bgField(c)}
           ${c.layout === 'stack' ? `<label class="admin-check"><input type="checkbox" data-cf="tight" ${c.tight ? 'checked' : ''}> No gaps between pictures</label>` : ''}
