@@ -193,3 +193,10 @@ size, 2-col, 3-col, stack. Images are 1920px wide. Sections and cases can be pas
   "Start your … questionnaire" (admin: Sections → "Questionnaire button"); contact page links to it.
   Quieter project ending: compact "Other projects" thumbnail row + slim "Next project" card. Games: Quiz
   ladder (12 steps, 50:50, skip, walk away) and Font spotter (study 4 fonts, type text, guess). ?v=20261111a.
+- 2026-11-11 (v19): opening is now a SCAN — a red light beam sweeps down the portrait; ahead of it a faint
+  wireframe (sketch + grid), behind it the full photo; then the poster animates in; the ending scrambles
+  every piece (random spin, staggered) into the paper plane → flies up → wave. Signature is now
+  "Helloutidex" (Monsieur La Doulaise outline + red swash; assets/signature.svg); admin: Content → About →
+  signature PNG/SVG upload replaces it (also used on the poster). Hero "Available for hire" pill with a pulsing
+  green dot (Content → Hero, empty hides it). CSS/JS ?v=20261111b.
+- 2026-11-11 (v20): every game opens on a start screen (rules + "Start game"), then a 3-2-1 countdown; all games have a timer and sound (mute button, remembered). Headings tightened like "Experience & practice." (not the hero); trailing full stops on headings are brand red (span.hd-dot). Contact heading is sentence case. Questionnaire budget = "Estimated budget for this project" slider (0–10m) with NGN/USD/GBP/CAD and a "price is discussed" note — no fixed amounts. Signature red underline removed. Light mode: darker ink/muted text (migrateTheme fixes washed-out published palettes). Social links (Instagram, X, LinkedIn, optional link; own icons) in footer + contact page, admin → Social links. Pinned dark sticky notes section (feeling / building / spark), admin → Pinned notes. SA. logo in header (assets/brand.svg) and SA. ring badge as the floating badge; admin → Logo style / Badge style. ?v=20261111d.

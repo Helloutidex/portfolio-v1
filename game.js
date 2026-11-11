@@ -21,6 +21,79 @@
 
   let root = null, onClose = null, cleanup = null;
 
+  /* ---------- sound (made in the browser, no files) ---------- */
+  let actx = null, muted = false;
+  try { muted = localStorage.getItem('gm-muted') === '1'; } catch (e) {}
+  function tone(freq, dur, type, vol, slide) {
+    if (muted) return;
+    try {
+      actx = actx || new (window.AudioContext || window.webkitAudioContext)(); if (actx.state === 'suspended') actx.resume();
+      const t = actx.currentTime, o = actx.createOscillator(), g = actx.createGain();
+      o.type = type || 'sine'; o.frequency.setValueAtTime(freq, t); if (slide) o.frequency.exponentialRampToValueAtTime(slide, t + dur);
+      g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(vol || .12, t + .015); g.gain.exponentialRampToValueAtTime(.0001, t + dur);
+      o.connect(g); g.connect(actx.destination); o.start(t); o.stop(t + dur + .02);
+    } catch (e) {}
+  }
+  const SFX = {
+    click: () => tone(520, .06, 'triangle', .07),
+    tick: () => tone(1200, .05, 'square', .04),
+    go: () => { tone(660, .12, 'triangle', .1); setTimeout(() => tone(990, .2, 'triangle', .1), 110); },
+    count: () => tone(440, .12, 'triangle', .1),
+    right: () => { tone(660, .1, 'sine', .14); setTimeout(() => tone(880, .1, 'sine', .14), 90); setTimeout(() => tone(1320, .18, 'sine', .12), 180); },
+    wrong: () => { tone(220, .25, 'sawtooth', .07, 110); },
+    win: () => [523, 659, 784, 1047].forEach((f, i) => setTimeout(() => tone(f, .22, 'triangle', .12), i * 120)),
+    lose: () => [392, 330, 262].forEach((f, i) => setTimeout(() => tone(f, .28, 'triangle', .1), i * 160)),
+    flip: () => tone(760, .05, 'sine', .06, 980),
+  };
+
+  /* ---------- countdown clock: a bar + seconds; ticks in the last 5 seconds ---------- */
+  let clocks = [];
+  function clock(stage, secs, onEnd) {
+    let el = stage.querySelector('.gm-clock');
+    if (!el) { el = document.createElement('div'); el.className = 'gm-clock'; el.innerHTML = '<span class="gm-clock-bar"><i></i></span><b></b>'; stage.prepend(el); }
+    const bar = el.querySelector('i'), num = el.querySelector('b');
+    let total = secs, left = secs, id = null;
+    const draw = () => { num.textContent = Math.max(0, Math.ceil(left)) + 's'; bar.style.width = (Math.max(0, left) / total * 100) + '%'; el.classList.toggle('is-low', left <= 5); };
+    const api = {
+      start(s) { if (s) { total = left = s; } clearInterval(id); draw(); id = setInterval(() => { left -= .25; draw(); if (left <= 5 && left > 0 && Math.abs(left - Math.round(left)) < .01) SFX.tick(); if (left <= 0) { api.stop(); onEnd && onEnd(); } }, 250); return api; },
+      stop() { clearInterval(id); id = null; },
+      add(n) { left = Math.min(total, Math.max(0, left + n)); draw(); },
+      get left() { return left; },
+    };
+    clocks.push(api); draw(); return api;
+  }
+  const stopClocks = () => { clocks.forEach(c => c.stop()); clocks = []; };
+
+  /* ---------- every game opens on a start screen ---------- */
+  const RULES = {
+    quiz: ['12 questions, each worth more than the last', '30 seconds per question', 'Helpers: 50:50 and Skip (once each)', 'Safe amounts at question 4 and 8'],
+    fonts: ['Study four fonts and their names', 'Type any word you like', 'Guess which font it is written in — 15 seconds each'],
+    odd: ['One square is a slightly different shade', '30 seconds — each right answer adds 2s', 'Wrong taps cost 3 seconds'],
+    memory: ['Flip two cards at a time', 'Match all 6 pairs of design tools', '75 seconds on the clock'],
+    sudoku: ['Fill the 4 × 4 grid with 1–4', 'No number twice in a row, column or box', '2 minutes on the clock'],
+    words: ['Unscramble the design word from its clue', '30 seconds per word', 'Undo or skip any time'],
+  };
+  const ICON = { quiz: '◆', fonts: 'Aa', odd: '◐', memory: '❖', sudoku: '#', words: '✎' };
+  function intro(stage, key, startFn) {
+    stage.innerHTML = `<div class="gm-intro">
+        <span class="gm-intro-ico" aria-hidden="true">${ICON[key] || '●'}</span>
+        <h3>${esc(GAMES[key].name)}</h3>
+        <p>${esc(GAMES[key].blurb)}</p>
+        <ul>${(RULES[key] || []).map(r => `<li>${esc(r)}</li>`).join('')}</ul>
+        <div class="gm-row"><button type="button" class="gm-btn gm-start" data-start-game>Start game</button></div>
+      </div>`;
+    stage.querySelector('[data-start-game]').addEventListener('click', () => {
+      // 3 · 2 · 1 · go
+      let n = 3; stage.innerHTML = `<div class="gm-count"><b>${n}</b></div>`; SFX.count();
+      const id = setInterval(() => {
+        n--; const b = stage.querySelector('.gm-count b');
+        if (n > 0) { b.textContent = n; b.style.animation = 'none'; void b.offsetWidth; b.style.animation = ''; SFX.count(); }
+        else { clearInterval(id); SFX.go(); stage.innerHTML = ''; cleanup = startFn(stage) || null; }
+      }, 700);
+      cleanup = () => clearInterval(id);
+    });
+  }
+
   function open(opts) {
     opts = opts || {};
     const list = (opts.games && opts.games.length ? opts.games : Object.keys(GAMES)).filter(k => GAMES[k]);
@@ -33,7 +106,7 @@
         <div class="gm-top">
           <div><span class="gm-eyebrow">${esc(opts.offline ? 'You are offline' : 'Break time')}</span>
           <h2 class="gm-title">${esc(opts.title || 'Taking a break? Play a quick game.')}</h2></div>
-          <button class="gm-close" type="button" data-gm-close>✕ <span>Close game &amp; keep exploring</span></button>
+          <div class="gm-top-btns"><button class="gm-mute" type="button" data-gm-mute aria-pressed="${muted}">${muted ? '🔇' : '🔊'}</button><button class="gm-close" type="button" data-gm-close>✕ <span>Close game &amp; keep exploring</span></button></div>
         </div>
         <div class="gm-tabs" role="tablist">${list.map((k, i) => `<button type="button" role="tab" class="gm-tab${i ? '' : ' is-on'}" data-gm-tab="${k}">${esc(GAMES[k].name)}</button>`).join('')}</div>
         <p class="gm-blurb" id="gmBlurb"></p>
@@ -44,6 +117,8 @@
     document.documentElement.classList.add('gm-open');
     requestAnimationFrame(() => root.classList.add('is-in'));
     root.addEventListener('click', e => {
+      const mb = e.target.closest('[data-gm-mute]');
+      if (mb) { muted = !muted; try { localStorage.setItem('gm-muted', muted ? '1' : '0'); } catch (er) {} mb.textContent = muted ? '🔇' : '🔊'; mb.setAttribute('aria-pressed', String(muted)); if (!muted) SFX.click(); return; }
       if (e.target.closest('[data-gm-close]') || e.target === root) close();
       const t = e.target.closest('[data-gm-tab]');
       if (t) { root.querySelectorAll('.gm-tab').forEach(b => b.classList.toggle('is-on', b === t)); play(t.dataset.gmTab); }
@@ -55,7 +130,7 @@
   function onKey(e) { if (e.key === 'Escape') close(); }
   function close() {
     if (!root) return;
-    if (cleanup) { cleanup(); cleanup = null; }
+    if (cleanup) { cleanup(); cleanup = null; } stopClocks();
     document.removeEventListener('keydown', onKey);
     const r = root; root = null; r.classList.remove('is-in');
     document.documentElement.classList.remove('gm-open');
@@ -67,7 +142,14 @@
     root.querySelector('#gmBlurb').textContent = GAMES[key].blurb;
     const old = root.querySelector('#gmStage'), stage = old.cloneNode(false); old.replaceWith(stage);   // fresh, no old listeners
     stage.className = 'gm-stage gm-' + key;
-    cleanup = ({ odd: oddColour, memory, sudoku, words, quiz, fonts })[key](stage) || null;
+    stopClocks();
+    intro(stage, key, s => ({ odd: oddColour, memory, sudoku, words, quiz, fonts })[key](s));
+  }
+  // "Play again" buttons skip the start screen
+  function replay(key) {
+    if (cleanup) { cleanup(); cleanup = null; } stopClocks();
+    const old = root.querySelector('#gmStage'), stage = old.cloneNode(false); old.replaceWith(stage); stage.className = 'gm-stage gm-' + key;
+    SFX.go(); cleanup = ({ odd: oddColour, memory, sudoku, words, quiz, fonts })[key](stage) || null;
   }
   const status = (stage, html) => { let s = stage.querySelector('.gm-status'); if (!s) { s = document.createElement('div'); s.className = 'gm-status'; stage.prepend(s); } s.innerHTML = html; };
 
@@ -84,18 +166,18 @@
       grid.dataset.odd = odd;
       status(stage, `Level <b>${level}</b> · <span id="gmTime">${left}</span>s left · best <b>${best}</b>`);
     };
-    const start = () => { level = 1; left = 30; round(); clearInterval(timer); timer = setInterval(() => { left--; const t = stage.querySelector('#gmTime'); if (t) t.textContent = left; if (left <= 0) end(); }, 1000); };
+    const start = () => { level = 1; left = 30; round(); clearInterval(timer); timer = setInterval(() => { left--; if (left > 0 && left <= 5) SFX.tick(); const t = stage.querySelector('#gmTime'); if (t) t.textContent = left; if (left <= 0) end(); }, 1000); };
     const end = () => {
-      clearInterval(timer); timer = null;
+      clearInterval(timer); timer = null; SFX.lose();
       if (level - 1 > best) { best = level - 1; try { localStorage.setItem('gm-odd-best', best); } catch (e) {} }
       grid.innerHTML = `<div class="gm-done"><strong>Time! You reached level ${level}.</strong><button type="button" class="gm-btn" data-again>Play again</button></div>`;
       status(stage, `Best: <b>${best}</b>`);
     };
     grid.addEventListener('click', e => {
-      if (e.target.closest('[data-again]')) return start();
+      if (e.target.closest('[data-again]')) { SFX.go(); return start(); }
       const b = e.target.closest('button[data-i]'); if (!b || !timer) return;
-      if (b.dataset.i === grid.dataset.odd) { level++; left = Math.min(30, left + 2); round(); }
-      else { b.classList.add('gm-shake'); left = Math.max(0, left - 3); setTimeout(() => b.classList.remove('gm-shake'), 400); }
+      if (b.dataset.i === grid.dataset.odd) { SFX.right(); level++; left = Math.min(30, left + 2); round(); }
+      else { SFX.wrong(); b.classList.add('gm-shake'); left = Math.max(0, left - 3); setTimeout(() => b.classList.remove('gm-shake'), 400); }
     });
     start();
     return () => clearInterval(timer);
@@ -118,16 +200,17 @@
     const board = document.createElement('div'); board.className = 'gm-mem-grid'; stage.appendChild(board);
     board.innerHTML = deck.map((k, i) => `<button type="button" class="gm-card" data-k="${k}" aria-label="Card ${i + 1}"><span class="gm-card-in"><span class="gm-face gm-back"></span><span class="gm-face gm-front"><svg viewBox="0 0 40 40" aria-hidden="true">${ICONS[k]}</svg></span></span></button>`).join('');
     const upd = () => status(stage, `Moves <b>${moves}</b> · pairs <b>${found}</b> / 6`); upd();
+    const clk = clock(stage, 75, () => { lock = true; SFX.lose(); status(stage, `Time's up — ${found} of 6 pairs. <button type="button" class="gm-btn" data-again>Play again</button>`); board.classList.add('is-over'); }).start();
     board.addEventListener('click', e => {
       const c = e.target.closest('.gm-card'); if (!c || lock || c.classList.contains('is-up')) return;
-      c.classList.add('is-up');
+      c.classList.add('is-up'); SFX.flip();
       if (!first) { first = c; return; }
       moves++;
       if (first.dataset.k === c.dataset.k) { first.classList.add('is-done'); c.classList.add('is-done'); first = null; found++; upd();
-        if (found === 6) status(stage, `Done in <b>${moves}</b> moves! <button type="button" class="gm-btn" data-again>Play again</button>`); }
-      else { lock = true; const a = first; first = null; upd(); setTimeout(() => { a.classList.remove('is-up'); c.classList.remove('is-up'); lock = false; }, 750); }
+        SFX.right(); if (found === 6) { clk.stop(); SFX.win(); status(stage, `Done in <b>${moves}</b> moves with ${Math.ceil(clk.left)}s to spare! <button type="button" class="gm-btn" data-again>Play again</button>`); } }
+      else { lock = true; const a = first; first = null; upd(); setTimeout(SFX.wrong, 250); setTimeout(() => { a.classList.remove('is-up'); c.classList.remove('is-up'); lock = false; }, 750); }
     });
-    stage.addEventListener('click', e => { if (e.target.closest('[data-again]')) play('memory'); });
+    stage.addEventListener('click', e => { if (e.target.closest('[data-again]')) replay('memory'); });
   }
 
   /* ---------- 3. Mini Sudoku (4 × 4) ---------- */
@@ -140,6 +223,8 @@
     const sol = rows.flat(), givens = new Set(shuffle([...Array(16).keys()]).slice(0, 7));
     const val = sol.map((v, i) => givens.has(i) ? v : 0);
     const board = document.createElement('div'); board.className = 'gm-sudoku'; stage.appendChild(board);
+    let over = false;
+    const clk = clock(stage, 120, () => { over = true; SFX.lose(); status(stage, 'Time\'s up! <button type="button" class="gm-btn" data-again>New puzzle</button>'); board.classList.add('is-over'); });
     const draw = () => {
       board.innerHTML = val.map((v, i) => `<button type="button" data-i="${i}" class="${givens.has(i) ? 'is-given' : ''}${(i % 4) === 1 ? ' bx-r' : ''}${Math.floor(i / 4) === 1 ? ' bx-b' : ''}" ${givens.has(i) ? 'disabled' : ''}>${v || ''}</button>`).join('');
       // solved = every row, column and 2×2 box holds 1–4 once (any valid answer counts)
@@ -149,11 +234,12 @@
       for (let c = 0; c < 4; c++) groups.push([0, 1, 2, 3].map(r => r * 4 + c));
       for (const [r, c] of [[0, 0], [0, 2], [2, 0], [2, 2]]) groups.push([r * 4 + c, r * 4 + c + 1, (r + 1) * 4 + c, (r + 1) * 4 + c + 1]);
       const full = val.every(Boolean), right = full && groups.every(ok);
-      status(stage, right ? 'Solved! 🎉 <button type="button" class="gm-btn" data-again>New puzzle</button>' : full ? 'Not quite — something repeats. Keep going.' : 'Tap a square to cycle 1 → 4.');
+      if (right && !over) { over = true; clk.stop(); SFX.win(); }
+      if (!over || right) status(stage, right ? 'Solved! 🎉 <button type="button" class="gm-btn" data-again>New puzzle</button>' : full ? 'Not quite — something repeats. Keep going.' : 'Tap a square to cycle 1 → 4.');
     };
-    board.addEventListener('click', e => { const b = e.target.closest('button[data-i]'); if (!b || b.disabled) return; const i = +b.dataset.i; val[i] = (val[i] % 4) + 1; draw(); });
-    stage.addEventListener('click', e => { if (e.target.closest('[data-again]')) play('sudoku'); });
-    draw();
+    board.addEventListener('click', e => { const b = e.target.closest('button[data-i]'); if (!b || b.disabled || over) return; SFX.click(); const i = +b.dataset.i; val[i] = (val[i] % 4) + 1; draw(); });
+    stage.addEventListener('click', e => { if (e.target.closest('[data-again]')) replay('sudoku'); });
+    draw(); clk.start();
   }
 
   /* ---------- 4. Design words ---------- */
@@ -163,7 +249,9 @@
   function words(stage) {
     let order = shuffle(WORDS.slice()), idx = 0, score = 0;
     const box = document.createElement('div'); box.className = 'gm-words'; stage.appendChild(box);
+    const clk = clock(stage, 30, () => { SFX.wrong(); const w = order[idx % order.length][0]; box.querySelector('.gm-answer').innerHTML = w.split('').map(ch => `<span>${ch}</span>`).join(''); box.querySelector('.gm-answer').classList.add('is-missed'); setTimeout(() => { idx++; round(); }, 1300); });
     const round = () => {
+      clk.start(30);
       const [word, clue] = order[idx % order.length]; let letters;
       do { letters = shuffle(word.split('')); } while (letters.join('') === word);
       const picked = [];
@@ -175,11 +263,11 @@
       };
       box.onclick = e => {
         const t = e.target.closest('[data-t]');
-        if (t) { picked.push(+t.dataset.t); draw();
+        if (t) { SFX.click(); picked.push(+t.dataset.t); draw();
           if (picked.length === word.length) {
             const guess = picked.map(i => letters[i]).join('');
-            if (guess === word) { score++; box.querySelector('.gm-answer').classList.add('is-right'); setTimeout(() => { idx++; round(); }, 700); }
-            else { box.querySelector('.gm-answer').classList.add('gm-shake'); setTimeout(() => { picked.length = 0; draw(); }, 600); }
+            if (guess === word) { clk.stop(); SFX.right(); score++; box.querySelector('.gm-answer').classList.add('is-right'); setTimeout(() => { idx++; round(); }, 700); }
+            else { SFX.wrong(); box.querySelector('.gm-answer').classList.add('gm-shake'); setTimeout(() => { picked.length = 0; draw(); }, 600); }
           }
           status(stage, `Solved <b>${score}</b>`); }
         if (e.target.closest('[data-undo]')) { picked.pop(); draw(); }
@@ -232,7 +320,9 @@
     const wrap = document.createElement('div'); wrap.className = 'gm-qwrap'; stage.appendChild(wrap);
     const ladderHTML = () => `<ol class="gm-ladder">${LADDER.map((v, i) => `<li class="${i === step ? 'is-now' : i < step ? 'is-done' : ''}${(i + 1) % 4 === 0 ? ' safe' : ''}"><span>${i + 1}</span>${v}</li>`).reverse().join('')}</ol>`;
     const safe = () => step >= 8 ? LADDER[7] : step >= 4 ? LADDER[3] : '₦0';
+    const clk = clock(stage, 30, () => { if (lock) return; lock = true; SFX.wrong(); wrap.querySelectorAll('.gm-opt').forEach(x => { if (x.dataset.o === set[step][1]) x.classList.add('is-right'); x.disabled = true; }); setTimeout(() => { lock = false; end("Time's up!", safe()); }, 1300); });
     const ask = () => {
+      clk.start(30);
       const q = set[step], opts = shuffle([q[1], q[2], q[3], q[4]]);
       wrap.innerHTML = `<div class="gm-q-main">
           <p class="gm-q-step">Question ${step + 1} of ${LADDER.length} · for ${LADDER[step]}</p>
@@ -242,9 +332,9 @@
         </div>${ladderHTML()}`;
       status(stage, `Safe amount: <b>${safe()}</b>`);
     };
-    const end = (msg, won) => { wrap.innerHTML = `<div class="gm-done gm-q-end"><strong>${msg}</strong><span>You leave with <b>${won}</b> (just for fun!)</span><button type="button" class="gm-btn" data-again>Play again</button></div>`; status(stage, ''); };
+    const end = (msg, won) => { clk.stop(); (won === LADDER[LADDER.length - 1] ? SFX.win : (won === '₦0' ? SFX.lose : SFX.win))(); wrap.innerHTML = `<div class="gm-done gm-q-end"><strong>${msg}</strong><span>You leave with <b>${won}</b> (just for fun!)</span><button type="button" class="gm-btn" data-again>Play again</button></div>`; status(stage, ''); };
     wrap.addEventListener('click', e => {
-      if (e.target.closest('[data-again]')) return play('quiz');
+      if (e.target.closest('[data-again]')) return replay('quiz');
       const l = e.target.closest('[data-l]');
       if (l && !lock) {
         const q = set[step];
@@ -254,11 +344,11 @@
         return;
       }
       const b = e.target.closest('.gm-opt'); if (!b || lock || b.disabled) return;
-      lock = true; b.classList.add('is-picked');
+      lock = true; clk.stop(); SFX.click(); b.classList.add('is-picked');
       const right = b.dataset.o === set[step][1];
       setTimeout(() => {
         wrap.querySelectorAll('.gm-opt').forEach(x => { if (x.dataset.o === set[step][1]) x.classList.add('is-right'); });
-        if (!right) b.classList.add('is-wrong');
+        if (!right) { b.classList.add('is-wrong'); SFX.wrong(); } else SFX.right();
         setTimeout(() => {
           lock = false;
           if (!right) return end('Oh no, that was wrong.', safe());
@@ -295,6 +385,9 @@
         <div class="gm-font-list">${round.map(f => `<div class="gm-font-card"><span style="font-family:${f[1]}">Aa Bb Gg 123</span><b>${esc(f[0])}</b></div>`).join('')}</div>
         <div class="gm-row"><button type="button" class="gm-btn" data-start>I'm ready</button></div>`;
     };
+    let clk = null;
+    const timeUp = () => { turns++; SFX.wrong(); box.querySelectorAll('.gm-opt').forEach(x => { x.disabled = true; if (x.dataset.f === answer[0]) x.classList.add('is-right'); });
+      status(stage, `Time's up — it was ${esc(answer[0])}. Score <b>${score}</b> / ${turns} <button type="button" class="gm-btn" data-next>Next</button>`); };
     const ask = () => {
       answer = round[rnd(4)];
       box.innerHTML = `<label class="gm-type">Type anything<input type="text" maxlength="40" value="${esc(text)}" data-text></label>
@@ -303,14 +396,15 @@
         <div class="gm-opts">${shuffle(round.slice()).map((f, i) => `<button type="button" class="gm-opt" data-f="${esc(f[0])}"><b>${'ABCD'[i]}</b>${esc(f[0])}</button>`).join('')}</div>
         <div class="gm-row"><button type="button" class="gm-btn ghost" data-study>See the fonts again</button></div>`;
       status(stage, `Score <b>${score}</b> / ${turns}`);
+      if (!clk) clk = clock(stage, 15, timeUp); clk.start(15);
     };
     box.addEventListener('input', e => { if (e.target.matches('[data-text]')) { text = e.target.value; const sp = box.querySelector('.gm-specimen'); if (sp) sp.textContent = text || 'Aa'; } });
     box.addEventListener('click', e => {
       if (e.target.closest('[data-start]')) return ask();
-      if (e.target.closest('[data-study]')) return study();
+      if (e.target.closest('[data-study]')) { clk && clk.stop(); return study(); }
       if (e.target.closest('[data-next]')) return ask();
       const b = e.target.closest('.gm-opt'); if (!b || b.disabled) return;
-      turns++; const right = b.dataset.f === answer[0]; if (right) score++;
+      clk && clk.stop(); turns++; const right = b.dataset.f === answer[0]; if (right) score++; (right ? SFX.right : SFX.wrong)();
       box.querySelectorAll('.gm-opt').forEach(x => { x.disabled = true; if (x.dataset.f === answer[0]) x.classList.add('is-right'); });
       if (!right) b.classList.add('is-wrong');
       status(stage, `${right ? 'Correct!' : 'It was ' + esc(answer[0]) + '.'} Score <b>${score}</b> / ${turns} <button type="button" class="gm-btn" data-next>Next</button>`);

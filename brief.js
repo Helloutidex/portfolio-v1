@@ -17,12 +17,17 @@
     ['company', 'Company / organisation', 'text', '', false],
   ]};
   const WRAP = { title: 'Budget & timing', fields: [
-    ['budget', 'Budget range', 'choice', ['Under ₦150k', '₦150k – ₦400k', '₦400k – ₦1m', '₦1m – ₦3m', 'Above ₦3m', 'Not sure yet'], true],
+    ['budget', 'Estimated budget for this project', 'budget', '', false],
     ['deadline', 'When do you need it?', 'date', '', false],
     ['refs', 'Links to anything you like (references, current work, drive folder)', 'textarea', 'Paste links here', false],
     ['extra', 'Anything else I should know?', 'textarea', '', false],
   ]};
 
+  // estimated budget slider: 0 → max in the chosen currency (curved, so smaller budgets are easy to pick)
+  const CUR = { NGN: { sym: '₦', max: 10000000 }, USD: { sym: '$', max: 10000000 }, GBP: { sym: '£', max: 10000000 }, CAD: { sym: 'CA$', max: 10000000 } };
+  const short = n => n >= 1e6 ? (n / 1e6).toFixed(n % 1e6 ? 1 : 0) + 'm' : n >= 1e3 ? Math.round(n / 1e3) + 'k' : String(n);
+  const budgetValue = (cur, pos) => { const v = CUR[cur].max * Math.pow(pos / 1000, 3); const step = v < 1e4 ? 500 : v < 1e5 ? 5000 : v < 1e6 ? 25000 : 100000; return Math.round(v / step) * step; };
+  const fmtBudget = (cur, pos) => { const v = budgetValue(cur, pos); return pos >= 1000 ? `${CUR[cur].sym}${v.toLocaleString('en')}+` : `${CUR[cur].sym}${v.toLocaleString('en')}`; };
   const BRIEFS = {
     branding: { label: 'Brand identity', icon: '◆', blurb: 'A complete look and feel for your business — logo, colours, type and how it all works together.', steps: [
       YOU,
@@ -147,6 +152,15 @@
     if (kind === 'choice' || kind === 'multi') return `<fieldset class="bf-field" data-name="${name}" data-kind="${kind}" ${req ? 'data-req' : ''}><legend><span>${esc(label)}${star}</span></legend><div class="bf-chips">${opt.map(o => {
       const on = kind === 'multi' ? (v || []).includes(o) : v === o;
       return `<button type="button" class="bf-chip${on ? ' is-on' : ''}" data-val="${esc(o)}" aria-pressed="${on}">${esc(o)}</button>`; }).join('')}</div></fieldset>`;
+    if (kind === 'budget') {
+      const cur = answers._cur || 'NGN', pos = answers._pos != null ? answers._pos : 0;
+      return `<div class="bf-field bf-budget" data-name="${name}" data-kind="budget"><span>${esc(label)}${star}</span>
+        <p class="bf-note">Just an estimate to help me plan — the final price is discussed with you.</p>
+        <div class="bf-cur" role="radiogroup" aria-label="Currency">${Object.keys(CUR).map(k => `<button type="button" class="bf-chip${k === cur ? ' is-on' : ''}" data-cur="${k}" aria-pressed="${k === cur}">${CUR[k].sym} ${k}</button>`).join('')}</div>
+        <output class="bf-amount" data-amount>${fmtBudget(cur, pos)}</output>
+        <input type="range" class="bf-range" min="0" max="1000" step="1" value="${pos}" data-range aria-label="Estimated budget" style="--p:${pos / 10}%">
+        <div class="bf-scale"><span>${CUR[cur].sym}0</span><span>${CUR[cur].sym}${short(CUR[cur].max)}</span></div></div>`;
+    }
     if (kind === 'textarea') return `<label class="bf-field"><span>${esc(label)}${star}</span><textarea name="${name}" rows="3" placeholder="${esc(opt)}" ${req ? 'required' : ''}>${esc(v || '')}</textarea></label>`;
     return `<label class="bf-field"><span>${esc(label)}${star}</span><input name="${name}" type="${kind}" placeholder="${esc(opt)}" value="${esc(v || '')}" ${req ? 'required' : ''}></label>`;
   }
@@ -166,7 +180,7 @@
     if (!firstShow) root.scrollIntoView({ behavior: 'smooth', block: 'start' }); firstShow = false;
   }
   function collect() {
-    root.querySelectorAll('.bf-fields input, .bf-fields textarea').forEach(el => { answers[el.name] = el.value.trim(); });
+    root.querySelectorAll('.bf-fields input[name], .bf-fields textarea[name]').forEach(el => { answers[el.name] = el.value.trim(); });
   }
   function valid() {
     const s = BRIEFS[type].steps[step]; let ok = true;
@@ -181,6 +195,7 @@
     return ok;
   }
   function summary() {
+    if (answers._pos && !answers.budget) answers.budget = fmtBudget(answers._cur || 'NGN', answers._pos) + ' ' + (answers._cur || 'NGN');
     const b = BRIEFS[type], rows = [];
     b.steps.forEach(s => s.fields.forEach(([name, label]) => { const v = answers[name]; if (v && (!Array.isArray(v) || v.length)) rows.push([label, Array.isArray(v) ? v.join(', ') : v]); }));
     return rows;
@@ -221,6 +236,8 @@
     const t = e.target;
     const tp = t.closest('[data-type]'); if (tp) { type = tp.dataset.type; step = 0; history.replaceState(null, '', '?type=' + type); return stepScreen(); }
     if (t.closest('[data-change]')) return pickScreen();
+    const cb = t.closest('[data-cur]');
+    if (cb) { answers._cur = cb.dataset.cur; if (answers._pos) answers.budget = fmtBudget(answers._cur, answers._pos) + ' ' + answers._cur; collect(); return stepScreen(); }
     const chip = t.closest('.bf-chip');
     if (chip) {
       const fs = chip.closest('[data-name]'), name = fs.dataset.name, val = chip.dataset.val;
@@ -233,6 +250,12 @@
     if (t.closest('[data-edit]')) { step = 0; return stepScreen(); }
     if (t.closest('[data-send]')) return send(t.closest('[data-send]'));
     if (t.closest('[data-wa]')) return whatsapp();
+  });
+  root.addEventListener('input', e => {
+    const r = e.target.closest('[data-range]'); if (!r) return;
+    answers._pos = Number(r.value); r.style.setProperty('--p', (answers._pos / 10) + '%');
+    const cur = answers._cur || 'NGN'; answers.budget = fmtBudget(cur, answers._pos) + ' ' + cur;
+    root.querySelector('[data-amount]').textContent = fmtBudget(cur, answers._pos);
   });
   root.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.tagName === 'INPUT') { e.preventDefault(); root.querySelector('[data-next]')?.click(); } });
   const want = params.get('type');

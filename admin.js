@@ -123,7 +123,7 @@ try {
   ============================================================ */
   const CONTENT_STORAGE_KEY = 'ferricool-portfolio-content';
   const DEFAULT_CONTENT = {
-    nav: { logo: 'ADEDEJI SAMUEL / DESIGN', logoImage: '', favicon: '', links: [{ label: 'About', href: '#about' }, { label: 'Work', href: '#work' }], ctaLabel: "Let's talk", ctaHref: 'contact.html' },
+    nav: { logo: 'ADEDEJI SAMUEL / DESIGN', logoImage: '', logoStyle: 'mark-name', favicon: '', links: [{ label: 'About', href: '#about' }, { label: 'Work', href: '#work' }], ctaLabel: "Let's talk", ctaHref: 'contact.html' },
     hero: {
       eyebrow: 'Independent designer · Lagos, Nigeria',
       titlePre: 'Designing ', titleEm: "what's", titlePost: ' next.',
@@ -133,6 +133,7 @@ try {
       note: 'The work is hidden in the lens.',
       zoomInstruction: 'Tap to explore',
       lensImage: '', ctaLabel: 'View my work ↗', ctaHref: '#work',
+      available: 'Available for hire',
       hireLabel: 'Hire me', whatsapp: '2348065925091', hireMessage: "Hi Samuel, I saw your portfolio and I'd like to hire you for a project.",
     },
     about: {
@@ -141,6 +142,7 @@ try {
       headingPre: 'I design for the space between an ', headingEm: 'idea', headingPost: ' and what it can become.',
       paragraph1: "I'm a multidisciplinary designer working across brand identity, digital design, campaigns and AI / generative visuals.",
       paragraph2: "I'm interested in clear ideas, strong visual systems and work that can live beyond a single screen.",
+      signImage: '',
       skills: ['Brand identity','Art direction','Digital design','AI / generative','Visual systems'],
     },
     social: { label: 'Selected collaborators', count: '01 — 05', items: [
@@ -187,12 +189,19 @@ try {
     links: { label: 'Links', description: 'Find the work, the process, or start a conversation.', items: [
       { label: 'Work ↗', href: '#work' }, { label: 'About ↗', href: '#about' }, { label: 'Contact ↗', href: '#contact' },
     ]},
-    badge: { initials: 'AS', ringText: 'ADEDEJI SAMUEL', ringImage: '', size: 96, href: 'contact.html' },
+    badge: { style: 'brand', initials: 'AS', ringText: 'ADEDEJI SAMUEL', ringImage: '', size: 96, href: 'contact.html' },
     signature: { name: 'ADEDEJI SAMUEL', font: 'UnifrakturCook', nameColor: '#E8223E', bg: '#141211', textColor: '#faf6ee' },
-    contact: { ctaLabel: "Let's talk ↗", pageHeading: "Let's talk.", subheading: 'Tell me about your project.', body: 'Share a little about what you have in mind — the goal, the timeline, anything that helps. I read every message and reply personally.', whatsappLabel: 'WhatsApp number (optional)', backLabel: '← Back home', small: 'Start a project', headingLines: ["LET'S MAKE","SOMETHING","WORTH SEEING."], available: 'Available for selected projects', emailText: 'samuel.s.adedeji@gmail.com ↗', emailHref: 'mailto:samuel.s.adedeji@gmail.com' },
+    contact: { ctaLabel: "Let's talk ↗", pageHeading: "Let's talk.", subheading: 'Tell me about your project.', body: 'Share a little about what you have in mind — the goal, the timeline, anything that helps. I read every message and reply personally.', whatsappLabel: 'WhatsApp number (optional)', backLabel: '← Back home', small: 'Start a project', headingLines: ["Let's make","something","worth seeing."], available: 'Available for selected projects', emailText: 'samuel.s.adedeji@gmail.com ↗', emailHref: 'mailto:samuel.s.adedeji@gmail.com' },
+    notes: { enabled: true, label: 'Say hello', heading: 'A few notes pinned for you.', feel: 'How are you feeling today? One word.', build: 'What are you building next?', spark: 'Need a spark?' },
+    socials: [
+      { kind: 'instagram', label: 'Instagram', url: 'https://www.instagram.com/helloutidex', icon: '' },
+      { kind: 'x', label: 'X (Twitter)', url: 'https://x.com/helloutidex', icon: '' },
+      { kind: 'linkedin', label: 'LinkedIn', url: 'https://www.linkedin.com/search/results/people/?keywords=Adedeji%20Samuel', icon: '' },
+      { kind: 'link', label: '', url: '', icon: '' },
+    ],
     footer: { left: '© 2026 Adedeji Samuel', right: 'Designed with intention / Lagos', brand: 'Helloutidex', name: 'SAMUEL ADEDEJI' },
     effects: { particles: true, intro: true, introStyle: 'poster' },
-    poster: { head: "Every project is a\nconversation, this is\nwhere yours begins.", btn: 'Book a Call', tag: "What are you waiting for, let's build bold brands.", sign: 'Adedeji Samuel', signImage: '', image: 'assets/portrait-cutout.webp', mark: 'SA', hold: 8.4,
+    poster: { head: "Every project is a\nconversation, this is\nwhere yours begins.", btn: 'Book a Call', tag: "What are you waiting for, let's build bold brands.", sign: 'Helloutidex', signImage: '', image: 'assets/portrait-cutout.webp', mark: 'SA', hold: 8.4,
       socials: [{ label: 'Instagram', url: '' }, { label: 'LinkedIn', url: '' }, { label: 'Linktree', url: '' }] },
     games: { enabled: true, idleMinutes: 2, button: 'Play a game', offline: true, title: 'Taking a break? Play a quick game.', quiz: true, fonts: true, odd: true, memory: true, sudoku: true, words: true },
   };
@@ -328,6 +337,18 @@ try {
         <button class="admin-mini-remove" type="button" data-res-remove="${i}">Remove</button>
       </div>`).join('');
   }
+  function renderSocials(){
+    content.socials = content.socials || [];
+    $('#socialsEditor').innerHTML = content.socials.map((s, i) => `
+      <div class="admin-mini-row admin-res-row admin-soc-row" data-index="${i}">
+        <div class="admin-image-field">${s.icon ? `<img src="${esc(s.icon)}" alt="">` : '<span class="admin-thumb-empty">Built-in icon</span>'}
+          <input type="file" accept="image/*" class="admin-upload-input" data-soc-upload><button type="button" class="admin-upload-btn" data-soc-upload-btn>${s.icon ? 'Replace icon' : 'Own icon'}</button>${s.icon ? '<button type="button" class="admin-upload-btn" data-soc-clear>Use built-in</button>' : ''}</div>
+        <label>Type<select data-soc-field="kind">${[['instagram', 'Instagram'], ['x', 'X (Twitter)'], ['linkedin', 'LinkedIn'], ['behance', 'Behance'], ['dribbble', 'Dribbble'], ['link', 'Other link']].map(([v, l]) => `<option value="${v}" ${s.kind === v ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
+        <label>Name<input data-soc-field="label" value="${esc(s.label)}"></label>
+        <label class="full">Link<input data-soc-field="url" value="${esc(s.url)}" placeholder="https://…"></label>
+        <button class="admin-mini-remove" type="button" data-soc-remove="${i}">Remove</button>
+      </div>`).join('');
+  }
   function renderPosterSocials(){
     content.poster.socials = content.poster.socials || [];
     $('#posterSocialsEditor').innerHTML = content.poster.socials.map((it, i) => listRow(i, `
@@ -343,7 +364,7 @@ try {
       else if (el.dataset.list === 'lines') el.value = Array.isArray(val) ? val.join('\n') : '';
       else el.value = val == null ? '' : val;
     });
-    renderFileFields(); renderNavLinks(); renderExpRows(); renderLinks(); renderTestimonials(); renderStats(); renderLogoLists(); renderPosterSocials(); renderSteps(); renderResources();
+    renderFileFields(); renderNavLinks(); renderExpRows(); renderLinks(); renderTestimonials(); renderStats(); renderLogoLists(); renderPosterSocials(); renderSteps(); renderResources(); renderSocials();
   }
   fillContentForm();
 
@@ -365,6 +386,7 @@ try {
     if (el.dataset.testimonialField) content.testimonials.items[idx][el.dataset.testimonialField] = el.value;
     if (el.dataset.statField) content.proof.stats[idx][el.dataset.statField] = el.value;
     if (el.dataset.psField) content.poster.socials[idx][el.dataset.psField] = el.value;
+    if (el.dataset.socField) content.socials[idx][el.dataset.socField] = el.value;
     if (el.dataset.stepField) content.process.steps[idx][el.dataset.stepField] = el.value;
     if (el.dataset.resField) content.resources.items[idx][el.dataset.resField] = el.value;
     if (el.dataset.llField) { const tile = el.closest('.admin-logo-tile'); content[tile.dataset.list].items[Number(tile.dataset.index)][el.dataset.llField] = el.value; }
@@ -375,6 +397,9 @@ try {
     if ((m = t.closest('[data-exp-remove]'))) { content.experience.rows.splice(Number(m.dataset.expRemove), 1); renderExpRows(); }
     if ((m = t.closest('[data-link-remove]'))) { content.links.items.splice(Number(m.dataset.linkRemove), 1); renderLinks(); }
     if ((m = t.closest('[data-testimonial-remove]'))) { content.testimonials.items.splice(Number(m.dataset.testimonialRemove), 1); renderTestimonials(); }
+    if ((m = t.closest('[data-soc-remove]'))) { content.socials.splice(Number(m.dataset.socRemove), 1); renderSocials(); }
+    if (t.closest('[data-soc-upload-btn]')) t.closest('.admin-soc-row').querySelector('[data-soc-upload]').click();
+    if (t.closest('[data-soc-clear]')) { content.socials[Number(t.closest('.admin-soc-row').dataset.index)].icon = ''; renderSocials(); }
     if ((m = t.closest('[data-step-remove]'))) { content.process.steps.splice(Number(m.dataset.stepRemove), 1); renderSteps(); }
     if ((m = t.closest('[data-res-remove]'))) { content.resources.items.splice(Number(m.dataset.resRemove), 1); renderResources(); }
     if (t.closest('[data-res-upload-btn]')) t.closest('.admin-res-row').querySelector('[data-res-upload]').click();
@@ -392,6 +417,8 @@ try {
   contentPanel.addEventListener('change', async e => {
     const t = e.target;
     if (t.dataset.fileText) renderFileFields();
+    if (t.matches('[data-soc-upload]') && t.files[0]) { content.socials[Number(t.closest('.admin-soc-row').dataset.index)].icon = await readImageResized(t.files[0], 200, true); renderSocials(); return; }
+    if (t.dataset.socField === 'kind') { content.socials[Number(t.closest('.admin-soc-row').dataset.index)].kind = t.value; return; }
     if (t.matches('[data-res-upload]') && t.files[0]) { content.resources.items[Number(t.closest('.admin-res-row').dataset.index)].image = await readImageResized(t.files[0], 900); renderResources(); return; }
     if (t.dataset.resField === 'kind') return;
     if (t.matches('[data-ll-upload]') && t.files[0]) {
@@ -412,6 +439,7 @@ try {
   $('#addNavLink').addEventListener('click', () => { content.nav.links.push({ label: '', href: '#' }); renderNavLinks(); });
   $('#addExpRow').addEventListener('click', () => { content.experience.rows.push({ tag: '', role: '', meta: '' }); renderExpRows(); });
   $('#addLink').addEventListener('click', () => { content.links.items.push({ label: '', href: '#' }); renderLinks(); });
+  $('#addSocial').addEventListener('click', () => { content.socials.push({ kind: 'link', label: '', url: '', icon: '' }); renderSocials(); });
   $('#addStep').addEventListener('click', () => { content.process.steps.push({ title: '', text: '' }); renderSteps(); });
   $('#addResource').addEventListener('click', () => { content.resources.items.push({ title: '', by: '', kind: 'Book', image: '', url: '' }); renderResources(); });
   $('#addPosterSocial').addEventListener('click', () => { content.poster.socials.push({ label: '', url: '' }); renderPosterSocials(); });
@@ -473,6 +501,11 @@ try {
       ['paper', 'ink', 'muted', 'line', 'tint1', 'tint2'].forEach(k => { if (saved[k]) out.light[k] = saved[k]; });
       if (saved.contactBg) { out.light.accent = saved.contactBg; out.light.contactBg = saved.contactBg; }
     }
+    // older light palettes used grey for the main text — that looked washed out. Keep text near-black.
+    const lum = hex => { const m = /^#?([0-9a-f]{6})$/i.exec(hex || ''); if (!m) return 0; const n = parseInt(m[1], 16); return (0.2126 * (n >> 16) + 0.7152 * ((n >> 8) & 255) + 0.0722 * (n & 255)) / 255; };
+    if (lum(out.light.ink) > .3) out.light.ink = '#141211';
+    if (lum(out.light.muted) > .55 || out.light.muted === out.light.ink) out.light.muted = '#5c5c5c';
+    if (lum(out.light.contactText) > .3 && lum(out.light.contactBg) > .7) { out.light.contactBg = '#E8223E'; out.light.contactText = '#ffffff'; }
     return out;
   }
 

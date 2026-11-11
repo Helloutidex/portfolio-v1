@@ -39,7 +39,7 @@
   ============================================================ */
   const CONTENT_STORAGE_KEY = 'ferricool-portfolio-content';
   const DEFAULT_CONTENT = {
-    nav: { logo: 'ADEDEJI SAMUEL / DESIGN', logoImage: '', favicon: '', links: [{ label: 'About', href: '#about' }, { label: 'Work', href: '#work' }], ctaLabel: "Let's talk", ctaHref: 'contact.html' },
+    nav: { logo: 'ADEDEJI SAMUEL / DESIGN', logoImage: '', logoStyle: 'mark-name', favicon: '', links: [{ label: 'About', href: '#about' }, { label: 'Work', href: '#work' }], ctaLabel: "Let's talk", ctaHref: 'contact.html' },
     hero: {
       eyebrow: 'Independent designer · Lagos, Nigeria',
       titlePre: 'Designing ', titleEm: "what's", titlePost: ' next.',
@@ -49,6 +49,7 @@
       note: 'The work is hidden in the lens.',
       zoomInstruction: 'Tap to explore',
       lensImage: '', ctaLabel: 'View my work ↗', ctaHref: '#work',
+      available: 'Available for hire',
       hireLabel: 'Hire me', whatsapp: '2348065925091', hireMessage: "Hi Samuel, I saw your portfolio and I'd like to hire you for a project.",
     },
     about: {
@@ -57,6 +58,7 @@
       headingPre: 'I design for the space between an ', headingEm: 'idea', headingPost: ' and what it can become.',
       paragraph1: "I'm a multidisciplinary designer working across brand identity, digital design, campaigns and AI / generative visuals.",
       paragraph2: "I'm interested in clear ideas, strong visual systems and work that can live beyond a single screen.",
+      signImage: '',
       skills: ['Brand identity','Art direction','Digital design','AI / generative','Visual systems'],
     },
     social: { label: 'Selected collaborators', count: '01 — 05', items: [
@@ -103,12 +105,19 @@
     links: { label: 'Links', description: 'Find the work, the process, or start a conversation.', items: [
       { label: 'Work ↗', href: '#work' }, { label: 'About ↗', href: '#about' }, { label: 'Contact ↗', href: '#contact' },
     ]},
-    badge: { initials: 'AS', ringText: 'ADEDEJI SAMUEL', ringImage: '', size: 96, href: 'contact.html' },
+    badge: { style: 'brand', initials: 'AS', ringText: 'ADEDEJI SAMUEL', ringImage: '', size: 96, href: 'contact.html' },
     signature: { name: 'ADEDEJI SAMUEL', font: 'UnifrakturCook', nameColor: '#E8223E', bg: '#141211', textColor: '#faf6ee' },
-    contact: { ctaLabel: "Let's talk ↗", pageHeading: "Let's talk.", subheading: 'Tell me about your project.', body: 'Share a little about what you have in mind — the goal, the timeline, anything that helps. I read every message and reply personally.', whatsappLabel: 'WhatsApp number (optional)', backLabel: '← Back home', small: 'Start a project', headingLines: ["LET'S MAKE","SOMETHING","WORTH SEEING."], available: 'Available for selected projects', emailText: 'samuel.s.adedeji@gmail.com ↗', emailHref: 'mailto:samuel.s.adedeji@gmail.com' },
+    contact: { ctaLabel: "Let's talk ↗", pageHeading: "Let's talk.", subheading: 'Tell me about your project.', body: 'Share a little about what you have in mind — the goal, the timeline, anything that helps. I read every message and reply personally.', whatsappLabel: 'WhatsApp number (optional)', backLabel: '← Back home', small: 'Start a project', headingLines: ["Let's make","something","worth seeing."], available: 'Available for selected projects', emailText: 'samuel.s.adedeji@gmail.com ↗', emailHref: 'mailto:samuel.s.adedeji@gmail.com' },
+    notes: { enabled: true, label: 'Say hello', heading: 'A few notes pinned for you.', feel: 'How are you feeling today? One word.', build: 'What are you building next?', spark: 'Need a spark?' },
+    socials: [
+      { kind: 'instagram', label: 'Instagram', url: 'https://www.instagram.com/helloutidex', icon: '' },
+      { kind: 'x', label: 'X (Twitter)', url: 'https://x.com/helloutidex', icon: '' },
+      { kind: 'linkedin', label: 'LinkedIn', url: 'https://www.linkedin.com/search/results/people/?keywords=Adedeji%20Samuel', icon: '' },
+      { kind: 'link', label: '', url: '', icon: '' },
+    ],
     footer: { left: '© 2026 Adedeji Samuel', right: 'Designed with intention / Lagos', brand: 'Helloutidex', name: 'SAMUEL ADEDEJI' },
     effects: { particles: true, intro: true, introStyle: 'poster' },
-    poster: { head: "Every project is a\nconversation, this is\nwhere yours begins.", btn: 'Book a Call', tag: "What are you waiting for, let's build bold brands.", sign: 'Adedeji Samuel', signImage: '', image: 'assets/portrait-cutout.webp', mark: 'SA', hold: 8.4,
+    poster: { head: "Every project is a\nconversation, this is\nwhere yours begins.", btn: 'Book a Call', tag: "What are you waiting for, let's build bold brands.", sign: 'Helloutidex', signImage: '', image: 'assets/portrait-cutout.webp', mark: 'SA', hold: 8.4,
       socials: [{ label: 'Instagram', url: '' }, { label: 'LinkedIn', url: '' }, { label: 'Linktree', url: '' }] },
     games: { enabled: true, idleMinutes: 2, button: 'Play a game', offline: true, title: 'Taking a break? Play a quick game.', quiz: true, fonts: true, odd: true, memory: true, sudoku: true, words: true },
   };
@@ -159,7 +168,11 @@
     const navLogo = $('#navLogo');
     if (navLogo) {
       if (c.nav.logoImage) { navLogo.innerHTML = `<img class="sb-logo-img" src="${esc(c.nav.logoImage)}" alt="${esc(c.nav.logo || 'Logo')}">`; navLogo.classList.add('has-img'); }
-      else { navLogo.textContent = c.nav.logo; navLogo.classList.remove('has-img'); }
+      else if (c.nav.logoStyle === 'text') { navLogo.textContent = c.nav.logo; navLogo.classList.remove('has-img', 'has-mark'); }
+      else {   // built-in SA. mark (letters follow the theme, the dot stays red) + optional name
+        navLogo.classList.add('has-mark'); navLogo.classList.remove('has-img');
+        navLogo.innerHTML = `<svg class="sb-mark" viewBox="0 0 422 144" role="img" aria-label="${esc(c.nav.logo || 'SA')}"><use href="assets/brand.svg#sa-letters"/><use class="mark-dot" href="assets/brand.svg#sa-dot"/></svg>${c.nav.logoStyle === 'mark' ? '' : `<span class="sb-name">${esc(c.nav.logo || '')}</span>`}`;
+      }
     }
     renderNav(c);
     // favicon (the little icon in the browser tab): admin → Content → Header, falls back to assets/favicon.svg
@@ -183,6 +196,11 @@
     const portraitImg = $('#portraitImg'); if (portraitImg && c.about.portraitImage) portraitImg.src = c.about.portraitImage;
     set('portraitCaption', c.about.portraitCaption);
     set('aboutHeadingPre', c.about.headingPre); set('aboutHeadingEm', c.about.headingEm); set('aboutHeadingPost', c.about.headingPost);
+    // signature: an uploaded PNG / SVG replaces the drawn one (About + opening poster)
+    const asg = $('#aboutSign');
+    if (asg && c.about.signImage) { asg.innerHTML = `<img class="sig-img" src="${esc(c.about.signImage)}" alt="Signature">`; }
+    // "Available for hire" badge in the hero (empty text hides it)
+    const av = $('#heroAvail'); if (av) { av.hidden = !c.hero.available; set('heroAvailText', c.hero.available || ''); }
     set('aboutParagraph1', c.about.paragraph1); set('aboutParagraph2', c.about.paragraph2);
     const skillsList = $('#skillsList'); if (skillsList) skillsList.innerHTML = c.about.skills.map(s => `<span class="skill">${esc(s)}</span>`).join('');
     set('socialLabel', c.social.label); set('socialCount', c.social.count);
@@ -228,7 +246,9 @@
     });
     // contact: homepage call-to-action + the contact page
     set('contactSmall', c.contact.small);
-    const ch = $('#contactHeading'); if (ch) ch.innerHTML = c.contact.headingLines.map(esc).join('<br>');
+    // contact heading in sentence case (ALL-CAPS lines from older settings are converted)
+    const sentence = lines => { const t = lines.join('\n'); if (t !== t.toUpperCase()) return lines; const low = t.toLowerCase(); return (low.charAt(0).toUpperCase() + low.slice(1)).replace(/\bi\b/g, 'I').split('\n'); };
+    const ch = $('#contactHeading'); if (ch) ch.innerHTML = sentence(c.contact.headingLines || []).map(esc).join('<br>');
     set('contactPageHeading', c.contact.pageHeading); set('contactSub', c.contact.subheading); set('contactBody', c.contact.body);
     set('contactBack', c.contact.backLabel); set('whatsappLabel', c.contact.whatsappLabel);
     set('contactAvailable', c.contact.available);
@@ -236,6 +256,20 @@
     set('contactCtaBtn', c.contact.ctaLabel || "Let's talk ↗");
     const formEl = $('#contactForm'); if (formEl) formEl.action = 'https://formsubmit.co/' + String(c.contact.emailHref || '').replace(/^mailto:/, '').split('?')[0];
     set('footerLeft', c.footer.left); set('footerRight', c.footer.right);
+    // social links (footer + contact page); built-in icons unless you upload your own
+    const SOC = {
+      instagram: '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="17.4" cy="6.6" r="1.2" fill="currentColor"/></svg>',
+      x: '<svg viewBox="0 0 24 24"><path d="M4 4h4.6l4.1 5.6L17.6 4H20l-6.2 7.1L20.5 20h-4.6l-4.4-6-5.2 6H4l6.6-7.6z" fill="currentColor"/></svg>',
+      linkedin: '<svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M7.5 10v6.5M7.5 7.3v.1M11 16.5V10m0 3.2c0-1.9 1-3.2 2.6-3.2s2.4 1.1 2.4 3v3.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+      behance: '<svg viewBox="0 0 24 24"><path d="M3 6h5.2a2.8 2.8 0 0 1 .9 5.4A3 3 0 0 1 8.4 18H3zM3 11.5h5M15 8h5M14 14h7a3.5 3.5 0 1 0-1 2.6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+      dribbble: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M5 7c4 1.5 9 1 13-1.5M3.5 13c5-1.5 11-1 16.5 3M9 3.8c3 4 5 10 6 16.6" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>',
+      link: '<svg viewBox="0 0 24 24"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1.2 1.2M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1.2-1.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+    };
+    const socials = (c.socials || []).filter(s => s && s.url);
+    const socialHTML = socials.map(s => `<a class="soc" href="${esc(s.url)}" target="_blank" rel="noopener" aria-label="${esc(s.label || s.kind)}" title="${esc(s.label || s.kind)}">${s.icon ? `<img src="${esc(s.icon)}" alt="">` : (SOC[s.kind] || SOC.link)}</a>`).join('');
+    $$('[data-socials]').forEach(el => { el.innerHTML = socialHTML; el.hidden = !socials.length; });
+    const pn = c.notes || {}; const notesEl = $('#notes'); if (notesEl) notesEl.hidden = pn.enabled === false;
+    set('notesLabel', pn.label || ''); set('notesHeading', pn.heading || '');
     set('footBrand', c.footer.brand || ''); set('footName', c.footer.name || '');
     // my process
     const pr2 = c.process || {}, steps = (pr2.steps || []).filter(s => s.title);
@@ -281,7 +315,12 @@
       const ini = $('#floatingBadgeInitials'); if (ini) ini.textContent = initials;
       const bimg = $('#floatingBadgeImg'), bsvg = $('#floatingBadgeSvg');
       if (bimg) { bimg.hidden = !ringImg; if (ringImg) bimg.src = ringImg; }
-      if (bsvg) bsvg.style.display = ringImg ? 'none' : '';
+      // built-in brand badge (SA. in the middle, ADEDEJI.SAMUEL.SUNDAY spinning around it) unless "text" style or a PNG is chosen
+      const brand = !ringImg && bd.style !== 'text';
+      badge.classList.toggle('is-brand', brand);
+      let art = $('#floatingBadgeArt');
+      if (brand && !art) { badge.insertAdjacentHTML('afterbegin', `<svg id="floatingBadgeArt" class="fb-art" viewBox="0 0 531 531" aria-hidden="true"><g class="fb-ring"><use href="assets/brand.svg#ring"/></g><use href="assets/brand.svg#center"/><use class="mark-dot" href="assets/brand.svg#bdot"/></svg>`); }
+      if (bsvg) bsvg.style.display = (ringImg || brand) ? 'none' : '';
       const ringPath = $('#badgeCircleText');
       if (ringPath && ring) {
         const unit = ring + ' · ';
@@ -299,7 +338,7 @@
     localStorage.setItem('ferricool-intro', ef.intro === false ? 'off' : 'on');
     localStorage.setItem('ferricool-intro-style', ef.intro === false ? 'off' : (ef.introStyle || 'poster'));
     localStorage.setItem('ferricool-intro-name', (C.signature && C.signature.name) || '');
-    const img = po.image && !String(po.image).startsWith('data:') ? po.image : 'assets/portrait-cutout.webp', simg = po.signImage && !String(po.signImage).startsWith('data:') ? po.signImage : '';
+    const img = po.image && !String(po.image).startsWith('data:') ? po.image : 'assets/portrait-cutout.webp', sraw = po.signImage || (C.about && C.about.signImage) || '', simg = sraw && !String(sraw).startsWith('data:') ? sraw : '';
     localStorage.setItem('ferricool-poster', JSON.stringify({ head: po.head, btn: po.btn, tag: po.tag, sign: po.sign, signImg: simg, img, mark: po.mark, hold: Math.round(Math.max(3.8, Number(po.hold) || 8.4) * 1000), socials: (po.socials || []).filter(x => x && x.label && x.url) }));
   } catch (e) {}
 
@@ -319,6 +358,11 @@
       ['paper', 'ink', 'muted', 'line', 'tint1', 'tint2'].forEach(k => { if (saved[k]) out.light[k] = saved[k]; });
       if (saved.contactBg) { out.light.accent = saved.contactBg; out.light.contactBg = saved.contactBg; }
     }
+    // older light palettes used grey for the main text — that looked washed out. Keep text near-black.
+    const lum = hex => { const m = /^#?([0-9a-f]{6})$/i.exec(hex || ''); if (!m) return 0; const n = parseInt(m[1], 16); return (0.2126 * (n >> 16) + 0.7152 * ((n >> 8) & 255) + 0.0722 * (n & 255)) / 255; };
+    if (lum(out.light.ink) > .3) out.light.ink = '#141211';
+    if (lum(out.light.muted) > .55 || out.light.muted === out.light.ink) out.light.muted = '#5c5c5c';
+    if (lum(out.light.contactText) > .3 && lum(out.light.contactBg) > .7) { out.light.contactBg = '#E8223E'; out.light.contactText = '#ffffff'; }
     return out;
   }
   // Mode: 'light', 'dark' or 'system' (follows each visitor's phone / computer setting, and switches live if they change it)
@@ -379,7 +423,7 @@
     const g = C.games || {}; if (g.enabled === false) return;
     const list = ['quiz', 'fonts', 'odd', 'memory', 'sudoku', 'words'].filter(k => g[k] !== false); if (!list.length) return;
     let ready = null;
-    const load = () => ready || (ready = new Promise((res, rej) => { if (window.PortfolioGames) return res(); const s = document.createElement('script'); s.src = 'game.js?v=3'; s.onload = res; s.onerror = () => { ready = null; rej(); }; document.head.appendChild(s); }));
+    const load = () => ready || (ready = new Promise((res, rej) => { if (window.PortfolioGames) return res(); const s = document.createElement('script'); s.src = 'game.js?v=4'; s.onload = res; s.onerror = () => { ready = null; rej(); }; document.head.appendChild(s); }));
     (window.requestIdleCallback || (f => setTimeout(f, 2500)))(() => load().catch(() => {}));
     const wait = Math.max(1, Number(g.idleMinutes) || 5) * 60 * 1000;
     let t = null;
@@ -429,6 +473,16 @@
   // 1) as a section scrolls away it gently shrinks, rounds its corners and dims, so the next one seems to slide over it
   // 2) testimonials are a deck: each card sticks, and the ones underneath shrink back as the next card covers them
   // 3) big section headings reveal word by word
+  // headings: the full stop at the end is always brand red (not the hero headline)
+  (function redDots(){
+    $$('.section-top p, .about h2, .contact h2, .experience h2, .proof-head p, .brief-head h1, .contact-intro h1, .case-thanks h2').forEach(h => {
+      const walker = document.createTreeWalker(h, NodeFilter.SHOW_TEXT); let last = null; while (walker.nextNode()) if (walker.currentNode.textContent.trim()) last = walker.currentNode;
+      if (!last || !/\.\s*$/.test(last.textContent) || last.parentElement.classList.contains('hd-dot')) return;
+      const t = last.textContent.replace(/\.\s*$/, ''); last.textContent = t;
+      const dot = document.createElement('span'); dot.className = 'hd-dot'; dot.textContent = '.'; last.parentNode.insertBefore(dot, last.nextSibling);
+    });
+  })();
+
   (function scrollMotion(){
     const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduce) return;

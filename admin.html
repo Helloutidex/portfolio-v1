@@ -6,8 +6,8 @@
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,500;1,500&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=UnifrakturCook:wght@700&display=swap">
-<link rel="stylesheet" href="style.css?v=20261111a">
-<link rel="stylesheet" href="admin.css?v=20261111a">
+<link rel="stylesheet" href="style.css?v=20261111d">
+<link rel="stylesheet" href="admin.css?v=20261111d">
 </head>
 <body class="admin-body">
 <section class="lock-screen" id="lockScreen">
@@ -56,6 +56,7 @@
   <section class="admin-panel" id="panel-content">
     <div class="admin-group" data-group="nav">
       <h2>Header</h2>
+      <label>Logo style (when no logo image is uploaded)<select data-path="nav.logoStyle"><option value="mark-name">SA. mark + name</option><option value="mark">SA. mark only</option><option value="text">Name only (text)</option></select></label>
       <label>Logo text (also used as the logo's description for screen readers)<input data-path="nav.logo"></label>
       <label>Logo image — replaces the text. Use a transparent PNG or SVG: it shows white on the dark theme and in its own colours on the light theme. Remove it to go back to the text.<div class="admin-image-field" data-image-path="nav.logoImage"></div></label>
       <label>Favicon — the small icon in the browser tab. A square PNG or SVG (at least 64 × 64). Empty = the built-in "AS" icon.<div class="admin-image-field" data-image-path="nav.favicon"></div></label>
@@ -80,6 +81,7 @@
         <label>Hero button text (leave empty to remove the button)<input data-path="hero.ctaLabel"></label>
         <label>Hero button goes to<input data-path="hero.ctaHref" placeholder="#work, contact.html, or any link"></label>
       </div>
+      <label>"Available" badge above the headline (empty = hidden)<input data-path="hero.available" placeholder="Available for hire"></label>
       <div class="admin-row3">
         <label>"Hire me" button text (empty = no button)<input data-path="hero.hireLabel"></label>
         <label>WhatsApp number (it opens a chat with you)<input data-path="hero.whatsapp" placeholder="2348065925091 or 08065925091"></label>
@@ -108,6 +110,7 @@
       </div>
       <label>Paragraph 1<textarea data-path="about.paragraph1"></textarea></label>
       <label>Paragraph 2<textarea data-path="about.paragraph2"></textarea></label>
+      <label>Signature under the About text — upload a transparent PNG / SVG (white or light works on dark) to replace the drawn "Helloutidex" one. Also used on the opening poster.<div class="admin-image-field" data-image-path="about.signImage"></div></label>
       <label>Skills (comma-separated)<input data-path="about.skills" data-list="comma"></label>
     </div>
 
@@ -213,6 +216,7 @@
         <label>Size (px)<input type="number" min="48" max="200" data-path="badge.size"></label>
         <label>Where it links<input data-path="badge.href" placeholder="contact.html"></label>
       </div>
+      <label>Badge style<select data-path="badge.style"><option value="brand">Brand badge — SA. with ADEDEJI.SAMUEL.SUNDAY around it</option><option value="text">Initials + text ring (set below)</option></select></label>
       <label>Text around the ring<input data-path="badge.ringText"></label>
       <label>Or your own PNG that spins instead of the text (transparent PNG works best)<div class="admin-image-field" data-image-path="badge.ringImage"></div></label>
     </div>
@@ -269,7 +273,7 @@
         <label>Seconds before the plane takes off (3.8–15)<input type="number" min="3.8" max="15" step="0.1" data-path="poster.hold"></label>
       </div>
       <label>Red tag text<input data-path="poster.tag"></label>
-      <label>Signature — leave as "Adedeji Samuel" to use the drawn signature, or type another name (handwriting font)<input data-path="poster.sign"></label>
+      <label>Signature — leave as "Helloutidex" to use the drawn signature, or type another name (handwriting font)<input data-path="poster.sign"></label>
       <label>Or your own signature (transparent PNG / SVG, white)<div class="admin-image-field" data-image-path="poster.signImage"></div></label>
       <label>Portrait — use a cut-out PNG with a transparent background (shown in black &amp; white with a fine line texture)<div class="admin-image-field" data-image-path="poster.image"></div></label>
       <p class="admin-hint" style="margin-top:12px">Links shown at the top (only ones with a link appear)</p>
@@ -299,6 +303,21 @@
         <label class="admin-check"><input type="checkbox" data-path="games.sudoku"> Mini Sudoku</label>
         <label class="admin-check"><input type="checkbox" data-path="games.words"> Design words</label>
       </div>
+    </div>
+
+    <div class="admin-group" data-group="notes">
+      <h2>Pinned notes <span class="admin-hint">(three dark sticky notes after Social proof — visitors type a word and get a reply)</span></h2>
+      <label class="admin-check"><input type="checkbox" data-path="notes.enabled"> Show the pinned notes</label>
+      <div class="admin-row2"><label>Small label<input data-path="notes.label"></label><label>Heading<input data-path="notes.heading"></label></div>
+      <label>Note 1 — mood question<input data-path="notes.feel"></label>
+      <label>Note 2 — project question<input data-path="notes.build"></label>
+      <label>Note 3 — design-tip note<input data-path="notes.spark"></label>
+    </div>
+
+    <div class="admin-group" data-group="socials">
+      <h2>Social links <span class="admin-hint">(shown in the footer and on the contact page — links left empty are hidden)</span></h2>
+      <div id="socialsEditor"></div>
+      <button class="admin-add-small" type="button" id="addSocial">+ Add a link</button>
     </div>
 
     <div class="admin-group" data-group="footer">
@@ -384,5 +403,5 @@
 </main>
 </div>
 
-<script src="admin.js?v=20261111a" defer></script>
+<script src="admin.js?v=20261111d" defer></script>
 </body></html>
