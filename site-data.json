@@ -3,7 +3,7 @@
     "nav": {
       "logo": "ADEDEJI SAMUEL / DESIGN",
       "logoImage": "",
-      "logoStyle": "mark-label",
+      "logoStyle": "mark",
       "favicon": "",
       "thumbBar": true,
       "links": [
@@ -656,5 +656,5 @@
       ]
     }
   ],
-  "updatedAt": "2026-11-11T05:34:11.315Z"
+  "updatedAt": "2026-11-11T05:36:30.235Z"
 }
