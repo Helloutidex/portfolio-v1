@@ -39,7 +39,7 @@
   ============================================================ */
   const CONTENT_STORAGE_KEY = 'ferricool-portfolio-content';
   const DEFAULT_CONTENT = {
-    nav: { logo: 'ADEDEJI SAMUEL / DESIGN', logoImage: '', logoStyle: 'mark-name', favicon: '', links: [{ label: 'About', href: '#about' }, { label: 'Work', href: '#work' }], ctaLabel: "Let's talk", ctaHref: 'contact.html' },
+    nav: { logo: 'ADEDEJI SAMUEL / DESIGN', logoImage: '', logoStyle: 'mark', favicon: '', thumbBar: true, links: [{ label: 'About', href: '#about' }, { label: 'Work', href: '#work' }], ctaLabel: "Let's talk", ctaHref: 'contact.html' },
     hero: {
       eyebrow: 'Independent designer · Lagos, Nigeria',
       titlePre: 'Designing ', titleEm: "what's", titlePost: ' next.',
@@ -115,8 +115,8 @@
       { kind: 'linkedin', label: 'LinkedIn', url: 'https://www.linkedin.com/search/results/people/?keywords=Adedeji%20Samuel', icon: '' },
       { kind: 'link', label: '', url: '', icon: '' },
     ],
-    footer: { left: '© 2026 Adedeji Samuel', right: 'Designed with intention / Lagos', brand: 'Helloutidex', name: 'SAMUEL ADEDEJI' },
-    effects: { particles: true, intro: true, introStyle: 'poster' },
+    footer: { copyright: '© 2026 Helloutidex. All rights reserved.', left: '© 2026 Adedeji Samuel', right: 'Designed with intention / Lagos', brand: 'Helloutidex', name: 'SAMUEL ADEDEJI' },
+    effects: { particles: true, ctaPuzzle: true, intro: true, introStyle: 'poster' },
     poster: { head: "Every project is a\nconversation, this is\nwhere yours begins.", btn: 'Book a Call', tag: "What are you waiting for, let's build bold brands.", sign: 'Helloutidex', signImage: '', image: 'assets/portrait-cutout.webp', mark: 'SA', hold: 8.4,
       socials: [{ label: 'Instagram', url: '' }, { label: 'LinkedIn', url: '' }, { label: 'Linktree', url: '' }] },
     games: { enabled: true, idleMinutes: 2, button: 'Play a game', offline: true, title: 'Taking a break? Play a quick game.', quiz: true, fonts: true, odd: true, memory: true, sudoku: true, words: true },
@@ -171,14 +171,14 @@
       else if (c.nav.logoStyle === 'text') { navLogo.textContent = c.nav.logo; navLogo.classList.remove('has-img', 'has-mark'); }
       else {   // built-in SA. mark (letters follow the theme, the dot stays red) + optional name
         navLogo.classList.add('has-mark'); navLogo.classList.remove('has-img');
-        navLogo.innerHTML = `<svg class="sb-mark" viewBox="0 0 422 144" role="img" aria-label="${esc(c.nav.logo || 'SA')}"><use href="assets/brand.svg#sa-letters"/><use class="mark-dot" href="assets/brand.svg#sa-dot"/></svg>${c.nav.logoStyle === 'mark' ? '' : `<span class="sb-name">${esc(c.nav.logo || '')}</span>`}`;
+        navLogo.innerHTML = `<svg class="sb-mark" viewBox="0 0 422 144" role="img" aria-label="${esc(c.nav.logo || 'SA')}"><use href="assets/brand.svg#sa-letters"/><use class="mark-dot" href="assets/brand.svg#sa-dot"/></svg>${c.nav.logoStyle !== 'mark-label' ? '' : `<span class="sb-name">${esc(c.nav.logo || '')}</span>`}`;
       }
     }
     renderNav(c);
     // favicon (the little icon in the browser tab): admin → Content → Header, falls back to assets/favicon.svg
     const fav = document.getElementById('favicon');
     if (fav && c.nav.favicon) { fav.href = c.nav.favicon; fav.removeAttribute('type'); }
-    set('heroEyebrow', c.hero.eyebrow); set('heroTitlePre', c.hero.titlePre); set('heroTitleEm', c.hero.titleEm); set('heroTitlePost', c.hero.titlePost);
+    set('heroEyebrow', c.hero.eyebrow); { const eb = $('#heroEyebrow'); if (eb) eb.hidden = c.hero.showEyebrow !== true; } set('heroTitlePre', c.hero.titlePre); set('heroTitleEm', c.hero.titleEm); set('heroTitlePost', c.hero.titlePost);
     set('heroParagraph', c.hero.paragraph); set('lensLabel', c.hero.lensLabel); set('opticNote', c.hero.opticNote);
     set('heroNote', c.hero.note); set('heroZoomInstruction', c.hero.zoomInstruction);
     const cta = $('#heroCta');
@@ -270,7 +270,7 @@
     $$('[data-socials]').forEach(el => { el.innerHTML = socialHTML; el.hidden = !socials.length; });
     const pn = c.notes || {}; const notesEl = $('#notes'); if (notesEl) notesEl.hidden = pn.enabled === false;
     set('notesLabel', pn.label || ''); set('notesHeading', pn.heading || '');
-    set('footBrand', c.footer.brand || ''); set('footName', c.footer.name || '');
+    set('footBrand', c.footer.brand || ''); set('footCopy', c.footer.copyright || ('© ' + new Date().getFullYear() + ' Helloutidex. All rights reserved.')); set('footName', c.footer.name || '');
     // my process
     const pr2 = c.process || {}, steps = (pr2.steps || []).filter(s => s.title);
     const procEl = $('#process'); if (procEl) procEl.hidden = !steps.length;
@@ -500,7 +500,7 @@
       walk(h); $$('.wd', h).forEach((w, i) => w.style.setProperty('--w', i)); h.classList.add('words');
     });
     if ('IntersectionObserver' in window) {
-      const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('words-in'); io.unobserve(e.target); } }), { threshold: .4 });
+      const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.querySelectorAll('.wd').forEach((w, i) => w.style.setProperty('--w', Math.min(i, 16))); e.target.classList.add('words-in'); io.unobserve(e.target); } }), { threshold: .4 });
       $$('.words').forEach(h => io.observe(h));
     }
     let ticking = false;

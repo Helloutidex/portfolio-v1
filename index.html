@@ -4,10 +4,10 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Adedeji Samuel — Designing What's Next</title>
 <link rel="preload" as="image" href="assets/uploads/mvybotwj-0.jpg" fetchpriority="high"><link rel="preload" as="image" href="assets/portrait-cutout.webp"><link rel="preload" as="image" href="assets/portrait-sketch.webp">
-<link rel="icon" id="favicon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" id="favicon" href="assets/favicon.svg?v=2" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Mrs+Saint+Delafield&family=Caveat:wght@400;700&display=swap"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,500;1,500&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=UnifrakturCook:wght@700&display=swap">
-<link rel="stylesheet" href="style.css?v=20261111d">
+<link rel="stylesheet" href="style.css?v=20261111i">
 <script>/* paint the saved colours before anything shows, and hold the page until the real content is in (max 2.5s) */
 (function(){var d=document.documentElement;d.classList.add("is-loading");try{var t=JSON.parse(localStorage.getItem("ferricool-theme-cache")||"null"),m;if(t){m=t.mode==="system"?(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"):t.mode;var v=t[m];if(v)for(var k in v)d.style.setProperty(k,v[k])}else m=localStorage.getItem("ferricool-mode")||(window.matchMedia&&matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");if(m==="dark")d.classList.add("predark");var l=localStorage.getItem("ferricool-lens");if(l){var p=document.createElement("link");p.rel="preload";p.as="image";p.href=l;document.head.appendChild(p)}}catch(e){}setTimeout(function(){d.classList.remove("is-loading")},1500)})();</script>
 </head>
@@ -144,6 +144,7 @@
       <a class="hero-cta" id="heroCta" href="#work">View my work ↗</a>
       <a class="hero-hire" id="heroHire" href="https://wa.me/2348065925091" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M8.6 8.4c.2-.5.5-.5.8-.5h.5c.2 0 .4 0 .6.5l.7 1.7c.1.2 0 .5-.1.7l-.5.6c-.1.2-.2.4 0 .6.6 1 1.5 1.9 2.6 2.5.2.1.4.1.6-.1l.6-.7c.2-.2.4-.3.7-.2l1.6.8c.3.1.4.3.4.5 0 .6-.3 1.4-1 1.8-.6.4-1.5.5-2.6.1-1.6-.6-3-1.7-4-3.1-.8-1.1-1.3-2.4-.9-3.7z" fill="currentColor"/></svg><span id="heroHireLabel">Hire me</span></a>
     </div>
+    <div class="hero-social" data-socials aria-label="Social links"></div>
   </div>
   <div class="stage" id="stage">
     <div class="cards" id="cards" aria-label="Selected work"></div>
@@ -235,6 +236,7 @@
 <section class="links-section">
   <div class="section-top"><span id="linksLabel">Links</span><p id="linksDescription">Find the work, the process, or start a conversation.</p></div>
   <div class="links-grid" id="linksGrid"></div>
+  <div class="links-social"><span class="ls-label" id="linksSocialLabel">Follow along</span><div class="ls-icons" data-socials></div></div>
 </section>
 <div class="signature"><div class="name-track" id="nameTrack"></div></div>
 
@@ -250,7 +252,7 @@
     <svg class="sf-cross" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="7"/><path d="M16 2v28M2 16h28"/></svg>
     <span class="sf-name" id="footName">SAMUEL ADEDEJI</span>
   </div>
-  <div class="sf-social" data-socials></div>
+  <span class="sf-copy" id="footCopy">© 2026 Helloutidex. All rights reserved.</span>
 </footer>
 
 <div class="modal" id="modal">
@@ -301,6 +303,8 @@
   <span class="floating-badge-center"><b id="floatingBadgeInitials">SA</b><i>.</i></span>
 </a>
 
-<script src="notes.js?v=1" defer></script>
-<script src="script.js?v=20261111d" defer></script>
+<script src="notes.js?v=2" defer></script>
+<script src="cta-bg.js?v=1" defer></script>
+<script src="thumbbar.js?v=2" defer></script>
+<script src="script.js?v=20261111i" defer></script>
 </body></html>

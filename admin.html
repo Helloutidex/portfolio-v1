@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Portfolio Admin — Designing What's Next</title>
-<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon.svg?v=2" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,500;1,500&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=UnifrakturCook:wght@700&display=swap">
-<link rel="stylesheet" href="style.css?v=20261111d">
-<link rel="stylesheet" href="admin.css?v=20261111d">
+<link rel="stylesheet" href="style.css?v=20261111i">
+<link rel="stylesheet" href="admin.css?v=20261111i">
 </head>
 <body class="admin-body">
 <section class="lock-screen" id="lockScreen">
@@ -56,7 +56,7 @@
   <section class="admin-panel" id="panel-content">
     <div class="admin-group" data-group="nav">
       <h2>Header</h2>
-      <label>Logo style (when no logo image is uploaded)<select data-path="nav.logoStyle"><option value="mark-name">SA. mark + name</option><option value="mark">SA. mark only</option><option value="text">Name only (text)</option></select></label>
+      <label>Logo style (when no logo image is uploaded)<select data-path="nav.logoStyle"><option value="mark">SA. mark only</option><option value="mark-label">SA. mark + name</option><option value="text">Name only (text)</option></select></label>
       <label>Logo text (also used as the logo's description for screen readers)<input data-path="nav.logo"></label>
       <label>Logo image — replaces the text. Use a transparent PNG or SVG: it shows white on the dark theme and in its own colours on the light theme. Remove it to go back to the text.<div class="admin-image-field" data-image-path="nav.logoImage"></div></label>
       <label>Favicon — the small icon in the browser tab. A square PNG or SVG (at least 64 × 64). Empty = the built-in "AS" icon.<div class="admin-image-field" data-image-path="nav.favicon"></div></label>
@@ -66,11 +66,13 @@
         <label>Button text (empty = no button)<input data-path="nav.ctaLabel"></label>
         <label>Button goes to<input data-path="nav.ctaHref" placeholder="contact.html"></label>
       </div>
+      <label class="admin-check" style="margin-top:10px"><input type="checkbox" data-path="nav.thumbBar"> Thumb bar on phones (Work · Hire me · Let's talk pinned at the bottom of the screen)</label>
     </div>
 
     <div class="admin-group" data-group="hero">
       <h2>Hero</h2>
       <label>Eyebrow<input data-path="hero.eyebrow"></label>
+      <label class="admin-check"><input type="checkbox" data-path="hero.showEyebrow"> Show the eyebrow line in the hero (hidden by default)</label>
       <div class="admin-row3">
         <label>Headline — before<input data-path="hero.titlePre"></label>
         <label>Headline — italic word<input data-path="hero.titleEm"></label>
@@ -261,6 +263,7 @@
     <div class="admin-group" data-group="effects">
       <h2>Effects</h2>
       <label class="admin-check"><input type="checkbox" data-path="effects.particles"> Soft particles that bloom where the cursor moves or lands</label>
+      <label class="admin-check"><input type="checkbox" data-path="effects.ctaPuzzle"> Moving puzzle behind "Let's make something worth seeing" (tiles build the SA. mark, the lens, an arrow and a cube)</label>
       <label class="admin-check"><input type="checkbox" data-path="effects.intro"> Opening animation when someone arrives (once per visit, tap to skip)</label>
       <label>Which opening<select data-path="effects.introStyle"><option value="poster">Poster — "Every project is a conversation…" (set it up below)</option><option value="plane">Paper plane — a red plane takes off and reveals the site</option></select></label>
     </div>
@@ -325,6 +328,7 @@
       <div class="admin-row2">
         <label>Brand<input data-path="footer.brand" placeholder="Helloutidex"></label>
         <label>Name<input data-path="footer.name" placeholder="SAMUEL ADEDEJI"></label>
+        <label>Copyright line<input data-path="footer.copyright" placeholder="© 2026 Helloutidex. All rights reserved."></label>
       </div>
     </div>
 
@@ -403,5 +407,5 @@
 </main>
 </div>
 
-<script src="admin.js?v=20261111d" defer></script>
+<script src="admin.js?v=20261111i" defer></script>
 </body></html>

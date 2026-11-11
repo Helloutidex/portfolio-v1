@@ -123,7 +123,7 @@ try {
   ============================================================ */
   const CONTENT_STORAGE_KEY = 'ferricool-portfolio-content';
   const DEFAULT_CONTENT = {
-    nav: { logo: 'ADEDEJI SAMUEL / DESIGN', logoImage: '', logoStyle: 'mark-name', favicon: '', links: [{ label: 'About', href: '#about' }, { label: 'Work', href: '#work' }], ctaLabel: "Let's talk", ctaHref: 'contact.html' },
+    nav: { logo: 'ADEDEJI SAMUEL / DESIGN', logoImage: '', logoStyle: 'mark', favicon: '', thumbBar: true, links: [{ label: 'About', href: '#about' }, { label: 'Work', href: '#work' }], ctaLabel: "Let's talk", ctaHref: 'contact.html' },
     hero: {
       eyebrow: 'Independent designer · Lagos, Nigeria',
       titlePre: 'Designing ', titleEm: "what's", titlePost: ' next.',
@@ -199,8 +199,8 @@ try {
       { kind: 'linkedin', label: 'LinkedIn', url: 'https://www.linkedin.com/search/results/people/?keywords=Adedeji%20Samuel', icon: '' },
       { kind: 'link', label: '', url: '', icon: '' },
     ],
-    footer: { left: '© 2026 Adedeji Samuel', right: 'Designed with intention / Lagos', brand: 'Helloutidex', name: 'SAMUEL ADEDEJI' },
-    effects: { particles: true, intro: true, introStyle: 'poster' },
+    footer: { copyright: '© 2026 Helloutidex. All rights reserved.', left: '© 2026 Adedeji Samuel', right: 'Designed with intention / Lagos', brand: 'Helloutidex', name: 'SAMUEL ADEDEJI' },
+    effects: { particles: true, ctaPuzzle: true, intro: true, introStyle: 'poster' },
     poster: { head: "Every project is a\nconversation, this is\nwhere yours begins.", btn: 'Book a Call', tag: "What are you waiting for, let's build bold brands.", sign: 'Helloutidex', signImage: '', image: 'assets/portrait-cutout.webp', mark: 'SA', hold: 8.4,
       socials: [{ label: 'Instagram', url: '' }, { label: 'LinkedIn', url: '' }, { label: 'Linktree', url: '' }] },
     games: { enabled: true, idleMinutes: 2, button: 'Play a game', offline: true, title: 'Taking a break? Play a quick game.', quiz: true, fonts: true, odd: true, memory: true, sudoku: true, words: true },

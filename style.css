@@ -144,7 +144,7 @@ button{font:inherit}
 /* ---------- work / automatic gallery ---------- */
 .work{padding:115px var(--edge) 110px;background:var(--paper)}
 .section-top{border-top:1px solid var(--line);padding-top:14px;display:flex;justify-content:space-between;gap:30px;margin-bottom:40px}
-.section-top span{font:500 10px 'DM Mono',monospace;text-transform:uppercase;color:var(--muted)}
+.section-top > span{font:500 10px 'DM Mono',monospace;text-transform:uppercase;color:var(--muted)}
 .section-top p{font-size:calc(var(--scale) * clamp(27px,4vw,53px));line-height:.98;letter-spacing:-.055em;max-width:760px;margin:0}
 /* Creative moving gallery: two rows of tilted frames drifting past each other in
    opposite directions, built entirely from the PROJECTS list — drop in a new
@@ -376,7 +376,7 @@ button{font:inherit}
 .lens:before{border-color:color-mix(in srgb,var(--accent) 28%, transparent)}
 .ring-mark{border-color:color-mix(in srgb,var(--accent) 50%, transparent)}
 .ring-mark:after{border-color:var(--accent);background:var(--accent)}
-.section-top span,.about-label,.social-proof-head span:first-child{color:var(--accent)}
+.section-top > span,.about-label,.social-proof-head span:first-child{color:var(--accent)}
 .about{background:var(--tint1)}
 .about .portrait-frame{background:var(--paper)}
 .skill{background:color-mix(in srgb,var(--paper) 72%, transparent);border-color:color-mix(in srgb,var(--ink) 16%, transparent)}
@@ -613,7 +613,7 @@ body{transition:opacity .35s ease}
 
 /* ---- section headings: label + big line, no rules ---- */
 .section-top{border-top:0;padding-top:0;display:grid;grid-template-columns:minmax(150px,1fr) 3fr;align-items:baseline;gap:clamp(16px,4vw,60px);margin-bottom:clamp(32px,4vw,56px)}
-.section-top span,.about-label,.proof-head .label{font:600 11px Manrope,Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
+.section-top > span,.about-label,.proof-head .label{font:600 11px Manrope,Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--accent)}
 .section-top p{max-width:900px}
 
 /* ---- about ---- */
@@ -758,14 +758,14 @@ body{transition:opacity .35s ease}
 /* links band: the big links line up under the heading, so the block is balanced */
 .links-section{display:grid;grid-template-columns:minmax(150px,1fr) 3fr;column-gap:clamp(16px,4vw,60px);align-items:start}
 .links-section .section-top{display:contents}
-.links-section .section-top span{grid-column:1;padding-top:.9em}
+.links-section .section-top > span{grid-column:1;padding-top:.9em}
 .links-section .section-top p{grid-column:2;margin:0 0 clamp(26px,3vw,44px)}
 .links-section .links-grid{grid-column:2;gap:12px clamp(22px,3vw,44px)}
 .links-section+.signature{padding-top:clamp(18px,3vw,40px)}
 @media(max-width:800px){
   .links-section{display:block}
   .links-section .section-top{display:block;margin-bottom:28px}
-  .links-section .section-top span{padding-top:0}
+  .links-section .section-top > span{padding-top:0}
   .links-section .section-top p{margin:12px 0 0}
 }
 
@@ -1714,3 +1714,53 @@ body:not(.dark) .contact-cta h2 .hd-dot{color:var(--accent)}
 .bf-field input.bf-range{padding:0;border:0;border-radius:8px;height:8px;background:linear-gradient(90deg,var(--accent) var(--p,0%),color-mix(in srgb,var(--ink) 16%,transparent) var(--p,0%))}
 .bf-field input.bf-range:focus-visible{outline:2px solid color-mix(in srgb,var(--accent) 50%,transparent);outline-offset:4px}
 @media(max-width:700px){.note{min-height:0;padding-bottom:30px}.notes-board,#notesBoard{gap:30px}}
+/* ===== v21 ===== */
+/* the old hero note card is gone */
+#heroNote{display:none!important}
+/* pinned notes: typed answers and replies in Manrope, like the rest of the site */
+.note-form input{font:500 18px/1.3 Manrope,Arial,sans-serif;letter-spacing:-.01em}
+.note-reply{font:400 16px/1.5 Manrope,Arial,sans-serif}
+/* links heading: real word spacing, tight lines, copyable */
+.links-section .section-top p{line-height:.98;letter-spacing:-.045em;word-spacing:.04em;user-select:text;-webkit-user-select:text}
+.links-section .section-top p .wd{user-select:text;-webkit-user-select:text}
+/* footer: copyright on the right */
+.sf-copy{font:500 11px Manrope,Arial,sans-serif;letter-spacing:.02em;color:var(--muted);white-space:nowrap}
+@media(max-width:700px){.site-foot{flex-wrap:wrap;gap:14px}.sf-copy{white-space:normal}}
+/* socials where people can see them: under the hero buttons and in the links band */
+.hero-social{display:flex;gap:8px;margin-top:18px}
+.hero-social .soc{width:40px;height:40px}
+.links-social{grid-column:2;display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:clamp(30px,4vw,54px)}
+.ls-label{font:600 11px Manrope,Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.ls-icons{display:flex;gap:10px;flex-wrap:wrap}
+.links-social .soc{width:48px;height:48px;color:inherit;border-color:color-mix(in srgb,currentColor 28%,transparent)}
+.links-social .soc svg,.links-social .soc img{width:20px;height:20px}
+.links-social .soc:hover{color:#fff}
+.dark .links-social .soc img{filter:brightness(0) invert(1)}
+@media(max-width:800px){.links-social{margin-top:30px}}
+/* badge backing: a wider, softer disc so it doesn't stop where the ring text ends */
+.floating-badge.is-brand:before{inset:-12%;background:radial-gradient(circle,color-mix(in srgb,var(--paper) 88%,transparent) 58%,color-mix(in srgb,var(--paper) 0%,transparent) 71%);backdrop-filter:none;-webkit-backdrop-filter:none}
+/* hero: available pill + WhatsApp in the brand colours (no green) */
+.avail{border-color:color-mix(in srgb,var(--ink) 16%,transparent);background:color-mix(in srgb,var(--ink) 4%,transparent)}
+.avail:hover{background:color-mix(in srgb,var(--ink) 9%,transparent)}
+.avail-dot,.avail-dot:after{background:var(--accent)}
+.hero-hire svg{color:currentColor}
+.hero-hire:hover{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.hero-hire:hover svg{color:var(--paper)}
+/* CTA background puzzle */
+.contact-cta{position:relative;overflow:hidden;isolation:isolate}
+.cta-puzzle{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.contact-cta>*:not(.cta-puzzle){position:relative;z-index:1}
+#heroEyebrow[hidden]{display:none!important}
+/* phone thumb bar */
+.thumb-bar{display:none}
+@media(max-width:760px){
+  .thumb-bar{display:flex;position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));z-index:90;gap:6px;padding:6px;border-radius:999px;background:color-mix(in srgb,var(--paper) 86%,transparent);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);border:1px solid color-mix(in srgb,var(--ink) 12%,transparent);box-shadow:0 12px 34px rgba(0,0,0,.22);transform:translateY(calc(100% + 30px));opacity:0;transition:transform .45s cubic-bezier(.16,1,.3,1),opacity .3s ease;pointer-events:none}
+  .thumb-bar.is-on{transform:none;opacity:1;pointer-events:auto}
+  .tb-btn{flex:1;min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:7px;border-radius:999px;color:var(--ink);font:700 14px Manrope,Arial,sans-serif;letter-spacing:-.01em;text-decoration:none;-webkit-tap-highlight-color:transparent}
+  .tb-btn svg{width:18px;height:18px;fill:currentColor}
+  .tb-btn:active{transform:scale(.96)}
+  .tb-main{flex:1.25;background:var(--accent);color:#fff}
+  .tb-main svg{fill:none;width:16px;height:16px}
+  html.tb-on .floating-badge{transform:translateY(calc(-64px - env(safe-area-inset-bottom,0px)));transition:transform .45s cubic-bezier(.16,1,.3,1)}
+  .floating-badge{transition:transform .45s cubic-bezier(.16,1,.3,1)}
+}

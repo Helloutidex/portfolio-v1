@@ -38,7 +38,7 @@
     root.innerHTML = `
       <article class="note n1"><span class="pin" aria-hidden="true"></span>
         <h3>${esc(n.feel)}</h3>
-        <form class="note-form" data-note="feel"><input maxlength="24" placeholder="e.g. tired" aria-label="${esc(n.feel)}"><button type="submit" aria-label="Send">→</button></form>
+        <form class="note-form" data-note="feel"><input maxlength="24" placeholder="e.g. excited" aria-label="${esc(n.feel)}"><button type="submit" aria-label="Send">→</button></form>
         <p class="note-reply" aria-live="polite"></p></article>
       <article class="note n2"><span class="pin" aria-hidden="true"></span>
         <h3>${esc(n.build)}</h3>
