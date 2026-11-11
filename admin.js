@@ -158,6 +158,27 @@ try {
       { value: '5yrs+', label: 'Design Experience.' },
     ]},
     logofolio: { label: 'Logofolio', heading: 'Marks & identities I have designed.', tiles: 'light', items: [] },
+    globeExtra: { items: [
+      { name: 'SwyftSend', logo: 'assets/uploads/mvybox7f-1.jpg' },
+      { name: 'SwyftSend', logo: 'assets/uploads/mvyboyty-2.jpg' },
+      { name: 'SwyftSend', logo: 'assets/uploads/mvybp0i1-3.jpg' },
+      { name: 'SwyftSend', logo: 'assets/uploads/mvybp21a-4.jpg' },
+      { name: 'SwyftSend', logo: 'assets/uploads/mvybp3fa-5.jpg' },
+      { name: 'SwyftSend', logo: 'assets/uploads/mvybp57e-6.jpg' },
+      { name: 'SwyftSend', logo: 'assets/uploads/mvybp704-7.jpg' },
+      { name: 'SwyftSend', logo: 'assets/uploads/mvybp8rr-8.jpg' },
+      { name: 'SwyftSend', logo: 'assets/uploads/mvybpa6v-9.jpg' },
+      { name: 'SwyftSend', logo: 'assets/uploads/mvybpc0z-10.jpg' },
+      { name: 'SwyftSend', logo: 'assets/uploads/mvybpdnv-11.jpg' },
+      { name: 'SwyftSend', logo: 'assets/uploads/mvybpf4x-12.jpg' },
+      { name: 'Kalvia', logo: 'assets/uploads/mw3sn5ib-0.jpg' },
+      { name: 'Conversation Circle', logo: 'assets/uploads/mw3sn94h-1.jpg' },
+      { name: 'Life magazine', logo: 'assets/uploads/mw9qlnk5-0.jpg' },
+      { name: 'Gloria and Yomi', logo: 'assets/uploads/mw9qlts0-1.jpg' },
+      { name: 'Glory2Glory', logo: 'assets/uploads/mw9qm3cf-2.jpg' },
+      { name: 'Glory2Glory', logo: 'assets/uploads/mw9qm8jv-3.jpg' },
+      { name: 'Make fruits part of your diet', logo: 'assets/uploads/mw9qmgjf-5.jpg' }
+    ] },
     work: { galleryStyle: 'globe', globeHint: 'Drag to spin · double-tap to scatter', gallerySpeed: 1, label: 'Gallery / automatic', description: 'Selected work, continuously moving. Tap any frame to explore.', noteRight: 'Drag to explore · tap a picture to open it', thanks: 'Thank you for viewing.', thanksNote: 'Have a project in mind?', thanksCta: "Let's talk ↗" },
     testimonials: { label: 'Praise', description: 'What collaborators say about working together.', items: [
       { quote: "Sam translated a vague brief into a brand system that felt inevitable — like it always should have looked that way.", name: 'Client name', role: 'Urban Food Fest' },
@@ -196,7 +217,7 @@ try {
     socials: [
       { kind: 'instagram', label: 'Instagram', url: 'https://www.instagram.com/helloutidex', icon: '' },
       { kind: 'x', label: 'X (Twitter)', url: 'https://x.com/helloutidex', icon: '' },
-      { kind: 'linkedin', label: 'LinkedIn', url: 'https://www.linkedin.com/search/results/people/?keywords=Adedeji%20Samuel', icon: '' },
+      { kind: 'linkedin', label: 'LinkedIn', url: 'https://www.linkedin.com/in/samadedeji/', icon: '' },
       { kind: 'link', label: '', url: '', icon: '' },
     ],
     footer: { copyright: '© 2026 Helloutidex. All rights reserved.', left: '© 2026 Adedeji Samuel', right: 'Designed with intention / Lagos', brand: 'Helloutidex', name: 'SAMUEL ADEDEJI' },
@@ -207,6 +228,10 @@ try {
   };
 
   function cloneDefaultContent(){ return JSON.parse(JSON.stringify(DEFAULT_CONTENT)); }
+  function fixSocials(o){   // the old LinkedIn search placeholder becomes the real profile
+    if (o && Array.isArray(o.socials)) o.socials.forEach(x => { if (x && /linkedin\.com\/search\//.test(x.url || '')) x.url = 'https://www.linkedin.com/in/samadedeji/'; });
+    return o;
+  }
   function mergeContent(saved){
     const d = cloneDefaultContent(), out = {};
     for (const k of Object.keys(d)) {
@@ -216,7 +241,7 @@ try {
     }
     if (saved && saved.social && Array.isArray(saved.social.names) && !Array.isArray(saved.social.items)) out.social.items = saved.social.names.map(n => ({ name: n, logo: '' }));
     if (!saved || !saved.badge) out.badge.ringText = out.signature.name;
-    return out;
+    return fixSocials(out);
   }
   function loadContent(){
     const saved = draftOf(CONTENT_STORAGE_KEY) || BASE.content;
@@ -279,7 +304,7 @@ try {
   }
 
   // one tidy tile editor for every logo list: the clients strip and the logofolio
-  const LOGO_LISTS = { social: '#collabEditor', logofolio: '#logofolioEditor' };
+  const LOGO_LISTS = { social: '#collabEditor', logofolio: '#logofolioEditor', globeExtra: '#globeExtraEditor' };
   function renderLogoList(key){
     const box = $(LOGO_LISTS[key]); if (!box) return;
     content[key] = content[key] || { items: [] }; content[key].items = content[key].items || [];
@@ -422,13 +447,13 @@ try {
     if (t.matches('[data-res-upload]') && t.files[0]) { content.resources.items[Number(t.closest('.admin-res-row').dataset.index)].image = await readImageResized(t.files[0], 900); renderResources(); return; }
     if (t.dataset.resField === 'kind') return;
     if (t.matches('[data-ll-upload]') && t.files[0]) {
-      const tile = t.closest('.admin-logo-tile'); content[tile.dataset.list].items[Number(tile.dataset.index)].logo = await readImageResized(t.files[0], 600, true);
+      const tile = t.closest('.admin-logo-tile'); content[tile.dataset.list].items[Number(tile.dataset.index)].logo = tile.dataset.list === 'globeExtra' ? await readImageResized(t.files[0], 1600) : await readImageResized(t.files[0], 600, true);
       renderLogoList(tile.dataset.list); return;
     }
     if (t.matches('[data-ll-bulk]') && t.files.length) {
       const k = t.closest('[data-list]').dataset.list, files = Array.from(t.files).sort((x, y) => x.name.localeCompare(y.name, undefined, { numeric: true }));
-      for (const f of files) content[k].items.push({ name: f.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' '), logo: await readImageResized(f, 600, true) });
-      renderLogoList(k); setStatus('contentStatus', `Added ${files.length} logo${files.length > 1 ? 's' : ''}. Save, then Publish.`); return;
+      for (const f of files) content[k].items.push({ name: f.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' '), logo: k === 'globeExtra' ? await readImageResized(f, 1600) : await readImageResized(f, 600, true) });
+      renderLogoList(k); setStatus('contentStatus', `Added ${files.length} ${k === 'globeExtra' ? 'picture' : 'logo'}${files.length > 1 ? 's' : ''}. Save, then Publish.`); return;
     }
     if (t.matches('[data-file-upload]') && t.files[0]) {
       const kind = t.parentElement.dataset.kind || 'image';

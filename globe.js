@@ -30,10 +30,11 @@
     function build() {
       W = stage.clientWidth; H = stage.clientHeight;
       R = Math.min(W * (W < 700 ? .4 : .3), H * .36);
-      CS = R * .46;                                   // card width
-      N = clamp(items.length * (W < 700 ? 2 : 3), W < 700 ? 12 : 16, W < 700 ? 24 : 32);   // fewer cards when there are fewer pictures, so they don't repeat too much
+      N = Math.min(items.length, 120);                // one frame per picture — never repeated
+      // card size follows how many pictures there are: few pictures → bigger frames, many → smaller, the globe stays full
+      CS = R * clamp(1.7 / Math.sqrt(Math.max(N, 1)), .3, W < 700 ? .46 : .5);
+      if (N < 6) R *= .78;                            // a tiny collection sits on a smaller globe
       layer.innerHTML = ''; cards = []; pts = [];
-      const gcd = (a, b) => b ? gcd(b, a % b) : a, STRIDE = [7, 5, 3, 1].find(s => gcd(s, items.length) === 1);
       const golden = Math.PI * (3 - Math.sqrt(5));
       for (let i = 0; i < N; i++) {                  // even spread over the sphere (Fibonacci)
         const y = 1 - (i + .5) / N * 2, r = Math.sqrt(1 - y * y), th = i * golden;
@@ -42,8 +43,8 @@
         const k = 1.3 + ((i * 53) % 100) / 100 * .75, j = [((i * 37) % 21 - 10) / 30, ((i * 71) % 21 - 10) / 30, ((i * 13) % 21 - 10) / 30];
         const s = [(p[0] + j[0]) * k * 1.25, (p[1] + j[1]) * k * .8, (p[2] + j[2]) * k * .55];
         pts.push({ p, s, spin: ((i * 97) % 60) - 30 });
-        const it = items[(i * STRIDE) % items.length];
-        const el = document.createElement('button'); el.type = 'button'; el.className = 'og-card'; el.dataset.id = it.id;
+        const it = items[i];
+        const el = document.createElement('button'); el.type = 'button'; el.className = 'og-card'; el.dataset.id = it.id || ''; if (it.pic !== undefined) el.dataset.pic = it.pic;
         el.setAttribute('aria-label', 'Open ' + (it.title || 'work'));
         el.innerHTML = `<img src="${it.src}" alt="" decoding="async" draggable="false"><span class="og-cap">${it.title || ''}</span>`;
         el.style.width = CS + 'px'; el.style.height = CS * 1.25 + 'px';

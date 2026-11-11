@@ -74,6 +74,27 @@
       { value: '5yrs+', label: 'Design Experience.' },
     ]},
     logofolio: { label: 'Logofolio', heading: 'Marks & identities I have designed.', tiles: 'light', items: [] },
+    globeExtra: { items: [
+      { name: 'SwyftSend', logo: 'assets/uploads/mvybox7f-1.jpg' },
+      { name: 'SwyftSend', logo: 'assets/uploads/mvyboyty-2.jpg' },
+      { name: 'SwyftSend', logo: 'assets/uploads/mvybp0i1-3.jpg' },
+      { name: 'SwyftSend', logo: 'assets/uploads/mvybp21a-4.jpg' },
+      { name: 'SwyftSend', logo: 'assets/uploads/mvybp3fa-5.jpg' },
+      { name: 'SwyftSend', logo: 'assets/uploads/mvybp57e-6.jpg' },
+      { name: 'SwyftSend', logo: 'assets/uploads/mvybp704-7.jpg' },
+      { name: 'SwyftSend', logo: 'assets/uploads/mvybp8rr-8.jpg' },
+      { name: 'SwyftSend', logo: 'assets/uploads/mvybpa6v-9.jpg' },
+      { name: 'SwyftSend', logo: 'assets/uploads/mvybpc0z-10.jpg' },
+      { name: 'SwyftSend', logo: 'assets/uploads/mvybpdnv-11.jpg' },
+      { name: 'SwyftSend', logo: 'assets/uploads/mvybpf4x-12.jpg' },
+      { name: 'Kalvia', logo: 'assets/uploads/mw3sn5ib-0.jpg' },
+      { name: 'Conversation Circle', logo: 'assets/uploads/mw3sn94h-1.jpg' },
+      { name: 'Life magazine', logo: 'assets/uploads/mw9qlnk5-0.jpg' },
+      { name: 'Gloria and Yomi', logo: 'assets/uploads/mw9qlts0-1.jpg' },
+      { name: 'Glory2Glory', logo: 'assets/uploads/mw9qm3cf-2.jpg' },
+      { name: 'Glory2Glory', logo: 'assets/uploads/mw9qm8jv-3.jpg' },
+      { name: 'Make fruits part of your diet', logo: 'assets/uploads/mw9qmgjf-5.jpg' }
+    ] },
     work: { galleryStyle: 'globe', globeHint: 'Drag to spin · double-tap to scatter', gallerySpeed: 1, label: 'Gallery / automatic', description: 'Selected work, continuously moving. Tap any frame to explore.', noteRight: 'Drag to explore · tap a picture to open it', thanks: 'Thank you for viewing.', thanksNote: 'Have a project in mind?', thanksCta: "Let's talk ↗" },
     testimonials: { label: 'Praise', description: 'What collaborators say about working together.', items: [
       { quote: "Sam translated a vague brief into a brand system that felt inevitable — like it always should have looked that way.", name: 'Client name', role: 'Urban Food Fest' },
@@ -112,7 +133,7 @@
     socials: [
       { kind: 'instagram', label: 'Instagram', url: 'https://www.instagram.com/helloutidex', icon: '' },
       { kind: 'x', label: 'X (Twitter)', url: 'https://x.com/helloutidex', icon: '' },
-      { kind: 'linkedin', label: 'LinkedIn', url: 'https://www.linkedin.com/search/results/people/?keywords=Adedeji%20Samuel', icon: '' },
+      { kind: 'linkedin', label: 'LinkedIn', url: 'https://www.linkedin.com/in/samadedeji/', icon: '' },
       { kind: 'link', label: '', url: '', icon: '' },
     ],
     footer: { copyright: '© 2026 Helloutidex. All rights reserved.', left: '© 2026 Adedeji Samuel', right: 'Designed with intention / Lagos', brand: 'Helloutidex', name: 'SAMUEL ADEDEJI' },
@@ -124,6 +145,10 @@
 
   const cloneDefaultContent = () => JSON.parse(JSON.stringify(DEFAULT_CONTENT));
   // Fills in any setting a saved / published copy doesn't have yet, so new features never break old data.
+  function fixSocials(o){   // the old LinkedIn search placeholder becomes the real profile
+    if (o && Array.isArray(o.socials)) o.socials.forEach(x => { if (x && /linkedin\.com\/search\//.test(x.url || '')) x.url = 'https://www.linkedin.com/in/samadedeji/'; });
+    return o;
+  }
   function mergeContent(saved){
     const d = cloneDefaultContent(), out = {};
     for (const k of Object.keys(d)) {
@@ -133,7 +158,7 @@
     }
     if (saved && saved.social && Array.isArray(saved.social.names) && !Array.isArray(saved.social.items)) out.social.items = saved.social.names.map(n => ({ name: n, logo: '' }));
     if (!saved || !saved.badge) out.badge.ringText = out.signature.name;
-    return out;
+    return fixSocials(out);
   }
   function loadContent(){
     const saved = draftOf(CONTENT_STORAGE_KEY) || REMOTE.content;
@@ -774,7 +799,14 @@
       `<div class="gallery-row row-a">${[...oneSet, ...oneSet].map(frame).join('')}</div>` +
       `<div class="gallery-row row-b">${[...oneSet.slice().reverse(), ...oneSet.slice().reverse()].map(frame).join('')}</div>` +
       `<div class="gallery-cursor" id="galleryCursor" aria-hidden="true"><span>View</span></div>`;
-    galleryEl.addEventListener('click', e => { const f = e.target.closest('.gallery-frame, .pp-card, .og-card'); if (f) openCategory(f.dataset.id); });
+    galleryEl.addEventListener('click', e => {
+      const f = e.target.closest('.gallery-frame, .pp-card, .og-card'); if (!f) return;
+      if (f.dataset.id) { openCategory(f.dataset.id); return; }
+      if (f.dataset.pic !== undefined && f.dataset.pic !== '') {   // a globe picture that isn't in a section: open it big
+        const list = window.__globeExtra || []; currentImages = list.map(x => x.logo); caseTitle.textContent = (list[Number(f.dataset.pic)] || {}).name || 'Selected work';
+        openLightbox(Number(f.dataset.pic));
+      }
+    });
     // Pop Parade (default) — the gallery as a looping motion piece; 'marquee' keeps the two moving rows
     const gStyle = (C.work || {}).galleryStyle || 'globe';
     if (gStyle === 'globe' && window.OrbitGlobe) {
@@ -787,6 +819,11 @@
         else if (typeof o === 'string' && /^(src|cover|image|pages|poster)$/.test(k || '') && o && !isStock(o) && !/^data:/.test(o) && !/\.(mp4|mov|webm|m4v|pdf)(\?|$)/i.test(o) && !out.includes(o)) out.push(o);
       }; walk(cat); return out; };
       let pics = CATEGORIES.filter(x => !x.locked).flatMap(x => ownPics(x).map(src => ({ id: x.id, title: x.title, src })));
+      // plus the pictures you added under admin → Work / gallery → More pictures on the globe (they open in the picture viewer)
+      const extraList = ((C.globeExtra || {}).items || []).filter(x => x && x.logo && !isStock(x.logo));
+      pics = pics.concat(extraList.map((x, i) => ({ id: '', pic: i, title: x.name || '', src: x.logo })));
+      window.__globeExtra = extraList;
+      { const seenSrc = new Set(); pics = pics.filter(p => !seenSrc.has(p.src) && seenSrc.add(p.src)); }   // each picture once, even if it sits in two sections
       if (!pics.length) pics = list.filter(x => !x.locked).map(x => ({ id: x.id, title: x.title, src: titleCard(x.title) }));   // nothing uploaded yet: clean title cards
       window.OrbitGlobe(galleryEl, pics, { hint: (C.work || {}).globeHint });
       if (cur) galleryEl.appendChild(cur);
