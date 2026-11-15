@@ -360,9 +360,9 @@
       badge.classList.toggle('spin-scroll', bd.spin !== 'auto');
       if (bd.spin !== 'auto' && !window.__badgeScrollSpin) {
         window.__badgeScrollSpin = true;
-        let cur = scrollY * .35, raf = 0;
+        let cur = scrollY * .1, raf = 0;
         const step = () => {
-          const target = scrollY * .35; cur += (target - cur) * .12;           // eases in and glides to a stop
+          const target = scrollY * .1; cur += (target - cur) * .08;           // eases in and glides to a stop
           badge.querySelectorAll('.fb-ring, .floating-badge-ring, .floating-badge-img').forEach(r => { r.style.transform = `rotate(${cur.toFixed(2)}deg)`; });
           raf = Math.abs(target - cur) > .05 ? requestAnimationFrame(step) : 0;
         };
