@@ -172,7 +172,7 @@ try {
         { tag: '03 / Community', role: 'Design volunteering & mentoring', meta: 'People · Events' },
       ],
     },
-    process: { label: 'My process', heading: 'How an idea becomes the work.', steps: [
+    process: { label: 'My process', heading: 'How an idea becomes the work.', page: true, linkLabel: 'See my full process', pageIntro: 'Every project moves through the same four stages — so you always know where we are, what comes next and why.', steps: [
       { title: 'Ideate', text: 'Listen, ask questions and find the real problem.' },
       { title: 'Think', text: 'Shape the strategy before a single pixel.' },
       { title: 'Explore', text: 'Sketch wide and test bold directions.' },
@@ -330,9 +330,16 @@ try {
   }
   function renderSteps(){
     content.process.steps = content.process.steps || [];
-    $('#processEditor').innerHTML = content.process.steps.map((st, i) => listRow(i, `
-        <label>Step<input data-step-field="title" value="${esc(st.title)}" placeholder="Ideate"></label>
-        <label>Short line<input data-step-field="text" value="${esc(st.text)}"></label><span></span>`, 'data-step-remove')).join('');
+    $('#processEditor').innerHTML = content.process.steps.map((st, i) => `
+      <div class="admin-mini-row admin-res-row admin-art-row admin-step-row" data-index="${i}">
+        <div class="admin-image-field">${st.image ? `<img src="${esc(st.image)}" alt="">` : '<span class="admin-thumb-empty">No picture<small>a numbered panel shows</small></span>'}
+          <input type="file" accept="image/*" class="admin-upload-input" data-step-upload><button type="button" class="admin-upload-btn" data-step-upload-btn>${st.image ? 'Replace picture' : 'Upload picture (right side)'}</button>${st.image ? '<button type="button" class="admin-upload-btn" data-step-clear>Remove picture</button>' : ''}</div>
+        <label>Stage ${i + 1} name<input data-step-field="title" value="${esc(st.title)}" placeholder="Ideate"></label>
+        <label>Short line (home page + under the name)<input data-step-field="text" value="${esc(st.text)}"></label>
+        <label class="full">The longer story (full process page — leave empty to use the built-in text)<textarea data-step-field="detail" rows="4">${esc(st.detail || '')}</textarea></label>
+        <label class="full">What happens here (comma-separated, e.g. Discovery call, Research, Moodboards)<input data-step-field="points" value="${esc(st.points || '')}"></label>
+        <button class="admin-mini-remove" type="button" data-step-remove="${i}">Remove stage</button>
+      </div>`).join('');
   }
   function renderResources(){
     content.resources.items = content.resources.items || [];
@@ -428,6 +435,8 @@ try {
     if (t.closest('[data-soc-upload-btn]')) t.closest('.admin-soc-row').querySelector('[data-soc-upload]').click();
     if (t.closest('[data-soc-clear]')) { content.socials[Number(t.closest('.admin-soc-row').dataset.index)].icon = ''; renderSocials(); }
     if ((m = t.closest('[data-step-remove]'))) { content.process.steps.splice(Number(m.dataset.stepRemove), 1); renderSteps(); }
+    if (t.closest('[data-step-upload-btn]')) t.closest('.admin-step-row').querySelector('[data-step-upload]').click();
+    if (t.closest('[data-step-clear]')) { content.process.steps[Number(t.closest('.admin-step-row').dataset.index)].image = ''; renderSteps(); }
     if ((m = t.closest('[data-art-remove]'))) { if (confirm('Remove this article?')) { content.articles.items.splice(Number(m.dataset.artRemove), 1); renderArticles(); } }
     if (t.closest('[data-art-upload-btn]')) t.closest('.admin-art-row').querySelector('[data-art-upload]').click();
     if (t.closest('[data-art-clear]')) { content.articles.items[Number(t.closest('.admin-art-row').dataset.index)].cover = ''; renderArticles(); }
@@ -449,6 +458,7 @@ try {
     if (t.dataset.fileText) renderFileFields();
     if (t.matches('[data-soc-upload]') && t.files[0]) { content.socials[Number(t.closest('.admin-soc-row').dataset.index)].icon = await readImageResized(t.files[0], 200, true); renderSocials(); return; }
     if (t.dataset.socField === 'kind') { content.socials[Number(t.closest('.admin-soc-row').dataset.index)].kind = t.value; return; }
+    if (t.matches('[data-step-upload]') && t.files[0]) { content.process.steps[Number(t.closest('.admin-step-row').dataset.index)].image = await readImageResized(t.files[0], 1600); renderSteps(); return; }
     if (t.matches('[data-art-upload]') && t.files[0]) { content.articles.items[Number(t.closest('.admin-art-row').dataset.index)].cover = await readImageResized(t.files[0], 1600); renderArticles(); return; }
     if (t.matches('[data-res-upload]') && t.files[0]) { content.resources.items[Number(t.closest('.admin-res-row').dataset.index)].image = await readImageResized(t.files[0], 900); renderResources(); return; }
     if (t.dataset.resField === 'kind') return;
@@ -734,7 +744,12 @@ try {
     if (b.type === 'pdf') return `<div class="admin-block"><div class="admin-block-head"><span>PDF</span>${acts}</div>${media('pdf', 'application/pdf,.pdf', `<span class="admin-thumb-empty">${b.src ? 'PDF' : 'None'}</span>`)}</div>`;
     if (b.type === 'video') return `<div class="admin-block"><div class="admin-block-head"><span>Video</span>${acts}</div>${media('video', 'video/*', `<span class="admin-thumb-empty">${b.src ? 'Video' : 'None'}</span>`)}</div>`;
     const tags = Array.isArray(b.tags) ? b.tags : (() => { try { const t = JSON.parse(b.tags || '[]'); return Array.isArray(t) ? t : []; } catch (e) { return []; } })();
+    if (b.type === 'quote') return `<div class="admin-block admin-block-text admin-block-quote"><div class="admin-block-head"><span>Client quote</span>${acts}</div>
+      <textarea data-bf="quote" placeholder="What the client said — shown big, lights up as you scroll">${esc(b.quote || '')}</textarea>
+      <div class="admin-row2"><input data-bf="name" placeholder="Name (e.g. Ada Okafor)" value="${esc(b.name || '')}"><input data-bf="role" placeholder="Role, company (e.g. CEO, SwyftSend)" value="${esc(b.role || '')}"></div>
+      <div class="admin-row2"><input data-bf="link" placeholder="Optional link (press release, review…)" value="${esc(b.link || '')}"><input data-bf="linkText" placeholder="Link text (e.g. Read the full story)" value="${esc(b.linkText || '')}"></div></div>`;
     return `<div class="admin-block admin-block-text"><div class="admin-block-head"><span>Text · chapter</span>${acts}</div>
+      <input data-bf="label" placeholder="Section label — e.g. Overview, Challenge, Strategy, Identity, Applications (shown as / Overview)" value="${esc(b.label || '')}">
       <input data-bf="heading" placeholder="Heading — the big statement (e.g. Making money home feel close.)" value="${esc(b.heading || '')}"><textarea data-bf="body" placeholder="The story — a few lines">${esc(b.body || '')}</textarea>
       <input data-bf="tagsText" placeholder="Tags, comma-separated (e.g. Logo, Colour, Typography)" value="${esc(tags.join(', '))}"></div>`;
   }
@@ -744,6 +759,7 @@ try {
       <div class="admin-block-add">
         <label class="admin-upload-label admin-dropzone"><b>⬆ Upload pictures</b><small>Click to choose — or drag files here. You can pick many at once (JPG, PNG, GIF, PDF).</small><input type="file" accept="image/*,application/pdf" multiple class="admin-upload-input" data-bulk-upload></label>
         <button type="button" class="admin-add-small" data-add-block="text">+ Add text (a chapter)</button>
+        <button type="button" class="admin-add-small" data-add-block="quote">+ Add a client quote</button>
         <button type="button" class="admin-add-small" data-add-block="video">+ Add a video</button>
       </div>
       ${(arr || []).length ? `<p class="admin-count">${n} picture${n === 1 ? '' : 's'}${(arr || []).length > n ? ` · ${(arr || []).length - n} other item${(arr || []).length - n === 1 ? '' : 's'}` : ''} — new uploads are added at the end</p>` : ''}
@@ -930,7 +946,8 @@ try {
     if (t.closest('.admin-block') && t.closest('[data-b-remove]')) { c.arr.splice(c.bi, 1); renderCategories(); return; }
     if ((m = t.closest('[data-add-block]'))) {
       const target = c.cs ? (c.cs.blocks = c.cs.blocks || []) : (c.cat.items = c.cat.items || []);
-      target.push(m.dataset.addBlock === 'video' ? { type: 'video', src: '', caption: '' } : { type: 'text', heading: '', body: '', tags: [] });
+      const k = m.dataset.addBlock;
+      target.push(k === 'video' ? { type: 'video', src: '', caption: '' } : k === 'quote' ? { type: 'quote', quote: '', name: '', role: '', link: '', linkText: '' } : { type: 'text', label: '', heading: '', body: '', tags: [] });
       renderCategories(); return;
     }
     if (t.closest('[data-add-case]')) {

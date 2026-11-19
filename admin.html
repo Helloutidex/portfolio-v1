@@ -6,8 +6,8 @@
 <link rel="icon" href="assets/favicon.svg?v=2" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,500;1,500&family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&family=UnifrakturCook:wght@700&display=swap">
-<link rel="stylesheet" href="style.css?v=20261119e">
-<link rel="stylesheet" href="admin.css?v=20261119e">
+<link rel="stylesheet" href="style.css?v=20261119g">
+<link rel="stylesheet" href="admin.css?v=20261119g">
 </head>
 <body class="admin-body">
 <section class="lock-screen" id="lockScreen">
@@ -162,6 +162,9 @@
         <label>Label<input data-path="process.label"></label>
         <label>Heading<input data-path="process.heading"></label>
       </div>
+      <label class="admin-check"><input type="checkbox" data-path="process.page"> Show the "full process" link and page (text on the left, picture on the right)</label>
+      <div class="admin-row2"><label>Link text<input data-path="process.linkLabel" placeholder="See my full process"></label>
+        <label>Intro on the process page<input data-path="process.pageIntro"></label></div>
       <div id="processEditor"></div>
       <button class="admin-add-small" type="button" id="addStep">+ Add a step</button>
     </div>
@@ -453,5 +456,5 @@
 </div>
 
 <script src="admin-ui.js?v=2" defer></script>
-<script src="admin.js?v=20261119e" defer></script>
+<script src="admin.js?v=20261119g" defer></script>
 </body></html>

@@ -88,7 +88,7 @@
         { tag: '03 / Community', role: 'Design volunteering & mentoring', meta: 'People · Events' },
       ],
     },
-    process: { label: 'My process', heading: 'How an idea becomes the work.', steps: [
+    process: { label: 'My process', heading: 'How an idea becomes the work.', page: true, linkLabel: 'See my full process', pageIntro: 'Every project moves through the same four stages — so you always know where we are, what comes next and why.', steps: [
       { title: 'Ideate', text: 'Listen, ask questions and find the real problem.' },
       { title: 'Think', text: 'Shape the strategy before a single pixel.' },
       { title: 'Explore', text: 'Sketch wide and test bold directions.' },
@@ -289,7 +289,10 @@
     const pr2 = c.process || {}, steps = (pr2.steps || []).filter(s => s.title);
     const procEl = $('#process'); if (procEl) procEl.hidden = !steps.length;
     set('processLabel', pr2.label || ''); set('processHeading', pr2.heading || '');
-    const ps2 = $('#processSteps'); if (ps2) ps2.innerHTML = steps.map((s, i) => `<li class="pstep" style="--i:${i}"><span class="pstep-dot" aria-hidden="true"></span><h3>${esc(s.title)}</h3>${s.text ? `<p>${esc(s.text)}</p>` : ''}</li>`).join('');
+    const ps2 = $('#processSteps'); if (ps2) ps2.innerHTML = steps.map((s, i) => `<li class="pstep" style="--i:${i}"><button type="button" class="pstep-open" data-process-step="${i}" aria-label="Read more about ${esc(s.title)}"><span class="pstep-dot" aria-hidden="true"></span><h3>${esc(s.title)}</h3>${s.text ? `<p>${esc(s.text)}</p>` : ''}</button></li>`).join('');
+    // the home page shows a snapshot; the full process opens on its own page (process.js)
+    if (procEl) { let more = $('#processMore'); if (!more) { more = document.createElement('div'); more.className = 'process-more-wrap'; more.innerHTML = '<a class="process-more" id="processMore" href="#my-process"><span></span><i aria-hidden="true">→</i></a>'; procEl.appendChild(more); more = $('#processMore'); }
+      more.querySelector('span').textContent = pr2.linkLabel || 'See my full process'; more.parentElement.hidden = pr2.page === false || !steps.length; }
     // articles — your own writing; each opens in a calm reading view (admin → Content → Articles)
     const ar = c.articles || {}, aitems = (ar.items || []).filter(x => x && String(x.title || '').trim());
     const artEl = $('#articles');
@@ -1050,9 +1053,17 @@
           const tags = Array.isArray(b.tags) ? b.tags : (() => { try { return JSON.parse(b.tags || '[]'); } catch (e) { return []; } })();
           const head = String(b.heading || '').trim(), body = String(b.body || '').trim();
           out.push(`<section class="m-chapter">
-            <div class="m-side"><span class="m-num">(${String(ch).padStart(2, '0')})</span>${tags.length ? `<ul class="m-tags">${tags.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}</div>
+            <div class="m-side"><span class="m-num">${String(b.label || '').trim() ? `/ ${esc(String(b.label).trim())}` : `(${String(ch).padStart(2, '0')})`}</span>${tags.length ? `<ul class="m-tags">${tags.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}</div>
             <div class="m-main">${head ? `<h3 class="m-statement" data-fill>${esc(head)}</h3>` : ''}${body ? body.split(/\n{2,}/).map(p => `<p class="m-body">${esc(p)}</p>`).join('') : ''}</div>
           </section>`);
+        } else if (b.type === 'quote') {
+          if (!String(b.quote || '').trim()) return;
+          const who = [b.name, b.role].map(x => String(x || '').trim()).filter(Boolean);
+          out.push(`<figure class="m-quote">
+            <span class="m-quote-mark" aria-hidden="true">“</span>
+            <blockquote data-fill>${esc(String(b.quote).trim())}</blockquote>
+            <figcaption>${who.length ? `<strong>${esc(who[0])}</strong>${who[1] ? `<span>${esc(who[1])}</span>` : ''}` : ''}${b.link ? `<a href="${esc(b.link)}" target="_blank" rel="noopener">${esc(b.linkText || 'Read the full story')} ↗</a>` : ''}</figcaption>
+          </figure>`);
         } else out.push(`<div class="m-other">${blocksHTML([b])}</div>`);
       });
       flush();
@@ -1082,11 +1093,20 @@
           fr.style.clipPath = `inset(${ins.toFixed(2)}% ${ins.toFixed(2)}% ${ins.toFixed(2)}% ${ins.toFixed(2)}% round ${(14 + ins).toFixed(1)}px)`;
           const im = fr.firstElementChild; if (im) im.style.transform = `scale(${(1.12 - .12 * enter).toFixed(4)})${f.classList.contains('m-par') ? ` translateY(${(((y + r.height / 2) - vh / 2) / vh * -4).toFixed(2)}%)` : ''}`;
         });
+        const mq = $('#mMarquee .m-track', modalBody);
+        if (mq && !reduce) { const t = performance.now() / 1000; mq.style.transform = `translate3d(${(-((modalBody.scrollTop * .6 + t * 40) % (mq.scrollWidth / 2))).toFixed(1)}px,0,0)`; }
+        $$('.m-chapter, .m-quote', modalBody).forEach(el => {
+          const r = el.getBoundingClientRect(), y = r.top - top0; if (y > vh || y + r.height < 0) return;
+          el.style.setProperty('--rp', reduce ? 1 : Math.max(0, Math.min(1, (vh - y) / (vh * .45))).toFixed(3));
+        });
         const hero = $('.m-hero', modalBody);
         if (hero) { const r = hero.getBoundingClientRect(), y = r.top - top0, p = Math.max(0, Math.min(1, (vh * .9 - y) / (vh * .7))); hero.style.setProperty('--hp', reduce ? 1 : p.toFixed(4)); }
       };
       mottoScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(run); } };
       modalBody.addEventListener('scroll', mottoScroll, { passive: true }); run(); setTimeout(run, 60);
+      if (!window.__mDrift) { window.__mDrift = true;
+        const drift = () => { if (!modalBody.classList.contains('is-motto') || !modal.classList.contains('open')) { window.__mDrift = false; return; } if (mottoScroll) mottoScroll(); requestAnimationFrame(drift); };
+        requestAnimationFrame(drift); }
     }
     async function fillPdfs(){
       for (const f of $$('iframe[data-pdf]', caseSections)) { const u = f.dataset.pdf; f.src = u.startsWith('data:') ? await fileUrlFor(u) : u + '#view=FitH'; }
@@ -1251,6 +1271,13 @@
       }
       }
       modalBody.classList.toggle('is-motto', cat.layout !== 'books' && (C.work || {}).caseStyle !== 'classic');
+      { // Motto-style hero: the project name runs across the page as a big moving wordmark
+        const old = $('#mMarquee', modalBody); if (old) old.remove();
+        if (modalBody.classList.contains('is-motto')) {
+          const unit = `<span>${esc(cs.title)}</span><i aria-hidden="true">●</i>`;
+          caseTitle.insertAdjacentHTML('beforebegin', `<div class="m-marquee" id="mMarquee" aria-hidden="true"><p class="m-kicker">(Case study)${/^case stud/i.test(cat.title || '') ? '' : ` — ${esc(cat.title)}`}</p><div class="m-track">${unit.repeat(8)}</div></div>`);
+        }
+      }
       // every case study ends with a thank-you (admin → Content → Work / gallery)
       const w = C.work || {};
       const thanks = w.thanks ? `<div class="case-thanks reveal"><span class="case-thanks-dot" aria-hidden="true"></span><h2>${esc(w.thanks)}</h2>${(w.thanksNote || w.thanksCta) ? `<p>${esc(w.thanksNote || '')}${w.thanksCta ? ` <a href="contact.html">${esc(w.thanksCta)}</a>` : ''}</p>` : ''}</div>` : '';
