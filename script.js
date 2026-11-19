@@ -69,33 +69,13 @@
       { name:'Independent Collaborations', logo:'' },
     ]},
     proof: { label: 'Social proof', heading: '', stats: [
-      { value: '80+', label: 'Satisfied Clients.' },
-      { value: '120+', label: 'Completed Projects.' },
+      { value: '120+', label: 'Satisfied Clients.' },
+      { value: '200+', label: 'Completed Projects.' },
       { value: '5yrs+', label: 'Design Experience.' },
     ]},
     logofolio: { label: 'Logofolio', heading: 'Marks & identities I have designed.', tiles: 'light', items: [] },
-    globeExtra: { items: [
-      { name: 'SwyftSend', logo: 'assets/uploads/mvybox7f-1.jpg' },
-      { name: 'SwyftSend', logo: 'assets/uploads/mvyboyty-2.jpg' },
-      { name: 'SwyftSend', logo: 'assets/uploads/mvybp0i1-3.jpg' },
-      { name: 'SwyftSend', logo: 'assets/uploads/mvybp21a-4.jpg' },
-      { name: 'SwyftSend', logo: 'assets/uploads/mvybp3fa-5.jpg' },
-      { name: 'SwyftSend', logo: 'assets/uploads/mvybp57e-6.jpg' },
-      { name: 'SwyftSend', logo: 'assets/uploads/mvybp704-7.jpg' },
-      { name: 'SwyftSend', logo: 'assets/uploads/mvybp8rr-8.jpg' },
-      { name: 'SwyftSend', logo: 'assets/uploads/mvybpa6v-9.jpg' },
-      { name: 'SwyftSend', logo: 'assets/uploads/mvybpc0z-10.jpg' },
-      { name: 'SwyftSend', logo: 'assets/uploads/mvybpdnv-11.jpg' },
-      { name: 'SwyftSend', logo: 'assets/uploads/mvybpf4x-12.jpg' },
-      { name: 'Kalvia', logo: 'assets/uploads/mw3sn5ib-0.jpg' },
-      { name: 'Conversation Circle', logo: 'assets/uploads/mw3sn94h-1.jpg' },
-      { name: 'Life magazine', logo: 'assets/uploads/mw9qlnk5-0.jpg' },
-      { name: 'Gloria and Yomi', logo: 'assets/uploads/mw9qlts0-1.jpg' },
-      { name: 'Glory2Glory', logo: 'assets/uploads/mw9qm3cf-2.jpg' },
-      { name: 'Glory2Glory', logo: 'assets/uploads/mw9qm8jv-3.jpg' },
-      { name: 'Make fruits part of your diet', logo: 'assets/uploads/mw9qmgjf-5.jpg' }
-    ] },
-    work: { galleryStyle: 'globe', globeHint: 'Drag to spin · double-tap to scatter', gallerySpeed: 1, label: 'Gallery / automatic', description: 'Selected work, continuously moving. Tap any frame to explore.', noteRight: 'Drag to explore · tap a picture to open it', thanks: 'Thank you for viewing.', thanksNote: 'Have a project in mind?', thanksCta: "Let's talk ↗" },
+    globeExtra: { items: [] },   // add pictures here from admin → Work / gallery → More pictures on the globe
+    work: { caseStyle: 'motto', galleryStyle: 'globe', globeHint: 'Drag to spin · double-tap to scatter', gallerySpeed: 1, label: 'Gallery / automatic', description: 'Selected work, continuously moving. Tap any frame to explore.', noteRight: 'Drag to explore · tap a picture to open it', thanks: 'Thank you for viewing.', thanksNote: 'Have a project in mind?', thanksCta: "Let's talk ↗" },
     testimonials: { label: 'Praise', description: 'What collaborators say about working together.', items: [
       { quote: "Sam translated a vague brief into a brand system that felt inevitable — like it always should have looked that way.", name: 'Client name', role: 'Urban Food Fest' },
       { quote: "Fast, sharp, and genuinely collaborative. The kind of designer who makes the whole project easier.", name: 'Client name', role: 'Shop Soma' },
@@ -114,6 +94,7 @@
       { title: 'Explore', text: 'Sketch wide and test bold directions.' },
       { title: 'Design', text: 'Craft the system and polish every detail.' },
     ]},
+    articles: { enabled: true, label: 'Articles', heading: 'Notes on design, brands and the work behind them.', items: [] },
     resources: { label: 'Resources', heading: 'Books, channels and programs that shaped how I design.', items: [
       { title: 'Incubator', by: 'Design programme', kind: 'Program', image: 'assets/resources/incubator.jpg', url: '' },
       { title: 'Logo Design Love', by: 'David Airey', kind: 'Book', image: 'assets/resources/logo-design-love.jpg', url: '' },
@@ -137,7 +118,7 @@
       { kind: 'link', label: '', url: '', icon: '' },
     ],
     footer: { copyright: '© 2026 Helloutidex. All rights reserved.', left: '© 2026 Adedeji Samuel', right: 'Designed with intention / Lagos', brand: 'Helloutidex', name: 'SAMUEL ADEDEJI' },
-    effects: { particles: true, ctaPuzzle: true, intro: true, introStyle: 'poster' },
+    effects: { particles: true, ctaPuzzle: true, scrollMotion: true, intro: true, introStyle: 'poster' },
     poster: { head: "Every project is a\nconversation, this is\nwhere yours begins.", btn: 'Book a Call', tag: "What are you waiting for, let's build bold brands.", sign: 'Helloutidex', signImage: '', image: 'assets/portrait-cutout.webp', mark: 'SA', hold: 8.4,
       socials: [{ label: 'Instagram', url: '' }, { label: 'LinkedIn', url: '' }, { label: 'Linktree', url: '' }] },
     games: { enabled: true, idleMinutes: 2, button: 'Play a game', offline: true, title: 'Taking a break? Play a quick game.', quiz: true, fonts: true, odd: true, memory: true, sudoku: true, words: true },
@@ -158,6 +139,10 @@
     }
     if (saved && saved.social && Array.isArray(saved.social.names) && !Array.isArray(saved.social.items)) out.social.items = saved.social.names.map(n => ({ name: n, logo: '' }));
     if (!saved || !saved.badge) out.badge.ringText = out.signature.name;
+    if (out.proof && Array.isArray(out.proof.stats)) out.proof.stats.forEach(st => {   // updated numbers (Nov 2026) — only replaces the old values
+      if (/satisfied clients/i.test(st.label || '') && st.value === '80+') st.value = '120+';
+      if (/completed projects/i.test(st.label || '') && (st.value === '120+' || st.value === '140+')) st.value = '200+';
+    });
     return fixSocials(out);
   }
   function loadContent(){
@@ -305,6 +290,26 @@
     const procEl = $('#process'); if (procEl) procEl.hidden = !steps.length;
     set('processLabel', pr2.label || ''); set('processHeading', pr2.heading || '');
     const ps2 = $('#processSteps'); if (ps2) ps2.innerHTML = steps.map((s, i) => `<li class="pstep" style="--i:${i}"><span class="pstep-dot" aria-hidden="true"></span><h3>${esc(s.title)}</h3>${s.text ? `<p>${esc(s.text)}</p>` : ''}</li>`).join('');
+    // articles — your own writing; each opens in a calm reading view (admin → Content → Articles)
+    const ar = c.articles || {}, aitems = (ar.items || []).filter(x => x && String(x.title || '').trim());
+    const artEl = $('#articles');
+    if (artEl) {
+      artEl.hidden = ar.enabled === false;
+      set('articlesLabel', ar.label || 'Articles'); set('articlesHeading', ar.heading || '');
+      const fmtDate = d => { const t = Date.parse(d); return isNaN(t) ? String(d || '') : new Date(t).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }); };
+      const sorted = aitems.map((x, i) => ({ x, i })).sort((p, q) => (Date.parse(q.x.date) || 0) - (Date.parse(p.x.date) || 0));
+      const ag = $('#artGrid');
+      if (ag) ag.innerHTML = sorted.length ? sorted.map(({ x, i }, k) => `
+        <button class="art-card${k === 0 && sorted.length > 2 ? ' is-lead' : ''}" type="button" data-art="${i}">
+          <span class="art-img">${x.cover ? `<img src="${esc(x.cover)}" alt="" loading="lazy" decoding="async">` : `<span class="art-noimg" aria-hidden="true">${esc(String(x.title).trim().charAt(0))}</span>`}</span>
+          <span class="art-meta">${x.tag ? `<em>(${esc(x.tag)})</em>` : ''}${x.date ? `<time>${esc(fmtDate(x.date))}</time>` : ''}</span>
+          <strong class="art-title">${esc(x.title)}</strong>
+          ${x.excerpt ? `<span class="art-ex">${esc(x.excerpt)}</span>` : ''}
+          <span class="art-read">Read <i aria-hidden="true">→</i></span>
+        </button>`).join('')
+        : `<div class="art-empty"><span class="art-empty-dot" aria-hidden="true"></span><strong>First articles are on the way.</strong><span>Thoughts on brands, process and the stories behind the work — soon.</span></div>`;
+      window.__articles = aitems; window.__artDate = fmtDate;
+    }
     // resources
     // built-in pictures for the starter resources (from the Resources page of the PDF portfolio), used when no cover is uploaded
     const RES_PICS = { 'incubator': 'incubator', 'logo design love': 'logo-design-love', 'satori graphics': 'satori-graphics', 'the brand gap': 'the-brand-gap',
@@ -679,11 +684,20 @@
   // (your saved content is untouched; admin still lists everything)
   (function dropStock(){
     const stock = u => /images\.unsplash\.com/.test(u || '');
-    const clean = list => (list || []).filter(b => !(b && b.type === 'image' && stock(b.src)));
+    // test leftovers ("ddddd") and the starter sample text never show either
+    const junk = s => { const w = String(s || '').trim().split(/\s+/).filter(Boolean); return !!w.length && w.every(x => /^(\w)\1{2,}$/i.test(x)); };
+    const badText = b => b && b.type === 'text' && (/^Tell the story in a few lines/.test(b.body || '') || (junk(b.body) && (!b.heading || junk(b.heading) || String(b.heading).trim().split(/\s+/).length <= 2)) || (!String(b.body || '').trim() && junk(b.heading)));
+    const clean = list => (list || []).filter(b => !(b && b.type === 'image' && stock(b.src)) && !badText(b));
     CATEGORIES.forEach(c => {
       if (stock(c.image)) c.image = '';
       if (!Array.isArray(c.items)) return;
-      if (c.layout === 'cases' || c.layout === 'books') c.items.forEach(s => { if (stock(s.cover)) s.cover = ''; if (Array.isArray(s.blocks)) s.blocks = clean(s.blocks); });
+      if (c.layout === 'cases' || c.layout === 'books') {
+        c.items = c.items.filter(s => {
+          if (!Array.isArray(s.blocks)) return true;                 // locked work: untouched
+          const had = s.blocks.length; if (stock(s.cover)) s.cover = ''; s.blocks = clean(s.blocks);
+          return s.blocks.length || s.cover || !had;                 // a sample case study with nothing of yours left is hidden
+        });
+      }
       else c.items = clean(c.items);
     });
   })();
@@ -1014,6 +1028,66 @@
         return `<div class="ptext reveal${String(b.body || '').length > 420 ? ' is-long' : ''}"><h3>${esc(b.heading)}</h3><p>${esc(b.body)}</p>${(b.tags && b.tags.length) ? `<div class="case-tags"><ul>${b.tags.map(t => `<li>${esc(t)}</li>`).join('')}</ul></div>` : ''}</div>`;
       }).join('');
     }
+
+    // Case study, editorial-agency style (after wearemotto.com/portfolio): numbered chapters with a big statement
+    // that fills in as you scroll, services listed beside it, and pictures grouped full-bleed / two-up / grid.
+    function mottoBlocksHTML(blocks){
+      const out = []; let ch = 0, run = [];
+      const figure = (b, cls) => { currentImages.push(b.src); const cap = String(b.caption || '').trim();
+        return `<figure class="pimg m-fig ${cls || ''}" data-lb="${currentImages.length - 1}"><span class="m-frame"><img src="${esc(b.src)}" alt="" loading="lazy" decoding="async"></span>${cap ? `<figcaption>${esc(cap)}</figcaption>` : ''}</figure>`; };
+      const flush = () => {
+        if (!run.length) return;
+        const r = run; run = [];
+        if (r.length === 1) { out.push(`<div class="m-imgs one">${figure(r[0], 'm-par')}</div>`); return; }
+        if (r.length === 3) { out.push(`<div class="m-imgs one">${figure(r[0], 'm-par')}</div><div class="m-imgs two">${figure(r[1])}${figure(r[2])}</div>`); return; }
+        for (let i = 0; i < r.length; i += 2) out.push(r.length - i === 1 ? `<div class="m-imgs one">${figure(r[i], 'm-par')}</div>` : `<div class="m-imgs two">${figure(r[i])}${figure(r[i + 1])}</div>`);
+      };
+      (blocks || []).forEach(b => {
+        if (b.type === 'image' && b.src) { run.push(b); return; }
+        flush();
+        if (b.type === 'text') {
+          ch++;
+          const tags = Array.isArray(b.tags) ? b.tags : (() => { try { return JSON.parse(b.tags || '[]'); } catch (e) { return []; } })();
+          const head = String(b.heading || '').trim(), body = String(b.body || '').trim();
+          out.push(`<section class="m-chapter">
+            <div class="m-side"><span class="m-num">(${String(ch).padStart(2, '0')})</span>${tags.length ? `<ul class="m-tags">${tags.map(t => `<li>${esc(t)}</li>`).join('')}</ul>` : ''}</div>
+            <div class="m-main">${head ? `<h3 class="m-statement" data-fill>${esc(head)}</h3>` : ''}${body ? body.split(/\n{2,}/).map(p => `<p class="m-body">${esc(p)}</p>`).join('') : ''}</div>
+          </section>`);
+        } else out.push(`<div class="m-other">${blocksHTML([b])}</div>`);
+      });
+      flush();
+      return out.join('');
+    }
+    // the scroll effects inside a case study: statements fill word by word, pictures open up and drift
+    let mottoScroll = null;
+    function armMotto(){
+      if (mottoScroll) { modalBody.removeEventListener('scroll', mottoScroll); mottoScroll = null; }
+      if (!modalBody.classList.contains('is-motto')) return;
+      $$('[data-fill]', modalBody).forEach(h => { if (h.dataset.split) return; h.dataset.split = '1'; h.innerHTML = h.textContent.split(/(\s+)/).map(w => /^\s+$/.test(w) ? w : `<span class="fw">${esc(w)}</span>`).join(''); });
+      const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let ticking = false;
+      const run = () => {
+        ticking = false; const vh = modalBody.clientHeight, top0 = modalBody.getBoundingClientRect().top;
+        $$('[data-fill]', modalBody).forEach(h => {
+          const r = h.getBoundingClientRect(), y = r.top - top0; if (y > vh || y + r.height < 0) return;
+          const p = Math.max(0, Math.min(1, (vh * .88 - y) / (vh * .5))), ws = h.querySelectorAll('.fw'), n = ws.length;
+          ws.forEach((w, i) => { const v = Math.max(0, Math.min(1, p * (n + 3) - i)); w.style.opacity = reduce ? 1 : (.16 + .84 * v).toFixed(3); });
+        });
+        $$('.m-fig', modalBody).forEach(f => {
+          const r = f.getBoundingClientRect(), y = r.top - top0; if (y > vh + 200 || y + r.height < -200) return;
+          const enter = Math.max(0, Math.min(1, (vh - y) / (vh * .65)));              // 0 just below the fold → 1 well in view
+          const fr = f.querySelector('.m-frame'); if (!fr) return;
+          if (reduce) { fr.style.clipPath = 'none'; return; }
+          const ins = (1 - enter) * 9;                                                  // the picture opens up from the middle
+          fr.style.clipPath = `inset(${ins.toFixed(2)}% ${ins.toFixed(2)}% ${ins.toFixed(2)}% ${ins.toFixed(2)}% round ${(14 + ins).toFixed(1)}px)`;
+          const im = fr.firstElementChild; if (im) im.style.transform = `scale(${(1.12 - .12 * enter).toFixed(4)})${f.classList.contains('m-par') ? ` translateY(${(((y + r.height / 2) - vh / 2) / vh * -4).toFixed(2)}%)` : ''}`;
+        });
+        const hero = $('.m-hero', modalBody);
+        if (hero) { const r = hero.getBoundingClientRect(), y = r.top - top0, p = Math.max(0, Math.min(1, (vh * .9 - y) / (vh * .7))); hero.style.setProperty('--hp', reduce ? 1 : p.toFixed(4)); }
+      };
+      mottoScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(run); } };
+      modalBody.addEventListener('scroll', mottoScroll, { passive: true }); run(); setTimeout(run, 60);
+    }
     async function fillPdfs(){
       for (const f of $$('iframe[data-pdf]', caseSections)) { const u = f.dataset.pdf; f.src = u.startsWith('data:') ? await fileUrlFor(u) : u + '#view=FitH'; }
       for (const a of $$('a[data-pdf-link]', caseSections)) { const u = a.dataset.pdfLink; if (u.startsWith('data:')) a.href = await fileUrlFor(u); }
@@ -1037,7 +1111,7 @@
       return `<div class="pmore reveal"><div class="pmore-head"><span class="pmore-rule"></span><h4>${esc(title)}</h4><span class="pmore-rule"></span></div><div class="pmore-row">${others.slice(0, 6).map(o => `
         <button class="pmore-card" type="button" data-kind="${kind}" data-i="${o.i}"><img src="${esc(imgW(kind === 'cat' ? coverOf(o.x) : caseCover(o.x), 360))}" alt="" loading="lazy"><span>${esc(o.x.title)}${o.x.locked ? ' 🔒' : ''}</span></button>`).join('')}</div></div>`;
     }
-    function finish(){ modalBody.scrollTop = 0; armReveals(modalBody); fillPdfs(); }
+    function finish(){ modalBody.scrollTop = 0; armReveals(modalBody); fillPdfs(); armMotto(); }
 
     /* ---------- BOOK layout: the cover on its own, then pages side by side that flip like a real book ----------
        Uses page-flip (assets/vendor, MIT). Drag a corner, tap a page edge, use the arrows / ← → keys, or swipe.
@@ -1117,7 +1191,7 @@
 
     function renderCategory(ci){
       destroyBook();
-      const cat = CATEGORIES[ci]; view = { t: 'cat', ci }; currentImages = [];
+      const cat = CATEGORIES[ci]; view = { t: 'cat', ci }; currentImages = []; modalBody.classList.remove('is-motto');
       applyPageBg(cat.bg); backBtn.hidden = true;
       mmeta.textContent = `${pad2(ci + 1)} / ${cat.title}`; caseTitle.textContent = cat.title;
       if (cat.intro) { caseTagline.textContent = cat.intro; caseTagline.hidden = false; } else caseTagline.hidden = true;
@@ -1167,9 +1241,16 @@
         caseSections.innerHTML = pages.length ? bookHTML(pages) + (others.length ? `<div class="pblocks gaps">${blocksHTML(others)}</div>` : '') : '<p class="pempty">Pages are coming soon.</p>';
         if (pages.length) setTimeout(() => startBook(pages), 30);
       } else {
+      if ((C.work || {}).caseStyle !== 'classic') {
+        caseSections.className = 'pblocks m-case';
+        const cover = cs.cover && !/images\.unsplash\.com/.test(cs.cover) ? cs.cover : '';
+        caseSections.innerHTML = (cover ? `<div class="m-hero"><span class="m-hero-frame"><img src="${esc(cover)}" alt="" decoding="async"></span></div>` : '') + mottoBlocksHTML(cs.blocks);
+      } else {
       caseSections.className = cs.tight !== false ? 'pblocks' : 'pblocks gaps';
       caseSections.innerHTML = blocksHTML(cs.blocks);
       }
+      }
+      modalBody.classList.toggle('is-motto', cat.layout !== 'books' && (C.work || {}).caseStyle !== 'classic');
       // every case study ends with a thank-you (admin → Content → Work / gallery)
       const w = C.work || {};
       const thanks = w.thanks ? `<div class="case-thanks reveal"><span class="case-thanks-dot" aria-hidden="true"></span><h2>${esc(w.thanks)}</h2>${(w.thanksNote || w.thanksCta) ? `<p>${esc(w.thanksNote || '')}${w.thanksCta ? ` <a href="contact.html">${esc(w.thanksCta)}</a>` : ''}</p>` : ''}</div>` : '';

@@ -153,33 +153,13 @@ try {
       { name:'Independent Collaborations', logo:'' },
     ]},
     proof: { label: 'Social proof', heading: '', stats: [
-      { value: '80+', label: 'Satisfied Clients.' },
-      { value: '120+', label: 'Completed Projects.' },
+      { value: '120+', label: 'Satisfied Clients.' },
+      { value: '200+', label: 'Completed Projects.' },
       { value: '5yrs+', label: 'Design Experience.' },
     ]},
     logofolio: { label: 'Logofolio', heading: 'Marks & identities I have designed.', tiles: 'light', items: [] },
-    globeExtra: { items: [
-      { name: 'SwyftSend', logo: 'assets/uploads/mvybox7f-1.jpg' },
-      { name: 'SwyftSend', logo: 'assets/uploads/mvyboyty-2.jpg' },
-      { name: 'SwyftSend', logo: 'assets/uploads/mvybp0i1-3.jpg' },
-      { name: 'SwyftSend', logo: 'assets/uploads/mvybp21a-4.jpg' },
-      { name: 'SwyftSend', logo: 'assets/uploads/mvybp3fa-5.jpg' },
-      { name: 'SwyftSend', logo: 'assets/uploads/mvybp57e-6.jpg' },
-      { name: 'SwyftSend', logo: 'assets/uploads/mvybp704-7.jpg' },
-      { name: 'SwyftSend', logo: 'assets/uploads/mvybp8rr-8.jpg' },
-      { name: 'SwyftSend', logo: 'assets/uploads/mvybpa6v-9.jpg' },
-      { name: 'SwyftSend', logo: 'assets/uploads/mvybpc0z-10.jpg' },
-      { name: 'SwyftSend', logo: 'assets/uploads/mvybpdnv-11.jpg' },
-      { name: 'SwyftSend', logo: 'assets/uploads/mvybpf4x-12.jpg' },
-      { name: 'Kalvia', logo: 'assets/uploads/mw3sn5ib-0.jpg' },
-      { name: 'Conversation Circle', logo: 'assets/uploads/mw3sn94h-1.jpg' },
-      { name: 'Life magazine', logo: 'assets/uploads/mw9qlnk5-0.jpg' },
-      { name: 'Gloria and Yomi', logo: 'assets/uploads/mw9qlts0-1.jpg' },
-      { name: 'Glory2Glory', logo: 'assets/uploads/mw9qm3cf-2.jpg' },
-      { name: 'Glory2Glory', logo: 'assets/uploads/mw9qm8jv-3.jpg' },
-      { name: 'Make fruits part of your diet', logo: 'assets/uploads/mw9qmgjf-5.jpg' }
-    ] },
-    work: { galleryStyle: 'globe', globeHint: 'Drag to spin · double-tap to scatter', gallerySpeed: 1, label: 'Gallery / automatic', description: 'Selected work, continuously moving. Tap any frame to explore.', noteRight: 'Drag to explore · tap a picture to open it', thanks: 'Thank you for viewing.', thanksNote: 'Have a project in mind?', thanksCta: "Let's talk ↗" },
+    globeExtra: { items: [] },   // add pictures here from admin → Work / gallery → More pictures on the globe
+    work: { caseStyle: 'motto', galleryStyle: 'globe', globeHint: 'Drag to spin · double-tap to scatter', gallerySpeed: 1, label: 'Gallery / automatic', description: 'Selected work, continuously moving. Tap any frame to explore.', noteRight: 'Drag to explore · tap a picture to open it', thanks: 'Thank you for viewing.', thanksNote: 'Have a project in mind?', thanksCta: "Let's talk ↗" },
     testimonials: { label: 'Praise', description: 'What collaborators say about working together.', items: [
       { quote: "Sam translated a vague brief into a brand system that felt inevitable — like it always should have looked that way.", name: 'Client name', role: 'Urban Food Fest' },
       { quote: "Fast, sharp, and genuinely collaborative. The kind of designer who makes the whole project easier.", name: 'Client name', role: 'Shop Soma' },
@@ -198,6 +178,7 @@ try {
       { title: 'Explore', text: 'Sketch wide and test bold directions.' },
       { title: 'Design', text: 'Craft the system and polish every detail.' },
     ]},
+    articles: { enabled: true, label: 'Articles', heading: 'Notes on design, brands and the work behind them.', items: [] },
     resources: { label: 'Resources', heading: 'Books, channels and programs that shaped how I design.', items: [
       { title: 'Incubator', by: 'Design programme', kind: 'Program', image: 'assets/resources/incubator.jpg', url: '' },
       { title: 'Logo Design Love', by: 'David Airey', kind: 'Book', image: 'assets/resources/logo-design-love.jpg', url: '' },
@@ -221,7 +202,7 @@ try {
       { kind: 'link', label: '', url: '', icon: '' },
     ],
     footer: { copyright: '© 2026 Helloutidex. All rights reserved.', left: '© 2026 Adedeji Samuel', right: 'Designed with intention / Lagos', brand: 'Helloutidex', name: 'SAMUEL ADEDEJI' },
-    effects: { particles: true, ctaPuzzle: true, intro: true, introStyle: 'poster' },
+    effects: { particles: true, ctaPuzzle: true, scrollMotion: true, intro: true, introStyle: 'poster' },
     poster: { head: "Every project is a\nconversation, this is\nwhere yours begins.", btn: 'Book a Call', tag: "What are you waiting for, let's build bold brands.", sign: 'Helloutidex', signImage: '', image: 'assets/portrait-cutout.webp', mark: 'SA', hold: 8.4,
       socials: [{ label: 'Instagram', url: '' }, { label: 'LinkedIn', url: '' }, { label: 'Linktree', url: '' }] },
     games: { enabled: true, idleMinutes: 2, button: 'Play a game', offline: true, title: 'Taking a break? Play a quick game.', quiz: true, fonts: true, odd: true, memory: true, sudoku: true, words: true },
@@ -241,6 +222,10 @@ try {
     }
     if (saved && saved.social && Array.isArray(saved.social.names) && !Array.isArray(saved.social.items)) out.social.items = saved.social.names.map(n => ({ name: n, logo: '' }));
     if (!saved || !saved.badge) out.badge.ringText = out.signature.name;
+    if (out.proof && Array.isArray(out.proof.stats)) out.proof.stats.forEach(st => {
+      if (/satisfied clients/i.test(st.label || '') && st.value === '80+') st.value = '120+';
+      if (/completed projects/i.test(st.label || '') && (st.value === '120+' || st.value === '140+')) st.value = '200+';
+    });
     return fixSocials(out);
   }
   function loadContent(){
@@ -362,6 +347,22 @@ try {
         <button class="admin-mini-remove" type="button" data-res-remove="${i}">Remove</button>
       </div>`).join('');
   }
+  function renderArticles(){
+    content.articles = content.articles || { items: [] }; content.articles.items = content.articles.items || [];
+    const box = $('#articlesEditor'); if (!box) return;
+    box.innerHTML = content.articles.items.map((r, i) => `
+      <div class="admin-mini-row admin-res-row admin-art-row" data-index="${i}">
+        <div class="admin-image-field">${r.cover ? `<img src="${esc(r.cover)}" alt="">` : '<span class="admin-thumb-empty">No cover</span>'}
+          <input type="file" accept="image/*" class="admin-upload-input" data-art-upload><button type="button" class="admin-upload-btn" data-art-upload-btn>${r.cover ? 'Replace' : 'Cover picture'}</button>${r.cover ? '<button type="button" class="admin-upload-btn" data-art-clear>Remove cover</button>' : ''}</div>
+        <label>Title<input data-art-field="title" value="${esc(r.title)}"></label>
+        <label>Date<input type="date" data-art-field="date" value="${esc(r.date)}"></label>
+        <label>Topic (e.g. Branding, Process)<input data-art-field="tag" value="${esc(r.tag)}"></label>
+        <label>Link (optional — if it's published elsewhere)<input data-art-field="url" value="${esc(r.url)}" placeholder="https://…"></label>
+        <label class="full">Short intro (shows on the card)<textarea data-art-field="excerpt" rows="2">${esc(r.excerpt)}</textarea></label>
+        <label class="full">Article text <small>— blank line = new paragraph · "## " heading · "> " quote · "- " list</small><textarea data-art-field="body" rows="9">${esc(r.body)}</textarea></label>
+        <button class="admin-mini-remove" type="button" data-art-remove="${i}">Remove</button>
+      </div>`).join('') || '<p class="admin-help">No articles yet — the section shows a "coming soon" note until you add one.</p>';
+  }
   function renderSocials(){
     content.socials = content.socials || [];
     $('#socialsEditor').innerHTML = content.socials.map((s, i) => `
@@ -389,7 +390,7 @@ try {
       else if (el.dataset.list === 'lines') el.value = Array.isArray(val) ? val.join('\n') : '';
       else el.value = val == null ? '' : val;
     });
-    renderFileFields(); renderNavLinks(); renderExpRows(); renderLinks(); renderTestimonials(); renderStats(); renderLogoLists(); renderPosterSocials(); renderSteps(); renderResources(); renderSocials();
+    renderFileFields(); renderNavLinks(); renderExpRows(); renderLinks(); renderTestimonials(); renderStats(); renderLogoLists(); renderPosterSocials(); renderSteps(); renderResources(); renderSocials(); renderArticles();
   }
   fillContentForm();
 
@@ -414,6 +415,7 @@ try {
     if (el.dataset.socField) content.socials[idx][el.dataset.socField] = el.value;
     if (el.dataset.stepField) content.process.steps[idx][el.dataset.stepField] = el.value;
     if (el.dataset.resField) content.resources.items[idx][el.dataset.resField] = el.value;
+    if (el.dataset.artField) content.articles.items[idx][el.dataset.artField] = el.value;
     if (el.dataset.llField) { const tile = el.closest('.admin-logo-tile'); content[tile.dataset.list].items[Number(tile.dataset.index)][el.dataset.llField] = el.value; }
   });
   contentPanel.addEventListener('click', e => {
@@ -426,6 +428,9 @@ try {
     if (t.closest('[data-soc-upload-btn]')) t.closest('.admin-soc-row').querySelector('[data-soc-upload]').click();
     if (t.closest('[data-soc-clear]')) { content.socials[Number(t.closest('.admin-soc-row').dataset.index)].icon = ''; renderSocials(); }
     if ((m = t.closest('[data-step-remove]'))) { content.process.steps.splice(Number(m.dataset.stepRemove), 1); renderSteps(); }
+    if ((m = t.closest('[data-art-remove]'))) { if (confirm('Remove this article?')) { content.articles.items.splice(Number(m.dataset.artRemove), 1); renderArticles(); } }
+    if (t.closest('[data-art-upload-btn]')) t.closest('.admin-art-row').querySelector('[data-art-upload]').click();
+    if (t.closest('[data-art-clear]')) { content.articles.items[Number(t.closest('.admin-art-row').dataset.index)].cover = ''; renderArticles(); }
     if ((m = t.closest('[data-res-remove]'))) { content.resources.items.splice(Number(m.dataset.resRemove), 1); renderResources(); }
     if (t.closest('[data-res-upload-btn]')) t.closest('.admin-res-row').querySelector('[data-res-upload]').click();
     if (t.closest('[data-res-clear]')) { content.resources.items[Number(t.closest('.admin-res-row').dataset.index)].image = ''; renderResources(); }
@@ -444,6 +449,7 @@ try {
     if (t.dataset.fileText) renderFileFields();
     if (t.matches('[data-soc-upload]') && t.files[0]) { content.socials[Number(t.closest('.admin-soc-row').dataset.index)].icon = await readImageResized(t.files[0], 200, true); renderSocials(); return; }
     if (t.dataset.socField === 'kind') { content.socials[Number(t.closest('.admin-soc-row').dataset.index)].kind = t.value; return; }
+    if (t.matches('[data-art-upload]') && t.files[0]) { content.articles.items[Number(t.closest('.admin-art-row').dataset.index)].cover = await readImageResized(t.files[0], 1600); renderArticles(); return; }
     if (t.matches('[data-res-upload]') && t.files[0]) { content.resources.items[Number(t.closest('.admin-res-row').dataset.index)].image = await readImageResized(t.files[0], 900); renderResources(); return; }
     if (t.dataset.resField === 'kind') return;
     if (t.matches('[data-ll-upload]') && t.files[0]) {
@@ -466,6 +472,7 @@ try {
   $('#addLink').addEventListener('click', () => { content.links.items.push({ label: '', href: '#' }); renderLinks(); });
   $('#addSocial').addEventListener('click', () => { content.socials.push({ kind: 'link', label: '', url: '', icon: '' }); renderSocials(); });
   $('#addStep').addEventListener('click', () => { content.process.steps.push({ title: '', text: '' }); renderSteps(); });
+  $('#addArticle')?.addEventListener('click', () => { content.articles = content.articles || { items: [] }; content.articles.items.unshift({ title: '', date: new Date().toISOString().slice(0, 10), tag: '', excerpt: '', body: '', cover: '', url: '' }); renderArticles(); });
   $('#addResource').addEventListener('click', () => { content.resources.items.push({ title: '', by: '', kind: 'Book', image: '', url: '' }); renderResources(); });
   $('#addPosterSocial').addEventListener('click', () => { content.poster.socials.push({ label: '', url: '' }); renderPosterSocials(); });
   $('#addStat').addEventListener('click', () => { content.proof.stats.push({ value: '', label: '' }); renderStats(); });
@@ -594,19 +601,16 @@ try {
     if (Array.isArray(s.details)) out.details = s.details.map(d => ({ label: String(d.label || ''), value: String(d.value || '') }));
     return Object.assign(out, lockFields(s));
   }
-  function makeDefaultCategories(){
-    const caseStudy = n => ({ id: 'case-' + n, title: 'Case study ' + n, cover: PHOTOS[(n - 1) % 5], tagline: 'A short line about this case study.', bg: '', tight: true, blocks: [
-      { type: 'text', heading: 'About this case study', body: 'Tell the story in a few lines — the brief, the thinking, the result. Delete this block if you want the pictures to speak for themselves.' },
-      { type: 'image', src: photoUrl(n) }, { type: 'image', src: photoUrl(n + 1) }, { type: 'image', src: photoUrl(n + 2) } ] });
-    const pics = (list, w = 1920) => list.map(i => ({ type: 'image', src: photoUrl(i, w) }));
+  function makeDefaultCategories(){   // empty starter sections — add your own work (no stock photos)
     return [
-      { id: 'cat-case', title: 'Case study', layout: 'cases', image: PHOTOS[0], intro: 'Selected projects, told from the brief to the result.', bg: '', tight: true, tile: false, items: [caseStudy(1), caseStudy(2), caseStudy(3)] },
-      { id: 'cat-editorial', title: 'Editorial', layout: 'natural', image: PHOTOS[2], intro: 'Pages, spreads and documents — shown at the size they were made.', bg: '', tight: false, tile: false, items: pics([2, 3, 4]) },
-      { id: 'cat-campaign', title: 'Campaign ads', layout: 'grid2', image: PHOTOS[1], intro: 'Social media and campaign creatives.', bg: '', tight: false, tile: false, items: pics([0, 1, 2, 3, 4, 0], 1200) },
-      { id: 'cat-logo', title: 'Logo folio', layout: 'grid3', image: PHOTOS[3], intro: 'A selection of marks and identities.', bg: '', tight: false, tile: true, items: pics([0, 1, 2, 3, 4, 1], 900) },
-      { id: 'cat-events', title: 'Events branding', layout: 'stack', image: PHOTOS[4], intro: 'Identity, signage and collateral for events.', bg: '', tight: true, tile: false, items: pics([4, 0, 1]) },
+      { id: 'cat-case', title: 'Case study', layout: 'cases', image: '', intro: 'Selected projects, told from the brief to the result.', bg: '', tight: true, tile: false, items: [] },
+      { id: 'cat-editorial', title: 'Editorial', layout: 'natural', image: '', intro: 'Pages, spreads and documents — shown at the size they were made.', bg: '', tight: false, tile: false, items: [] },
+      { id: 'cat-campaign', title: 'Campaign ads', layout: 'grid2', image: '', intro: 'Social media and campaign creatives.', bg: '', tight: false, tile: false, items: [] },
+      { id: 'cat-logo', title: 'Logo folio', layout: 'grid3', image: '', intro: 'A selection of marks and identities.', bg: '', tight: false, tile: true, items: [] },
+      { id: 'cat-events', title: 'Events branding', layout: 'stack', image: '', intro: 'Identity, signage and collateral for events.', bg: '', tight: true, tile: false, items: [] },
     ];
   }
+
   function migrateCategories(list){
     return list.map((c, i) => {
       const layout = LAYOUTS.includes(c.layout) ? c.layout : 'stack';
@@ -633,6 +637,64 @@ try {
   }
   let categories = loadCategories();
   let openCat = -1, openCase = -1;
+
+  /* ---------- clean start: find starter samples / test leftovers and remove them in one click ----------
+     stock placeholder photos, the sample case studies ("Case study 2" with the starter text), and test
+     text like "ddddd". Nothing is removed until you press the button; then Publish puts it live. */
+  const isStockSrc = u => /images\.unsplash\.com/.test(u || '');
+  const isJunkText = s => { const w = String(s || '').trim().split(/\s+/).filter(Boolean); return !!w.length && w.every(x => /^(\w)\1{2,}$/i.test(x)); };
+  const STARTER_TEXT = /^Tell the story in a few lines/;
+  const junkBlock = b => b && ((b.type === 'image' && isStockSrc(b.src)) || (b.type === 'text' && (STARTER_TEXT.test(b.body || '') || isJunkText(b.body) && (!b.heading || isJunkText(b.heading) || String(b.heading).trim().split(/\s+/).length <= 2) || (!String(b.body || '').trim() && isJunkText(b.heading)))));
+  function findSamples(){
+    const found = []; let pics = 0, texts = 0;
+    for (const c of categories) {
+      if (isStockSrc(c.image)) pics++;
+      if (!Array.isArray(c.items)) continue;
+      if (c.layout === 'cases' || c.layout === 'books') {
+        for (const s of c.items) {
+          if (!Array.isArray(s.blocks)) continue;
+          const keep = s.blocks.filter(b => !junkBlock(b));
+          const ownCover = s.cover && !isStockSrc(s.cover);
+          if (!keep.length && !ownCover && s.blocks.length) found.push(`${c.title} → "${s.title}" (sample, no work of yours in it)`);
+          else { pics += s.blocks.filter(b => b.type === 'image' && isStockSrc(b.src)).length + (isStockSrc(s.cover) ? 1 : 0); texts += s.blocks.filter(b => b.type === 'text' && junkBlock(b)).length; }
+        }
+      } else {
+        pics += c.items.filter(b => b.type === 'image' && isStockSrc(b.src)).length;
+        texts += c.items.filter(b => b.type === 'text' && junkBlock(b)).length;
+      }
+    }
+    if (pics) found.push(`${pics} stock placeholder picture${pics > 1 ? 's' : ''}`);
+    if (texts) found.push(`${texts} test / starter text block${texts > 1 ? 's' : ''} (like "ddddd")`);
+    return found;
+  }
+  function removeSamples(){
+    for (const c of categories) {
+      if (isStockSrc(c.image)) c.image = '';
+      if (!Array.isArray(c.items)) continue;
+      if (c.layout === 'cases' || c.layout === 'books') {
+        c.items = c.items.filter(s => {
+          if (!Array.isArray(s.blocks)) return true;
+          const had = s.blocks.length; s.blocks = s.blocks.filter(b => !junkBlock(b)); if (isStockSrc(s.cover)) s.cover = '';
+          return s.blocks.length || s.cover || !had;   // a brand-new empty case study you just added is kept
+        });
+      } else c.items = c.items.filter(b => !junkBlock(b));
+    }
+  }
+  function showSampleBanner(){
+    const box = $('#sampleBanner'); if (!box) return;
+    const found = findSamples();
+    if (!found.length) { box.hidden = true; return; }
+    box.hidden = false;
+    box.innerHTML = `<div><strong>Clean start — sample content found</strong><span>These are starter samples or test leftovers, not your work. Remove them so only your projects show:</span>
+      <ul>${found.map(f => `<li>${esc(f)}</li>`).join('')}</ul></div>
+      <button type="button" class="admin-primary" id="removeSamplesBtn">Remove all samples</button>`;
+    $('#removeSamplesBtn').addEventListener('click', async () => {
+      if (!confirm('Remove all of these samples? Your own uploads are kept.')) return;
+      removeSamples(); openCat = -1; openCase = -1; renderCategories();
+      await saveDraft(CATEGORIES_KEY, categories, null, true);
+      box.innerHTML = `<div><strong>Done — samples removed.</strong><span>Go to <b>Publish</b> and press "Publish to live site". Then press "Find &amp; delete unused pictures" to clear old files from GitHub.</span></div><button type="button" class="admin-primary" data-goto-tab="publish">Go to Publish →</button>`;
+    });
+  }
   const listEl = $('#adminList');
   const pad2 = n => String(n).padStart(2, '0');
   const isData = s => String(s || '').startsWith('data:');
@@ -663,25 +725,29 @@ try {
   function blockHTML(b, withCover){
     const acts = `<div class="admin-block-actions">${withCover && b.type === 'image' ? '<button type="button" data-set-cover>Use as cover</button>' : ''}<button type="button" data-b-move="-1" title="Move up">↑</button><button type="button" data-b-move="1" title="Move down">↓</button><button type="button" data-b-remove>Remove</button></div>`;
     const media = (kind, accept, thumb) => `<div class="admin-image-field">${thumb}
-        <input type="text" data-bf="src" value="${isData(b.src) ? '' : esc(b.src || '')}" placeholder="${isData(b.src) ? 'Uploaded file' : 'URL or path'}">
+        <input type="text" data-bf="src" value="${isData(b.src) ? '' : esc(b.src || '')}" placeholder="${isData(b.src) ? 'New upload — goes online when you publish' : 'URL or path'}">
         <input type="file" accept="${accept}" class="admin-upload-input" data-b-upload><button type="button" class="admin-upload-btn" data-b-upload-btn>${b.src ? 'Replace' : 'Upload'}</button></div>
-        <input data-bf="captionTitle" placeholder="Caption heading (optional)" value="${esc(b.captionTitle || '')}">
-        <textarea data-bf="caption" placeholder="Caption text (optional) — shown under the picture">${esc(b.caption || '')}</textarea>`;
+        <details class="admin-cap"${(b.captionTitle || b.caption) ? ' open' : ''}><summary>Caption (optional)</summary>
+        <input data-bf="captionTitle" placeholder="Caption heading" value="${esc(b.captionTitle || '')}">
+        <textarea data-bf="caption" placeholder="Caption text — shown under the picture">${esc(b.caption || '')}</textarea></details>`;
     if (b.type === 'image') return `<div class="admin-block"><div class="admin-block-head"><span>Image</span>${acts}</div>${media('image', 'image/*', b.src ? `<img src="${esc(b.src)}" alt="">` : '<span class="admin-thumb-empty">None</span>')}</div>`;
     if (b.type === 'pdf') return `<div class="admin-block"><div class="admin-block-head"><span>PDF</span>${acts}</div>${media('pdf', 'application/pdf,.pdf', `<span class="admin-thumb-empty">${b.src ? 'PDF' : 'None'}</span>`)}</div>`;
     if (b.type === 'video') return `<div class="admin-block"><div class="admin-block-head"><span>Video</span>${acts}</div>${media('video', 'video/*', `<span class="admin-thumb-empty">${b.src ? 'Video' : 'None'}</span>`)}</div>`;
-    return `<div class="admin-block"><div class="admin-block-head"><span>Text</span>${acts}</div>
-      <input data-bf="heading" placeholder="Heading" value="${esc(b.heading || '')}"><textarea data-bf="body" placeholder="Text">${esc(b.body || '')}</textarea>
-      <input data-bf="tagsText" placeholder="Optional tags, comma-separated" value="${esc((b.tags || []).join(', '))}"></div>`;
+    const tags = Array.isArray(b.tags) ? b.tags : (() => { try { const t = JSON.parse(b.tags || '[]'); return Array.isArray(t) ? t : []; } catch (e) { return []; } })();
+    return `<div class="admin-block admin-block-text"><div class="admin-block-head"><span>Text · chapter</span>${acts}</div>
+      <input data-bf="heading" placeholder="Heading — the big statement (e.g. Making money home feel close.)" value="${esc(b.heading || '')}"><textarea data-bf="body" placeholder="The story — a few lines">${esc(b.body || '')}</textarea>
+      <input data-bf="tagsText" placeholder="Tags, comma-separated (e.g. Logo, Colour, Typography)" value="${esc(tags.join(', '))}"></div>`;
   }
   function blocksEditor(arr, withCover, hint){
+    const n = (arr || []).filter(b => b.type === 'image').length;
     return `<p class="admin-hint">${hint}</p>
-      ${(arr || []).map(b => blockHTML(b, withCover)).join('')}
       <div class="admin-block-add">
-        <label class="admin-add-small admin-upload-label">+ Upload files (many at once)<input type="file" accept="image/*,application/pdf" multiple class="admin-upload-input" data-bulk-upload></label>
-        <button type="button" class="admin-add-small" data-add-block="text">+ Text</button>
-        <button type="button" class="admin-add-small" data-add-block="video">+ Video</button>
-      </div>`;
+        <label class="admin-upload-label admin-dropzone"><b>⬆ Upload pictures</b><small>Click to choose — or drag files here. You can pick many at once (JPG, PNG, GIF, PDF).</small><input type="file" accept="image/*,application/pdf" multiple class="admin-upload-input" data-bulk-upload></label>
+        <button type="button" class="admin-add-small" data-add-block="text">+ Add text (a chapter)</button>
+        <button type="button" class="admin-add-small" data-add-block="video">+ Add a video</button>
+      </div>
+      ${(arr || []).length ? `<p class="admin-count">${n} picture${n === 1 ? '' : 's'}${(arr || []).length > n ? ` · ${(arr || []).length - n} other item${(arr || []).length - n === 1 ? '' : 's'}` : ''} — new uploads are added at the end</p>` : ''}
+      ${(arr || []).map(b => blockHTML(b, withCover)).join('')}`;
   }
   function lockBox(o, label){
     return `<div class="admin-lock-panel">
@@ -719,34 +785,41 @@ try {
     return `<article class="admin-case${open ? ' is-open' : ''}" data-si="${si}">
       ${rowHead(si + 1, cs.cover || firstImg(cs.blocks), cs.title, cs.locked, `<button type="button" data-case-toggle>${open ? 'Close' : 'Edit'}</button>`)}
       ${open ? `<div class="admin-project-body">
-        <div class="admin-row2"><label>Title<input data-sf="title" value="${esc(cs.title || '')}"></label><label>Short line under the title (optional)<input data-sf="tagline" value="${esc(cs.tagline || '')}"></label></div>
-        ${needs ? '' : detailsEditor(cs)}
-        ${coverField(cs.cover, 'Cover picture (shown in the list) — or click "Use as cover" on any picture below')}
-        <div class="admin-row2"><label class="admin-check"><input type="checkbox" data-sf="tight" ${cs.tight !== false ? 'checked' : ''}> No gaps between pictures (edge to edge)</label>${bgField(cs)}</div>
-        ${lockBox(cs, 'this case study')}
-        ${needs ? unlockBox() : blocksEditor(cs.blocks, true, 'Pictures should be 1920 px wide, any height — wider ones are shrunk for you. Pick many at once; they are added in file-name order.')}
+        <p class="admin-step">1 · Name it</p>
+        <div class="admin-row2"><label>Title<input data-sf="title" value="${esc(cs.title || '')}"></label><label>One-line description (big text under the title)<input data-sf="tagline" value="${esc(cs.tagline || '')}"></label></div>
+        <p class="admin-step">2 · Cover picture</p>
+        ${coverField(cs.cover, 'Shown at the top of the page and in the list — or press "Use as cover" on any picture below')}
+        <p class="admin-step">3 · Pictures and chapters</p>
+        ${needs ? unlockBox() : blocksEditor(cs.blocks, true, 'Upload your pictures. Add text to make a numbered chapter: its heading becomes the big statement, and its tags become the list beside it (e.g. Logo, Colour, Typography). Use ↑ ↓ to order.')}
+        <details class="admin-more"><summary>Project details & more options <small>(Type, Category, Year · background · lock)</small></summary>
+          ${needs ? '' : detailsEditor(cs)}
+          <div class="admin-row2"><label class="admin-check"><input type="checkbox" data-sf="tight" ${cs.tight !== false ? 'checked' : ''}> No gaps between pictures (classic look only)</label>${bgField(cs)}</div>
+          ${lockBox(cs, 'this case study')}
+        </details>
       </div>` : ''}</article>`;
   }
   function categoryHTML(c, i){
     const open = openCat === i, needs = c.locked && c.enc && !Array.isArray(c.items), cases = c.layout === 'cases' || c.layout === 'books';
     const body = !open ? '' : `<div class="admin-project-body">
-        <div class="admin-row2"><label>Name (also on its floating card)<input data-cf="title" value="${esc(c.title || '')}"></label>
-          <label>How its page is laid out<select data-cf="layout">${LAYOUTS.map(l => `<option value="${l}" ${c.layout === l ? 'selected' : ''}>${esc(LAYOUT_LABELS[l])}</option>`).join('')}</select></label></div>
-        <label>Short intro on its page (optional)<input data-cf="intro" value="${esc(c.intro || '')}"></label>
-        <label>Questionnaire button on its page<select data-cf="brief">${[['', 'Automatic (from the section name)'], ['branding', 'Brand identity'], ['logo', 'Logo design'], ['editorial', 'Editorial / publication'], ['events', 'Event branding'], ['eventdesign', 'Event designs'], ['campaign', 'Campaign / social ads'], ['none', 'No button']].map(([v, l]) => `<option value="${v}" ${(c.brief || '') === v ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
-        ${coverField(c.image, 'Card picture (floating card + gallery) — empty = its first picture')}
-        <div class="admin-row2">${bgField(c)}
-          ${c.layout === 'stack' ? `<label class="admin-check"><input type="checkbox" data-cf="tight" ${c.tight ? 'checked' : ''}> No gaps between pictures</label>` : ''}
-          ${c.layout === 'grid2' || c.layout === 'grid3' ? `<label class="admin-check"><input type="checkbox" data-cf="tile" ${c.tile ? 'checked' : ''}> Show each picture on a soft tile (good for logos)</label>` : ''}</div>
-        ${lockBox(c, 'this whole section')}
+        <div class="admin-row2"><label>Section name<input data-cf="title" value="${esc(c.title || '')}"></label>
+          <label>Page layout<select data-cf="layout">${LAYOUTS.map(l => `<option value="${l}" ${c.layout === l ? 'selected' : ''}>${esc(LAYOUT_LABELS[l])}</option>`).join('')}</select></label></div>
         ${needs ? unlockBox() : cases
-          ? `<p class="admin-hint">${c.layout === 'books' ? 'Editorials — each one opens as its own flip book. In each: the FIRST picture is its cover, the rest are its pages (upload a PDF and every page is added for you).' : 'Case studies — each opens its own page. Click Edit on one to change it.'}</p>${(c.items || []).map(caseHTML).join('')}<button type="button" class="admin-add-small" data-add-case>${c.layout === 'books' ? '+ Add an editorial' : '+ Add a case study'}</button>`
-          : blocksEditor(c.items, true, c.layout === 'book' ? 'Book: the FIRST picture is the cover (shown on its own), then the pages follow in pairs, left and right. Upload a PDF and every page becomes a picture automatically, or upload page pictures (all the same size). Reorder with ↑ ↓.' : 'Pictures should be 1920 px wide, any height (PDFs are fine too). Pick many at once; they are added in file-name order.')}
+          ? `<p class="admin-step">${c.layout === 'books' ? 'Your editorials' : 'Your case studies'}</p><p class="admin-hint">${c.layout === 'books' ? 'Each one opens as its own flip book. The FIRST picture is its cover, the rest are its pages (upload a PDF and every page is added for you).' : 'Each one opens as its own project page. Press Edit on one to fill it in.'}</p>${(c.items || []).map(caseHTML).join('')}<button type="button" class="admin-add-big" data-add-case>${c.layout === 'books' ? '+ Add an editorial' : '+ Add a case study'}</button>`
+          : `<p class="admin-step">Your pictures</p>` + blocksEditor(c.items, true, c.layout === 'book' ? 'Book: the FIRST picture is the cover, then the pages follow in pairs. Upload a PDF and every page becomes a picture automatically. Use ↑ ↓ to order.' : 'Best at 1920 px wide, any height (PDFs are fine too). They are added in file-name order; use ↑ ↓ to change it.')}
+        <details class="admin-more"><summary>More options <small>(intro text · card picture · questionnaire button · background · lock)</small></summary>
+          <label>Short intro on its page (optional)<input data-cf="intro" value="${esc(c.intro || '')}"></label>
+          <label>Questionnaire button on its page<select data-cf="brief">${[['', 'Automatic (from the section name)'], ['branding', 'Brand identity'], ['logo', 'Logo design'], ['editorial', 'Editorial / publication'], ['events', 'Event branding'], ['eventdesign', 'Event designs'], ['campaign', 'Campaign / social ads'], ['none', 'No button']].map(([v, l]) => `<option value="${v}" ${(c.brief || '') === v ? 'selected' : ''}>${l}</option>`).join('')}</select></label>
+          ${coverField(c.image, 'Card picture (floating card + gallery) — empty = its first picture')}
+          <div class="admin-row2">${bgField(c)}
+            ${c.layout === 'stack' ? `<label class="admin-check"><input type="checkbox" data-cf="tight" ${c.tight ? 'checked' : ''}> No gaps between pictures</label>` : ''}
+            ${c.layout === 'grid2' || c.layout === 'grid3' ? `<label class="admin-check"><input type="checkbox" data-cf="tile" ${c.tile ? 'checked' : ''}> Show each picture on a soft tile (good for logos)</label>` : ''}</div>
+          ${lockBox(c, 'this whole section')}
+        </details>
       </div>`;
     return `<article class="admin-project${open ? ' is-open' : ''}" data-ci="${i}">${rowHead(i + 1, c.image || (cases ? ((c.items || []).map(s => s.cover || firstImg(s.blocks)).find(Boolean) || '') : firstImg(c.items)), c.title, c.locked, `<button type="button" data-cat-toggle>${open ? 'Close' : 'Edit'}</button>`)}${body}</article>`;
   }
   function renderCategories(){ listEl.innerHTML = categories.map(categoryHTML).join(''); }
-  renderCategories();
+  renderCategories(); showSampleBanner();
 
   // what an event happened inside: the section, maybe a case study in it, maybe a file/block in that
   function ctx(el){
@@ -1002,6 +1075,51 @@ try {
     } catch (err) {
       setStatus('publishStatus', 'Could not publish: ' + (err && err.message ? err.message : err));
       console.error(err);
+    } finally { btn.disabled = false; }
+  });
+
+  /* ---------- clean up: delete pictures you removed from the site ----------
+     Every file in assets/uploads that nothing on the site uses any more (a post you deleted,
+     a picture you replaced) is listed, and after you confirm it is deleted from GitHub,
+     so deleted work is really gone — not just hidden. Locked work must be open in this
+     editor first, so its pictures are never mistaken for unused ones. */
+  $('#cleanupBtn')?.addEventListener('click', async () => {
+    const btn = $('#cleanupBtn');
+    if (!gh.token) { setStatus('cleanupStatus', 'Paste your GitHub token first (above).'); return; }
+    const hidden = [];
+    for (const c of categories) {
+      if (c.locked && !Array.isArray(c.items)) hidden.push(c.title);
+      if ((c.layout === 'cases' || c.layout === 'books') && Array.isArray(c.items)) for (const s of c.items) if (s.locked && !Array.isArray(s.blocks)) hidden.push(s.title);
+    }
+    if (hidden.length) { setStatus('cleanupStatus', `Open the locked work first (${hidden.join(', ')}) — Sections tab → unlock it — so its pictures are kept.`); return; }
+    if (collectDataUrls({ content, theme, categories }).size) { setStatus('cleanupStatus', 'You have new uploads that are not published yet. Press Publish first, then clean up.'); return; }
+    btn.disabled = true;
+    try {
+      setStatus('cleanupStatus', 'Checking which pictures are still in use…');
+      const used = new Set(), walk = v => {
+        if (typeof v === 'string') { (v.match(/assets\/uploads\/[^"'\s?#)]+/g) || []).forEach(p => used.add(p)); }
+        else if (Array.isArray(v)) v.forEach(walk); else if (v && typeof v === 'object') Object.values(v).forEach(walk);
+      };
+      walk({ content, theme, categories });
+      // also keep anything the published file still points to (e.g. edited on another device)
+      try { const live = await ghApi('GET', 'site-data.json'); if (live.status === 200 && live.data && live.data.content) walk(decodeURIComponent(escape(atob(live.data.content.replace(/\n/g, ''))))); } catch (e) {}
+      // the live site loads light JPG twins of a few heavy PNGs (see LIGHTER in script.js) — keep both
+      const TWINS = { 'assets/uploads/mvybotwj-0.png': 'assets/uploads/mvybotwj-0.jpg', 'assets/uploads/mw3sn5ib-0.png': 'assets/uploads/mw3sn5ib-0.jpg', 'assets/uploads/mw3sn94h-1.png': 'assets/uploads/mw3sn94h-1.jpg' };
+      Object.keys(TWINS).forEach(p => { if (used.has(p)) used.add(TWINS[p]); });
+      const list = await ghApi('GET', 'assets/uploads');
+      const files = Array.isArray(list.data) ? list.data.filter(f => f.type === 'file') : [];
+      const unused = files.filter(f => !used.has(f.path));
+      if (!unused.length) { setStatus('cleanupStatus', `All ${files.length} files in use — nothing to delete.`); return; }
+      const names = unused.slice(0, 12).map(f => '• ' + f.name).join('\n') + (unused.length > 12 ? `\n…and ${unused.length - 12} more` : '');
+      if (!confirm(`Delete ${unused.length} picture${unused.length > 1 ? 's' : ''} from GitHub that your site no longer uses?\n\n${names}\n\nThis removes them from the live site for good (GitHub keeps them in its history).`)) { setStatus('cleanupStatus', 'Nothing deleted.'); return; }
+      let n = 0;
+      for (const f of unused) {
+        n++; setStatus('cleanupStatus', `Deleting ${n} of ${unused.length}…`);
+        await ghApi('DELETE', f.path, { message: `Remove unused ${f.path} from admin`, sha: f.sha, branch: gh.branch });
+      }
+      setStatus('cleanupStatus', `Done — deleted ${unused.length} unused picture${unused.length > 1 ? 's' : ''}. Only the work on your site is left.`);
+    } catch (err) {
+      setStatus('cleanupStatus', 'Could not clean up: ' + (err && err.message ? err.message : err));
     } finally { btn.disabled = false; }
   });
 } catch (err) {
